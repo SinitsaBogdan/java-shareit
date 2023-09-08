@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface ItemRepository {
 
+    Boolean checkId(Long id);
+
     List<Item> findAll();
 
     Item findById(Long itemId);

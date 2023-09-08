@@ -15,6 +15,11 @@ public class ItemRepositoryImpl implements ItemRepository {
     private static final Map<Long, Item> data = new HashMap<>();
 
     @Override
+    public Boolean checkId(Long id) {
+        return data.containsKey(id);
+    }
+
+    @Override
     public List<Item> findAll() {
         return (List<Item>) data.values();
     }

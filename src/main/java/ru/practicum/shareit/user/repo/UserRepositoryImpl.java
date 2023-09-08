@@ -13,6 +13,11 @@ public class UserRepositoryImpl implements UserRepository {
     private static final Map<Long, User> data = new HashMap<>();
 
     @Override
+    public Boolean checkId(Long id) {
+        return data.containsKey(id);
+    }
+
+    @Override
     public List<User> findAll() {
         return (List<User>) data.values();
     }

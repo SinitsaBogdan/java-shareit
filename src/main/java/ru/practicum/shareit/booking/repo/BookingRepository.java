@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface BookingRepository {
 
+    Boolean checkId(Long id);
+
     List<Booking> findAll();
 
     Booking findById(Long bookingId);

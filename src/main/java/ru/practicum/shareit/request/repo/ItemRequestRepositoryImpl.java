@@ -9,6 +9,11 @@ import java.util.List;
 public class ItemRequestRepositoryImpl implements ItemRequestRepository {
 
     @Override
+    public Boolean checkId(Long id) {
+        return null;
+    }
+
+    @Override
     public List<ItemRequest> findAll() {
         return null;
     }

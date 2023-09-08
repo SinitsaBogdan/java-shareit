@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ItemRequestRepository {
 
+    Boolean checkId(Long id);
+
     List<ItemRequest> findAll();
 
     ItemRequest findById(Long itemRequestId);

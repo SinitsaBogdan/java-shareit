@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface UserRepository {
 
+    Boolean checkId(Long id);
+
     List<User> findAll();
 
     User findById(Long userId);

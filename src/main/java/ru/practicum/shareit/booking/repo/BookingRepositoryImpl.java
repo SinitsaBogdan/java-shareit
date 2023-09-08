@@ -9,6 +9,11 @@ import java.util.List;
 public class BookingRepositoryImpl implements BookingRepository {
 
     @Override
+    public Boolean checkId(Long id) {
+        return null;
+    }
+
+    @Override
     public List<Booking> findAll() {
         return null;
     }

@@ -1,10 +1,17 @@
 package ru.practicum.shareit.booking.service;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.repo.BookingRepository;
 
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
+
+    private BookingRepository bookingRepository;
 
     @Override
     public List<BookingDto> getAll() {
@@ -12,27 +19,27 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDto> getAllByUser(long userId) {
+    public List<BookingDto> getAllByUser(Long userId) {
         return null;
     }
 
     @Override
-    public BookingDto getById(long bookingId) {
+    public BookingDto getById(Long bookingId) {
         return null;
     }
 
     @Override
-    public BookingDto addToUser(long userId, BookingDto booking) {
+    public BookingDto addToUser(Long userId, BookingDto booking) {
         return null;
     }
 
     @Override
-    public BookingDto updateToUser(long userId, BookingDto booking) {
+    public BookingDto updateToUser(Long userId, BookingDto booking) {
         return null;
     }
 
     @Override
-    public void deleteToUser(long userId, long bookingId) {
+    public void deleteToUser(Long userId, Long bookingId) {
 
     }
 }

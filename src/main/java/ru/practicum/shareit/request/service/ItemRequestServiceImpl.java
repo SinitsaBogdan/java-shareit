@@ -1,10 +1,17 @@
 package ru.practicum.shareit.request.service;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.repo.ItemRequestRepository;
 
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class ItemRequestServiceImpl implements ItemRequestService {
+
+    private ItemRequestRepository itemRequestRepository;
 
     @Override
     public List<ItemRequestDto> getAll() {
@@ -12,17 +19,17 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto add(long userId, ItemRequestDto itemRequest) {
+    public ItemRequestDto add(Long userId, ItemRequestDto itemRequest) {
         return null;
     }
 
     @Override
-    public ItemRequestDto update(long userId, ItemRequestDto itemRequest) {
+    public ItemRequestDto update(Long userId, ItemRequestDto itemRequest) {
         return null;
     }
 
     @Override
-    public void deleteToUser(long userId, long itemRequestId) {
+    public void deleteToUser(Long userId, Long itemRequestId) {
 
     }
 }

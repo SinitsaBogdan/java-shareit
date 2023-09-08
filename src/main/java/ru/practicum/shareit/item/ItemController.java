@@ -1,12 +1,9 @@
 package ru.practicum.shareit.item;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import java.util.List;
@@ -16,18 +13,18 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemService itemService;
+    private ItemService itemService;
 
     /**
      * Запрос всех записей
      * вещей пользователя
      **/
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader("X-Later-User-Id") long userId) {
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info(
                 "   GET [http://localhost:8080/items] : " +
                         "Запрос на получение всех вещей от пользователя id : {}",
@@ -41,7 +38,7 @@ public class ItemController {
      **/
     @GetMapping("/{itemId}")
     public ItemDto getById(
-            @RequestHeader("X-Later-User-Id") long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
             @RequestParam long itemId
     ) {
         log.info(
@@ -54,11 +51,11 @@ public class ItemController {
 
     /**
      * Запрос записей
-     * вещей по поиску в text ( название или описание )
+     * вещей по поиску в text (название или описание)
      **/
     @GetMapping("/search")
     public List<ItemDto> getAllToSearchText(
-            @RequestHeader("X-Later-User-Id") long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
             @RequestParam(required = false) String text
     ) {
         log.info(
@@ -75,7 +72,7 @@ public class ItemController {
      **/
     @PostMapping
     public ItemDto add(
-            @RequestHeader("X-Later-User-Id") long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
             @RequestBody ItemDto item
     ) {
         log.info(
@@ -83,7 +80,7 @@ public class ItemController {
                         "Запрос на добавление вещи от пользователя id : {} - {}",
                 userId, item
         );
-        return null;
+        return itemService.addToUser(userId, item);
     }
 
     /**
@@ -92,7 +89,7 @@ public class ItemController {
      **/
     @PatchMapping
     public ItemDto update(
-            @RequestHeader("X-Later-User-Id") long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
             @RequestBody ItemDto item
     ) {
         log.info(
@@ -109,7 +106,7 @@ public class ItemController {
      **/
     @DeleteMapping("/{itemDtoId}")
     public void delete(
-            @RequestHeader("X-Later-User-Id") long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
             @PathVariable long itemId
     ) {
         log.info(

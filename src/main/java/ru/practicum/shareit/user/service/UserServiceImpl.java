@@ -1,10 +1,17 @@
 package ru.practicum.shareit.user.service;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.repo.UserRepository;
 
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private UserRepository userRepository;
 
     @Override
     public List<UserDto> getAll() {
@@ -12,22 +19,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(long userId, long id) {
+    public UserDto getById(Long userId, Long id) {
         return null;
     }
 
     @Override
-    public UserDto add(long userId, UserDto user) {
+    public UserDto add(Long userId, UserDto user) {
         return null;
     }
 
     @Override
-    public UserDto update(long userId, UserDto user) {
+    public UserDto update(Long userId, UserDto user) {
         return null;
     }
 
     @Override
-    public List<UserDto> delete(long userId) {
+    public List<UserDto> delete(Long userId) {
         return null;
     }
 }

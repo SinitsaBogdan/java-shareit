@@ -1,9 +1,11 @@
 package ru.practicum.shareit.booking.repo;
 
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
 
+@Repository
 public class BookingRepositoryImpl implements BookingRepository {
 
     @Override

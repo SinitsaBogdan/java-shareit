@@ -1,12 +1,10 @@
 package ru.practicum.shareit.booking;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
@@ -16,22 +14,21 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
-@RequestMapping(path = "/bookings")
+@AllArgsConstructor
+@RequestMapping("/bookings")
 public class BookingController {
 
-    private final BookingService bookingService;
+    private BookingService bookingService;
 
     /**
      * Запрос всех записей
      * бронирования пользователя
     **/
     @GetMapping
-    public List<BookingDto> getAll(@RequestHeader("X-Later-User-Id") long userId) {
+    public List<BookingDto> getAll() {
         log.info(
                 "   GET [http://localhost:8080/bookings] : " +
-                        "Запрос на получение всех бронирований от пользователя id : {}",
-                userId
+                        "Запрос на получение всех бронирований"
         );
         return null;
     }
@@ -40,14 +37,11 @@ public class BookingController {
      * Запрос записи бронирования по ID
      **/
     @GetMapping("/{bookingId}")
-    public BookingDto getById(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestParam long bookingId
-    ) {
+    public BookingDto getById(@RequestParam Long bookingId) {
         log.info(
                 "   GET [http://localhost:8080/bookings/{}] : " +
-                        "Запрос на получение бронирования по id : {} от пользователя id : {}",
-                bookingId, bookingId, userId
+                        "Запрос на получение бронирования по id : {}",
+                bookingId, bookingId
         );
         return null;
     }
@@ -57,14 +51,11 @@ public class BookingController {
      * бронирования пользователя
      **/
     @PostMapping
-    public BookingDto add(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestBody BookingDto booking
-    ) {
+    public BookingDto add(@RequestBody BookingDto booking) {
         log.info(
                 "  POST [http://localhost:8080/bookings] : " +
-                        "Запрос на добавление бронирования от пользователя id : {} - {}",
-                userId, booking
+                        "Запрос на добавление бронирования - {}",
+                booking
         );
         return null;
     }
@@ -74,14 +65,11 @@ public class BookingController {
      * бронирования пользователя
      **/
     @PatchMapping
-    public BookingDto update(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestBody BookingDto booking
-    ) {
+    public BookingDto update(@RequestBody BookingDto booking) {
         log.info(
                 " PATCH [http://localhost:8080/bookings] : " +
-                        "Запрос на обновление бронирования от пользователя id : {} - {}",
-                userId, booking
+                        "Запрос на обновление бронирования - {}",
+                booking
         );
         return null;
     }
@@ -91,14 +79,11 @@ public class BookingController {
      * бронирования пользователя
      **/
     @DeleteMapping("/{bookingId}")
-    public void delete(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestParam long bookingId
-    ) {
+    public void delete(@RequestParam Long bookingId) {
         log.info(
                 " DELETE [http://localhost:8080/bookings/{}] : " +
-                        "Запрос на удаление бронирования id : {} от пользователя id : {}",
-                bookingId, bookingId, userId
+                        "Запрос на удаление бронирования id : {}",
+                bookingId, bookingId
         );
     }
 }

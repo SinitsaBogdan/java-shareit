@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -13,21 +13,20 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequiredArgsConstructor
-@RequestMapping(path = "/users")
+@AllArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private UserService userService;
 
     /**
      * Запрос всех пользователей
      **/
     @GetMapping
-    public List<UserDto> getAll(@RequestHeader("X-Later-User-Id") long userId) {
+    public List<UserDto> getAll() {
         log.info(
                 "   GET [http://localhost:8080/users] : " +
-                        "Запрос на получение всех пользователей от пользователя id : {}",
-                userId
+                        "Запрос на получение всех пользователей"
         );
         return null;
     }
@@ -36,14 +35,11 @@ public class UserController {
      * Запрос пользователя по ID
      **/
     @GetMapping("/{id}")
-    public UserDto getById(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestParam long id
-    ) {
+    public UserDto getById(@RequestParam Long id) {
         log.info(
                 "   GET [http://localhost:8080/users/{}] : " +
-                        "Запрос на получение пользователя id : {} от пользователя id : {}",
-                id, id, userId
+                        "Запрос на получение пользователя id : {}",
+                id, id
         );
         return null;
     }
@@ -52,14 +48,11 @@ public class UserController {
      * Добавление нового пользователя
      **/
     @PostMapping
-    public UserDto add(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestBody UserDto user
-    ) {
+    public UserDto add(@RequestBody UserDto user) {
         log.info(
                 "  POST [http://localhost:8080/users] : " +
-                        "Запрос на добавление пользователя от пользователя id : {} - {}",
-                userId, user
+                        "Запрос на добавление пользователя - {}",
+                user
         );
         return null;
     }
@@ -68,14 +61,11 @@ public class UserController {
      * Обновление существующего пользователя
      **/
     @PatchMapping
-    public UserDto update(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @RequestBody UserDto user
-    ) {
+    public UserDto update(@RequestBody UserDto user) {
         log.info(
                 " PATCH [http://localhost:8080/users] : " +
-                        "Запрос на обновление пользователя от пользователя id : {} - {}",
-                userId, user
+                        "Запрос на обновление пользователя - {}",
+                user
         );
         return null;
     }
@@ -84,14 +74,11 @@ public class UserController {
      * Удаление существующего пользователя
      **/
     @DeleteMapping("/{id}")
-    public void delete(
-            @RequestHeader("X-Later-User-Id") long userId,
-            @PathVariable long id
-    ) {
+    public void delete(@PathVariable Long id) {
         log.info(
                 " DELETE [http://localhost:8080/users/{}] : " +
-                        "Запрос на удаление пользователя id : {} от пользователя id : {}",
-                id, id, userId
+                        "Запрос на удаление пользователя id : {}",
+                id, id
         );
     }
 }

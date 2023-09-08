@@ -1,9 +1,11 @@
 package ru.practicum.shareit.request.repo;
 
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
+@Repository
 public class ItemRequestRepositoryImpl implements ItemRequestRepository {
 
     @Override

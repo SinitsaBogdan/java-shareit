@@ -8,9 +8,9 @@ public interface ItemRequestService {
 
     List<ItemRequestDto> getAll();
 
-    ItemRequestDto add(long userId, ItemRequestDto itemRequest);
+    ItemRequestDto add(Long userId, ItemRequestDto itemRequest);
 
-    ItemRequestDto update(long userId, ItemRequestDto itemRequest);
+    ItemRequestDto update(Long userId, ItemRequestDto itemRequest);
 
-    void deleteToUser(long userId, long itemRequestId);
+    void deleteToUser(Long userId, Long itemRequestId);
 }

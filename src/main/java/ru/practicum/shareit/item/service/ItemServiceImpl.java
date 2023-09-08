@@ -1,10 +1,20 @@
 package ru.practicum.shareit.item.service;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import ru.practicum.shareit.util.Validator;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repo.ItemRepository;
 
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
+
+    private ItemRepository itemRepository;
 
     @Override
     public List<ItemDto> getAll() {
@@ -12,7 +22,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getAllByUser(long userId) {
+    public List<ItemDto> getAllByUser(Long userId) {
         return null;
     }
 
@@ -22,22 +32,26 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getById(long itemId) {
+    public ItemDto getById(Long itemId) {
         return null;
     }
 
     @Override
-    public ItemDto addToUser(long userId, ItemDto item) {
+    public ItemDto addToUser(Long userId, ItemDto item) {
+        Validator.check(userId, itemRepository);
+        Validator.check(item);
+        Item result = ItemMapper.mapperItemDtoToItem(item);
+        result = itemRepository.save(result);
+        return ItemMapper.mapperItemToDto(result);
+    }
+
+    @Override
+    public ItemDto updateToUser(Long userId, ItemDto item) {
         return null;
     }
 
     @Override
-    public ItemDto updateToUser(long userId, ItemDto item) {
-        return null;
-    }
-
-    @Override
-    public void deleteToUser(long userId, long itemId) {
+    public void deleteToUser(Long userId, Long itemId) {
 
     }
 }

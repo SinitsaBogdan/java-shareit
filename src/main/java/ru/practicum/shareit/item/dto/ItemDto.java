@@ -13,5 +13,7 @@ public class ItemDto {
 
     private Long id;
     private String name, description;
-    private Boolean available;
+
+    @Builder.Default
+    private Boolean available = null;
 }

@@ -8,13 +8,13 @@ public interface BookingService {
 
     List<BookingDto> getAll();
 
-    List<BookingDto> getAllByUser(long userId);
+    List<BookingDto> getAllByUser(Long userId);
 
-    BookingDto getById(long bookingId);
+    BookingDto getById(Long bookingId);
 
-    BookingDto addToUser(long userId, BookingDto booking);
+    BookingDto addToUser(Long userId, BookingDto booking);
 
-    BookingDto updateToUser(long userId, BookingDto booking);
+    BookingDto updateToUser(Long userId, BookingDto booking);
 
-    void deleteToUser(long userId, long bookingId);
+    void deleteToUser(Long userId, Long bookingId);
 }

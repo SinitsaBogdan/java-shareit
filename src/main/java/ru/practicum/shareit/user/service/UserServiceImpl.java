@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateAll(long userId, UserDto user) {
+    public UserDto update(long userId, UserDto user) {
         return null;
     }
 

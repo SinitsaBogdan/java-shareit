@@ -13,7 +13,6 @@ import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
- *  1. Добавить логирование
  */
 @Slf4j
 @RestController

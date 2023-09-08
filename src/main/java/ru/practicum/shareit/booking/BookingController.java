@@ -12,7 +12,6 @@ import java.util.List;
 
 /**
  * TODO Sprint add-bookings.
- *  1. Добавить логирование
  */
 
 @Slf4j

@@ -7,12 +7,10 @@ import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.Validator;
-import ru.practicum.shareit.util.exeptions.ShareitException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static ru.practicum.shareit.util.exeptions.ErrorMessage.REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID;
 
 @Service
 @AllArgsConstructor
@@ -29,15 +27,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getById(Long userId) {
-        User user = userRepository.findById(userId);
-        if (user.getId() == null || !userRepository.checkId(user.getId())) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        Validator.checkIdInUserRepo(userId, userRepository);
         User result = userRepository.findById(userId);
         return UserMapper.mapperUserToDto(result);
     }
 
     @Override
     public UserDto add(UserDto user) {
-        Validator.check(user, userRepository);
+        Validator.checkValidUser(user, userRepository);
         User result = UserMapper.mapperUserDtoToUser(user);
         result = userRepository.save(result);
         return UserMapper.mapperUserToDto(result);
@@ -45,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto update(UserDto user) {
-        if (user.getId() == null || !userRepository.checkId(user.getId())) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        Validator.checkIdInUserRepo(user.getId(), userRepository);
         User result = UserMapper.mapperUserDtoToUser(user);
         result = userRepository.update(result);
         return UserMapper.mapperUserToDto(result);
@@ -53,8 +50,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long userId) {
+        Validator.checkIdInUserRepo(userId, userRepository);
         User user = userRepository.findById(userId);
-        if (user.getId() == null || !userRepository.checkId(user.getId())) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         userRepository.deleteById(user);
     }
 }

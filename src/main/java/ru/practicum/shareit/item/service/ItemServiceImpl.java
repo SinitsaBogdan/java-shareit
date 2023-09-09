@@ -8,12 +8,9 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.ItemRepository;
-import ru.practicum.shareit.util.exeptions.ShareitException;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service
 @AllArgsConstructor
@@ -52,15 +49,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getById(Long itemId) {
-        if (!itemRepository.checkId(itemId)) throw new ShareitException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+        Validator.checkIdInUserRepo(itemId, userRepository);
         return ItemMapper.mapperItemToDto(itemRepository.findById(itemId));
     }
 
     @Override
     public ItemDto addToUser(Long userId, ItemDto item) {
-        if (userId == null) throw new ShareitException(GLOBAL_ERROR__NOT_HEADER_IN_REQUEST);
-        if (!userRepository.checkId(userId)) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        Validator.check(item);
+        Validator.checkIdInUserRepo(userId, userRepository);
+        Validator.checkValidItem(item);
 
         Item result = ItemMapper.mapperItemDtoToItem(item);
         result.setOwner(userId);
@@ -70,14 +66,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto updateToUser(Long userId, ItemDto item) {
-        if (userId == null) throw new ShareitException(GLOBAL_ERROR__NOT_HEADER_IN_REQUEST);
-        if (!userRepository.checkId(userId)) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        if (!itemRepository.checkId(item.getId())) throw new ShareitException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+        Validator.checkIdInUserRepo(userId, userRepository);
+        Validator.checkIdInItemRepo(item.getId(), itemRepository);
 
         Item result = ItemMapper.mapperItemDtoToItem(item);
 
-        if (!itemRepository.findById(item.getId()).getOwner().equals(userId)) throw new ShareitException(ITEM_ERROR__VALID__ITEM__USER_NOT_OWNER);
+        Validator.checkValidItemOwner(item.getId(), userId, itemRepository);
         result.setOwner(userId);
+
         result = itemRepository.update(result);
         return ItemMapper.mapperItemToDto(result);
     }

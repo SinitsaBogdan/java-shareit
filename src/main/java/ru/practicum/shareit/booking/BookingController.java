@@ -37,7 +37,7 @@ public class BookingController {
      * Запрос записи бронирования по ID
      **/
     @GetMapping("/{bookingId}")
-    public BookingDto getById(@RequestParam Long bookingId) {
+    public BookingDto getById(@PathVariable Long bookingId) {
         log.info(
                 "   GET [http://localhost:8080/bookings/{}] : " +
                         "Запрос на получение бронирования по id : {}",
@@ -79,7 +79,7 @@ public class BookingController {
      * бронирования пользователя
      **/
     @DeleteMapping("/{bookingId}")
-    public void delete(@RequestParam Long bookingId) {
+    public void delete(@PathVariable Long bookingId) {
         log.info(
                 " DELETE [http://localhost:8080/bookings/{}] : " +
                         "Запрос на удаление бронирования id : {}",

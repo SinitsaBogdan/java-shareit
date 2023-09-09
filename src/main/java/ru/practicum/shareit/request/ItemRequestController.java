@@ -25,10 +25,7 @@ public class ItemRequestController {
      **/
     @GetMapping
     public List<ItemRequestDto> getAll() {
-        log.info(
-                "   GET [http://localhost:8080/requests] : " +
-                        "Запрос на получение всех запросов вещей"
-        );
+        log.info("   GET [http://localhost:8080/requests] : Запрос на получение всех запросов вещей");
         return null;
     }
 
@@ -37,11 +34,7 @@ public class ItemRequestController {
      **/
     @GetMapping("/{itemId}")
     public ItemRequestDto getById(@PathVariable Long itemId) {
-        log.info(
-                "   GET [http://localhost:8080/requests/{}] : " +
-                        "Запрос на получение запроса вещи id : {}",
-                itemId, itemId
-        );
+        log.info("   GET [http://localhost:8080/requests/{}] : Запрос на получение запроса вещи id : {}", itemId, itemId);
         return null;
     }
 
@@ -50,11 +43,7 @@ public class ItemRequestController {
      **/
     @PostMapping
     public ItemRequestDto add(@RequestBody ItemDto item) {
-        log.info(
-                "  POST [http://localhost:8080/requests] : " +
-                        "Запрос на добавление запроса вещи - {}",
-                item
-        );
+        log.info("  POST [http://localhost:8080/requests] : Запрос на добавление запроса вещи - {}", item);
         return null;
     }
 
@@ -63,11 +52,7 @@ public class ItemRequestController {
      **/
     @PatchMapping
     public ItemRequestDto update(@RequestBody ItemRequestDto itemRequest) {
-        log.info(
-                " PATCH [http://localhost:8080/requests] : " +
-                        "Запрос на обновление запроса вещи - {}",
-                itemRequest
-        );
+        log.info(" PATCH [http://localhost:8080/requests] : Запрос на обновление запроса вещи - {}", itemRequest);
         return null;
     }
 
@@ -76,10 +61,6 @@ public class ItemRequestController {
      **/
     @DeleteMapping("/{itemRequestId}")
     public void delete(@PathVariable Long itemRequestId) {
-        log.info(
-                " DELETE [http://localhost:8080/requests/{}] : " +
-                        "Запрос на удаление запроса вещи id : {}",
-                itemRequestId, itemRequestId
-        );
+        log.info(" DELETE [http://localhost:8080/requests/{}] : Запрос на удаление запроса вещи id : {}", itemRequestId, itemRequestId);
     }
 }

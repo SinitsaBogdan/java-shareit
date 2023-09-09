@@ -24,10 +24,7 @@ public class UserController {
      **/
     @GetMapping
     public List<UserDto> getAll() {
-        log.info(
-                "   GET [http://localhost:8080/users] : " +
-                        "Запрос на получение всех пользователей"
-        );
+        log.info("   GET [http://localhost:8080/users] : Запрос на получение всех пользователей");
         return userService.getAll();
     }
 
@@ -36,11 +33,7 @@ public class UserController {
      **/
     @GetMapping("/{userId}")
     public UserDto getById(@PathVariable Long userId) {
-        log.info(
-                "   GET [http://localhost:8080/users/{}] : " +
-                        "Запрос на получение пользователя id : {}",
-                userId, userId
-        );
+        log.info("   GET [http://localhost:8080/users/{}] : Запрос на получение пользователя id : {}", userId, userId);
         return userService.getById(userId);
     }
 
@@ -49,11 +42,7 @@ public class UserController {
      **/
     @PostMapping
     public UserDto add(@RequestBody UserDto user) {
-        log.info(
-                "  POST [http://localhost:8080/users] : " +
-                        "Запрос на добавление пользователя - {}",
-                user
-        );
+        log.info("  POST [http://localhost:8080/users] : Запрос на добавление пользователя - {}", user);
         return userService.add(user);
     }
 
@@ -61,15 +50,8 @@ public class UserController {
      * Обновление существующего пользователя
      **/
     @PatchMapping("/{userId}")
-    public UserDto update(
-            @PathVariable Long userId,
-            @RequestBody UserDto user
-    ) {
-        log.info(
-                " PATCH [http://localhost:8080/users] : " +
-                        "Запрос на обновление пользователя - {}",
-                user
-        );
+    public UserDto update(@PathVariable Long userId, @RequestBody UserDto user) {
+        log.info(" PATCH [http://localhost:8080/users] : Запрос на обновление пользователя - {}", user);
         user.setId(userId);
         return userService.update(user);
     }
@@ -79,11 +61,7 @@ public class UserController {
      **/
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable Long userId) {
-        log.info(
-                " DELETE [http://localhost:8080/users/{}] : " +
-                        "Запрос на удаление пользователя id : {}",
-                userId, userId
-        );
+        log.info(" DELETE [http://localhost:8080/users/{}] : Запрос на удаление пользователя id : {}", userId, userId);
         userService.delete(userId);
     }
 }

@@ -26,10 +26,7 @@ public class BookingController {
     **/
     @GetMapping
     public List<BookingDto> getAll() {
-        log.info(
-                "   GET [http://localhost:8080/bookings] : " +
-                        "Запрос на получение всех бронирований"
-        );
+        log.info("   GET [http://localhost:8080/bookings] : Запрос на получение всех бронирований");
         return null;
     }
 
@@ -38,11 +35,7 @@ public class BookingController {
      **/
     @GetMapping("/{bookingId}")
     public BookingDto getById(@PathVariable Long bookingId) {
-        log.info(
-                "   GET [http://localhost:8080/bookings/{}] : " +
-                        "Запрос на получение бронирования по id : {}",
-                bookingId, bookingId
-        );
+        log.info("   GET [http://localhost:8080/bookings/{}] : Запрос на получение бронирования по id : {}", bookingId, bookingId);
         return null;
     }
 
@@ -52,11 +45,7 @@ public class BookingController {
      **/
     @PostMapping
     public BookingDto add(@RequestBody BookingDto booking) {
-        log.info(
-                "  POST [http://localhost:8080/bookings] : " +
-                        "Запрос на добавление бронирования - {}",
-                booking
-        );
+        log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", booking);
         return null;
     }
 
@@ -66,11 +55,7 @@ public class BookingController {
      **/
     @PatchMapping
     public BookingDto update(@RequestBody BookingDto booking) {
-        log.info(
-                " PATCH [http://localhost:8080/bookings] : " +
-                        "Запрос на обновление бронирования - {}",
-                booking
-        );
+        log.info(" PATCH [http://localhost:8080/bookings] : Запрос на обновление бронирования - {}", booking);
         return null;
     }
 
@@ -80,10 +65,6 @@ public class BookingController {
      **/
     @DeleteMapping("/{bookingId}")
     public void delete(@PathVariable Long bookingId) {
-        log.info(
-                " DELETE [http://localhost:8080/bookings/{}] : " +
-                        "Запрос на удаление бронирования id : {}",
-                bookingId, bookingId
-        );
+        log.info(" DELETE [http://localhost:8080/bookings/{}] : Запрос на удаление бронирования id : {}", bookingId, bookingId);
     }
 }

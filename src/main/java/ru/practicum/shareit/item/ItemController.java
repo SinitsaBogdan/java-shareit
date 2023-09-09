@@ -25,11 +25,7 @@ public class ItemController {
      **/
     @GetMapping
     public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info(
-                "   GET [http://localhost:8080/items] : " +
-                        "Запрос на получение всех вещей от пользователя id : {}",
-                userId
-        );
+        log.info("   GET [http://localhost:8080/items] : Запрос на получение всех вещей от пользователя id : {}", userId);
         return itemService.getAllByUser(userId);
     }
 
@@ -41,11 +37,7 @@ public class ItemController {
             @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
             @PathVariable Long itemId
     ) {
-        log.info(
-                "   GET [http://localhost:8080/items/{}] : " +
-                        "Запрос на получение вещи по id : {} от пользователя id : {}",
-                itemId, itemId, userId
-        );
+        log.info("   GET [http://localhost:8080/items/{}] : Запрос на получение вещи по id : {} от пользователя id : {}", itemId, itemId, userId);
         return itemService.getById(itemId);
     }
 
@@ -55,14 +47,10 @@ public class ItemController {
      **/
     @GetMapping("/search")
     public List<ItemDto> getAllToSearchText(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
             @RequestParam(defaultValue = "") String text
     ) {
-        log.info(
-                "   GET [http://localhost:8080/items/search?text={}] : " +
-                        "Запрос на поиск вещей по фильтру text : {} от пользователя id : {} ",
-                text, text, userId
-        );
+        log.info("   GET [http://localhost:8080/items/search?text={}] : Запрос на поиск вещей по фильтру text : {} от пользователя id : {} ", text, text, userId);
         return itemService.getBySearchText(text.toLowerCase());
     }
 
@@ -75,11 +63,7 @@ public class ItemController {
             @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
             @RequestBody ItemDto item
     ) {
-        log.info(
-                "  POST [http://localhost:8080/items] : " +
-                        "Запрос на добавление вещи от пользователя id : {} - {}",
-                userId, item
-        );
+        log.info("  POST [http://localhost:8080/items] : Запрос на добавление вещи от пользователя id : {} - {}", userId, item);
         return itemService.addToUser(userId, item);
     }
 
@@ -93,11 +77,7 @@ public class ItemController {
             @PathVariable Long itemId,
             @RequestBody ItemDto item
     ) {
-        log.info(
-                " PATCH [http://localhost:8080/items] : " +
-                        "Запрос на обновление вещи от пользователя id : {} - {}",
-                userId, item
-        );
+        log.info(" PATCH [http://localhost:8080/items] : Запрос на обновление вещи от пользователя id : {} - {}", userId, item);
         item.setId(itemId);
         return itemService.updateToUser(userId, item);
     }
@@ -108,13 +88,9 @@ public class ItemController {
      **/
     @DeleteMapping("/{itemDtoId}")
     public void delete(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
-            @PathVariable long itemId
+            @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
+            @PathVariable Long itemId
     ) {
-        log.info(
-                " DELETE [http://localhost:8080/items/{}] : " +
-                        "Запрос на удаление вещи id : {} от пользователя id : {}",
-                itemId, itemId, userId
-        );
+        log.info(" DELETE [http://localhost:8080/items/{}] : Запрос на удаление вещи id : {} от пользователя id : {}", itemId, itemId, userId);
     }
 }

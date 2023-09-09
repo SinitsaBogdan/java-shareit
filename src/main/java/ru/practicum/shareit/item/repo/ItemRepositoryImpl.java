@@ -3,8 +3,8 @@ package ru.practicum.shareit.item.repo;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -20,8 +20,13 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public List<Item> findAll() {
-        return (List<Item>) data.values();
+    public Collection<Item> findAll() {
+        return data.values();
+    }
+
+    @Override
+    public Collection<Item> findAllByUser(Long userId) {
+        return data.values();
     }
 
     @Override
@@ -38,7 +43,14 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Item update(Item item) {
-        return data.put(item.getId(), item);
+
+        Item update = data.get(item.getId());
+        if (item.getName() != null && !item.getName().equals(update.getName())) update.setName(item.getName());
+        if (item.getDescription() != null && !item.getDescription().equals(update.getDescription())) update.setDescription(item.getDescription());
+        if (item.getAvailable() != null) update.setAvailable(item.getAvailable());
+
+        data.put(update.getId(), update);
+        return update;
     }
 
     @Override

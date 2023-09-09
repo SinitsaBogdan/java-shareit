@@ -36,7 +36,7 @@ public class ItemRequestController {
      * Запрос запроса вещи по ID
      **/
     @GetMapping("/{itemId}")
-    public ItemRequestDto getById(@RequestParam Long itemId) {
+    public ItemRequestDto getById(@PathVariable Long itemId) {
         log.info(
                 "   GET [http://localhost:8080/requests/{}] : " +
                         "Запрос на получение запроса вещи id : {}",

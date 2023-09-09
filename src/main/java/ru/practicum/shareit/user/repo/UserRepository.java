@@ -2,13 +2,15 @@ package ru.practicum.shareit.user.repo;
 
 import ru.practicum.shareit.user.model.User;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface UserRepository {
 
+    Boolean checkEmailDuplicate(String email);
+
     Boolean checkId(Long id);
 
-    List<User> findAll();
+    Collection<User> findAll();
 
     User findById(Long userId);
 
@@ -18,5 +20,5 @@ public interface UserRepository {
 
     void deleteAll();
 
-    void deleteById(Long userId);
+    void deleteById(User user);
 }

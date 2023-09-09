@@ -11,5 +11,9 @@ import lombok.Data;
 @Builder
 public class UserDto {
 
-    private String name, email;
+    private Long id;
+
+    private String name;
+
+    private String email;
 }

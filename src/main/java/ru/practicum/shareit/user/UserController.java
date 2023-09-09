@@ -28,20 +28,20 @@ public class UserController {
                 "   GET [http://localhost:8080/users] : " +
                         "Запрос на получение всех пользователей"
         );
-        return null;
+        return userService.getAll();
     }
 
     /**
      * Запрос пользователя по ID
      **/
-    @GetMapping("/{id}")
-    public UserDto getById(@RequestParam Long id) {
+    @GetMapping("/{userId}")
+    public UserDto getById(@PathVariable Long userId) {
         log.info(
                 "   GET [http://localhost:8080/users/{}] : " +
                         "Запрос на получение пользователя id : {}",
-                id, id
+                userId, userId
         );
-        return null;
+        return userService.getById(userId);
     }
 
     /**
@@ -54,31 +54,36 @@ public class UserController {
                         "Запрос на добавление пользователя - {}",
                 user
         );
-        return null;
+        return userService.add(user);
     }
 
     /**
      * Обновление существующего пользователя
      **/
-    @PatchMapping
-    public UserDto update(@RequestBody UserDto user) {
+    @PatchMapping("/{userId}")
+    public UserDto update(
+            @PathVariable Long userId,
+            @RequestBody UserDto user
+    ) {
         log.info(
                 " PATCH [http://localhost:8080/users] : " +
                         "Запрос на обновление пользователя - {}",
                 user
         );
-        return null;
+        user.setId(userId);
+        return userService.update(user);
     }
 
     /**
      * Удаление существующего пользователя
      **/
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable Long userId) {
         log.info(
                 " DELETE [http://localhost:8080/users/{}] : " +
                         "Запрос на удаление пользователя id : {}",
-                id, id
+                userId, userId
         );
+        userService.delete(userId);
     }
 }

@@ -30,7 +30,7 @@ public class ItemController {
                         "Запрос на получение всех вещей от пользователя id : {}",
                 userId
         );
-        return null;
+        return itemService.getAllByUser(userId);
     }
 
     /**
@@ -38,15 +38,15 @@ public class ItemController {
      **/
     @GetMapping("/{itemId}")
     public ItemDto getById(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
-            @RequestParam long itemId
+            @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
+            @PathVariable Long itemId
     ) {
         log.info(
                 "   GET [http://localhost:8080/items/{}] : " +
                         "Запрос на получение вещи по id : {} от пользователя id : {}",
                 itemId, itemId, userId
         );
-        return null;
+        return itemService.getById(itemId);
     }
 
     /**
@@ -56,14 +56,14 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> getAllToSearchText(
             @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
-            @RequestParam(required = false) String text
+            @RequestParam(defaultValue = "") String text
     ) {
         log.info(
                 "   GET [http://localhost:8080/items/search?text={}] : " +
                         "Запрос на поиск вещей по фильтру text : {} от пользователя id : {} ",
                 text, text, userId
         );
-        return null;
+        return itemService.getBySearchText(text.toLowerCase());
     }
 
     /**
@@ -72,7 +72,7 @@ public class ItemController {
      **/
     @PostMapping
     public ItemDto add(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
             @RequestBody ItemDto item
     ) {
         log.info(
@@ -87,9 +87,10 @@ public class ItemController {
      * Обновление существующей записи
      * вещи пользователя
      **/
-    @PatchMapping
+    @PatchMapping("/{itemId}")
     public ItemDto update(
-            @RequestHeader(value = "X-Sharer-User-Id", required = false) Long userId,
+            @RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId,
+            @PathVariable Long itemId,
             @RequestBody ItemDto item
     ) {
         log.info(
@@ -97,7 +98,8 @@ public class ItemController {
                         "Запрос на обновление вещи от пользователя id : {} - {}",
                 userId, item
         );
-        return null;
+        item.setId(itemId);
+        return itemService.updateToUser(userId, item);
     }
 
     /**

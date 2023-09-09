@@ -38,9 +38,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto addToUser(Long userId, ItemDto item) {
+
         Validator.check(userId, itemRepository);
         Validator.check(item);
+
         Item result = ItemMapper.mapperItemDtoToItem(item);
+        result.setOwner(userId);
         result = itemRepository.save(result);
         return ItemMapper.mapperItemToDto(result);
     }

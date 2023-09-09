@@ -3,14 +3,19 @@ package ru.practicum.shareit.user.repo;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
 
+    private static Long id = 1L;
+    private static final Set<String> dataEmail = new TreeSet<>();
     private static final Map<Long, User> data = new HashMap<>();
+
+    @Override
+    public Boolean checkEmailDuplicate(String email) {
+        return dataEmail.contains(email);
+    }
 
     @Override
     public Boolean checkId(Long id) {
@@ -29,7 +34,10 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User save(User user) {
-        return data.put(user.getId(), user);
+        user.setId(id++);
+        dataEmail.add(user.getEmail());
+        data.put(user.getId(), user);
+        return user;
     }
 
     @Override

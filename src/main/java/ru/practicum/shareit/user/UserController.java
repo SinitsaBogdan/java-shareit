@@ -54,7 +54,7 @@ public class UserController {
                         "Запрос на добавление пользователя - {}",
                 user
         );
-        return null;
+        return userService.add(user);
     }
 
     /**

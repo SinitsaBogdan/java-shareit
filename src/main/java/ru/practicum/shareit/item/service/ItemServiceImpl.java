@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.repo.ItemRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -21,30 +22,26 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAll() {
-        List<ItemDto> result = new ArrayList<>();
-        for (Item item : itemRepository.findAll()) result.add(ItemMapper.mapperItemToDto(item));
-        return result;
+        return itemRepository.findAll().stream()
+                .map(ItemMapper::mapperItemToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<ItemDto> getAllByUser(Long userId) {
-        List<ItemDto> result = new ArrayList<>();
-        for (Item item : itemRepository.findAllByUser(userId)) {
-            if (item.getOwner().equals(userId)) result.add(ItemMapper.mapperItemToDto(item));
-        }
-        return result;
+    public List<ItemDto> getAllByUserId(Long userId) {
+        return itemRepository.findAllIsUser(userId).stream()
+                .map(ItemMapper::mapperItemToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<ItemDto> getBySearchText(String text) {
-        List<ItemDto> result = new ArrayList<>();
-        if (text.isEmpty()) return result;
-        for (Item item : itemRepository.findAll()) {
-            if (!item.getAvailable()) continue;
-            if (item.getName().toLowerCase().contains(text)) result.add(ItemMapper.mapperItemToDto(item));
-            else if (item.getDescription().toLowerCase().contains(text)) result.add(ItemMapper.mapperItemToDto(item));
-        }
-        return result;
+        if (text.isEmpty()) return new ArrayList<>();
+        return itemRepository.findAll().stream()
+                .filter(Item::getAvailable)
+                .filter(item -> item.getName().toLowerCase().contains(text) || item.getDescription().toLowerCase().contains(text))
+                .map(ItemMapper::mapperItemToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -69,13 +66,18 @@ public class ItemServiceImpl implements ItemService {
         Validator.checkIdInUserRepo(userId, userRepository);
         Validator.checkIdInItemRepo(item.getId(), itemRepository);
 
-        Item result = ItemMapper.mapperItemDtoToItem(item);
+        Item itemDto = ItemMapper.mapperItemDtoToItem(item);
 
         Validator.checkValidItemOwner(item.getId(), userId, itemRepository);
-        result.setOwner(userId);
+        itemDto.setOwner(userId);
 
-        result = itemRepository.update(result);
-        return ItemMapper.mapperItemToDto(result);
+        Item update = itemRepository.findById(item.getId());
+        if (item.getName() != null && !item.getName().equals(update.getName())) update.setName(item.getName());
+        if (item.getDescription() != null && !item.getDescription().equals(update.getDescription())) update.setDescription(item.getDescription());
+        if (item.getAvailable() != null) update.setAvailable(item.getAvailable());
+
+        itemDto = itemRepository.update(update);
+        return ItemMapper.mapperItemToDto(itemDto);
     }
 
     @Override

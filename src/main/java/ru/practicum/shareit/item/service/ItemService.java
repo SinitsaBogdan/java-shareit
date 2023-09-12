@@ -8,7 +8,7 @@ public interface ItemService {
 
     List<ItemDto> getAll();
 
-    List<ItemDto> getAllByUser(Long userId);
+    List<ItemDto> getAllByUserId(Long userId);
 
     List<ItemDto> getBySearchText(String text);
 
@@ -17,6 +17,4 @@ public interface ItemService {
     ItemDto addToUser(Long userId, ItemDto item);
 
     ItemDto updateToUser(Long userId, ItemDto item);
-
-    void deleteToUser(Long userId, Long itemId);
 }

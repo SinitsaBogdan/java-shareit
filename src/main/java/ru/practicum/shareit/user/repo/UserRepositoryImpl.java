@@ -2,11 +2,8 @@ package ru.practicum.shareit.user.repo;
 
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.exeptions.ShareitException;
 
 import java.util.*;
-
-import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID_DUPLICATE__EMAIL;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -45,18 +42,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User update(User user) {
-
-        User update = data.get(user.getId());
-
-        if (user.getName() != null && !user.getName().equals(update.getName())) update.setName(user.getName());
-        if (user.getEmail() != null && !user.getEmail().equals(update.getEmail())) {
-            if (dataEmail.contains(user.getEmail())) throw new ShareitException(USER_ERROR__VALID_DUPLICATE__EMAIL);
-            dataEmail.remove(data.get(user.getId()).getEmail());
-            dataEmail.add(user.getEmail());
-            update.setEmail(user.getEmail());
-        }
-        data.put(update.getId(), update);
-        return update;
+        data.put(user.getId(), user);
+        return user;
     }
 
     @Override
@@ -68,5 +55,15 @@ public class UserRepositoryImpl implements UserRepository {
     public void deleteById(User user) {
         data.remove(user.getId());
         dataEmail.remove(user.getEmail());
+    }
+
+    @Override
+    public void addDataEmail(String email) {
+        dataEmail.add(email);
+    }
+
+    @Override
+    public void removeDataEmail(String email) {
+        dataEmail.remove(email);
     }
 }

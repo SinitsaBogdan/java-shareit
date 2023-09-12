@@ -23,7 +23,7 @@ public class BookingController {
     /**
      * Запрос всех записей
      * бронирования пользователя
-    **/
+     **/
     @GetMapping
     public List<BookingDto> getAll() {
         log.info("   GET [http://localhost:8080/bookings] : Запрос на получение всех бронирований");

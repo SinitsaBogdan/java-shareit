@@ -21,4 +21,8 @@ public interface UserRepository {
     void deleteAll();
 
     void deleteById(User user);
+
+    void addDataEmail(String email);
+
+    void removeDataEmail(String email);
 }

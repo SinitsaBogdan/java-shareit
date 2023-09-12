@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.repo;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ItemRepository {
 
@@ -10,7 +11,9 @@ public interface ItemRepository {
 
     Collection<Item> findAll();
 
-    Collection<Item> findAllByUser(Long userId);
+    Collection<Item> findAllIsText(String text);
+
+    List<Item> findAllIsUser(Long userId);
 
     Item findById(Long itemId);
 

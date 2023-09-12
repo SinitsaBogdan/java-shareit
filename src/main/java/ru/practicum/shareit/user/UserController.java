@@ -62,6 +62,6 @@ public class UserController {
     @DeleteMapping("/{userId}")
     public void delete(@PathVariable Long userId) {
         log.info(" DELETE [http://localhost:8080/users/{}] : Запрос на удаление пользователя id : {}", userId, userId);
-        userService.delete(userId);
+        userService.deleteById(userId);
     }
 }

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.user.model;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,11 +9,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Item {
+public class User {
 
     private Long id;
+
     private String name;
-    private String description;
-    private Boolean available;
-    private Long owner;
+
+    private String email;
 }

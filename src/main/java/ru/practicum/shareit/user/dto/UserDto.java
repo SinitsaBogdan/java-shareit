@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.dto;
+package ru.practicum.shareit.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -7,8 +7,15 @@ import lombok.Data;
 /**
  * TODO Sprint add-item-requests.
  */
+
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ItemRequestDto {
+public class UserDto {
+
+    private Long id;
+
+    private String name;
+
+    private String email;
 }

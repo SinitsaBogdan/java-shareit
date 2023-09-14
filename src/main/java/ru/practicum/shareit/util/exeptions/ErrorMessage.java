@@ -18,7 +18,8 @@ public enum ErrorMessage {
     USER_ERROR__VALID_EMPTY__NAME("Ошибка формирования тела запроса!", "Name отсутствует в теле запроса или пустое", 400),
     USER_ERROR__VALID__EMAIL("Ошибка формирования тела запроса!", "Не корректный формат поля email", 400),
     USER_ERROR__VALID_DUPLICATE__EMAIL("Ошибка формирования тела запроса!", "Email уже используется другим пользователем", 409),
-    USER_ERROR__VALID_EMPTY__EMAIL("Ошибка формирования тела запроса!", "Email отсутствует в теле запроса или пустое", 400)
+    USER_ERROR__VALID_EMPTY__EMAIL("Ошибка формирования тела запроса!", "Email отсутствует в теле запроса или пустое", 400),
+    VALID_ERROR("Тестирование аннотации", "", 404)
     ;
 
     private final String name;

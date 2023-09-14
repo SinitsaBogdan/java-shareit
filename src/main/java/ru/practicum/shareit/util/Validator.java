@@ -1,10 +1,10 @@
 package ru.practicum.shareit.util;
 
 import org.jetbrains.annotations.NotNull;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.repo.ItemRepository;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.repo.UserRepository;
+import ru.practicum.shareit.app.item.dto.ItemDto;
+import ru.practicum.shareit.app.item.repo.ItemRepository;
+import ru.practicum.shareit.app.user.dto.UserDto;
+import ru.practicum.shareit.app.user.repo.UserRepository;
 import ru.practicum.shareit.util.exeptions.ShareitException;
 
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
@@ -18,9 +18,9 @@ public class Validator {
 
     public static void checkValidUser(@NotNull UserDto user, UserRepository repository) {
         if (user.getName() == null || user.getName().isEmpty()) throw new ShareitException(USER_ERROR__VALID_EMPTY__NAME);
-        if (user.getEmail() == null || user.getEmail().isEmpty()) throw new ShareitException(USER_ERROR__VALID_EMPTY__EMAIL);
-        if (!user.getEmail().contains("@") || !user.getEmail().contains(".")) throw new ShareitException(USER_ERROR__VALID__EMAIL);
-        if (repository.checkEmailDuplicate(user.getEmail())) throw new ShareitException(USER_ERROR__VALID_DUPLICATE__EMAIL);
+//        if (user.getEmail() == null || user.getEmail().isEmpty()) throw new ShareitException(USER_ERROR__VALID_EMPTY__EMAIL);
+//        if (!user.getEmail().contains("@") || !user.getEmail().contains(".")) throw new ShareitException(USER_ERROR__VALID__EMAIL);
+//        if (repository.checkEmailDuplicate(user.getEmail())) throw new ShareitException(USER_ERROR__VALID_DUPLICATE__EMAIL);
     }
 
     public static void checkIdInItemRepo(Long id, ItemRepository repository) {

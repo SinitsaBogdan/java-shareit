@@ -8,6 +8,7 @@ public class ShareItApp {
 
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(ShareItApp.class);
-		app.run(args);
+		app.run();
+
 	}
 }

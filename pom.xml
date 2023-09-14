@@ -60,6 +60,11 @@
             <version>24.0.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.7</version>
+        </dependency>
     </dependencies>
 
 	<build>

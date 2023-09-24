@@ -1,28 +1,14 @@
 package ru.practicum.shareit.user.repo;
 
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.Collection;
+import java.util.Optional;
 
-public interface UserRepository {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    Boolean checkEmailDuplicate(String email);
+    @NotNull Optional<User> findById(@NotNull Long userId);
 
-    Boolean checkId(Long id);
-
-    Collection<User> findAll();
-
-    User findById(Long userId);
-
-    User save(User user);
-
-    User update(User user);
-
-    void deleteAll();
-
-    void deleteById(User user);
-
-    void addDataEmail(String email);
-
-    void removeDataEmail(String email);
+    void deleteById(@NotNull Long userId);
 }

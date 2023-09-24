@@ -51,8 +51,8 @@ public class UserController {
      **/
     @PatchMapping("/{userId}")
     public UserDto update(@PathVariable Long userId, @RequestBody UserDto user) {
-        log.info(" PATCH [http://localhost:8080/users] : Запрос на обновление пользователя - {}", user);
         user.setId(userId);
+        log.info(" PATCH [http://localhost:8080/users] : Запрос на обновление пользователя - {}", user);
         return userService.update(user);
     }
 

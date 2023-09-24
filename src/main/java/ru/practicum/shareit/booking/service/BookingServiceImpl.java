@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.repo.BookingRepository;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@NoArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
     private BookingRepository bookingRepository;

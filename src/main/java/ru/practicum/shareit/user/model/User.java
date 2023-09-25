@@ -12,10 +12,6 @@ import javax.persistence.*;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID_EMPTY__NAME;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID__EMAIL;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -29,9 +25,10 @@ public class User {
     private Long id;
 
     @CustomValidNotBlank(error = USER_ERROR__VALID_EMPTY__NAME)
+    @Column(name = "name", length = 20)
     private String name;
 
     @CustomValidEmail(error = USER_ERROR__VALID__EMAIL)
-    @Column(unique=true)
+    @Column(name = "email", length = 36, unique=true)
     private String email;
 }

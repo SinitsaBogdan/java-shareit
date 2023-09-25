@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -10,15 +11,20 @@ import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.util.exeptions.ShareitException;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.springframework.transaction.annotation.Isolation.DEFAULT;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
@@ -34,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllByUserId(Long userId) {
-        return itemRepository.findByOwner(userId).stream()
+        return userRepository.getById(userId).getItems().stream()
                 .map(ItemMapper::mapperItemToDto)
                 .collect(Collectors.toList());
     }
@@ -57,39 +63,39 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
+    @Transactional(isolation = REPEATABLE_READ )
     @Override
-    public ItemDto addToUser(Long userId, ItemDto item) {
-        Optional<User> optional = userRepository.findById(userId);
-        if (optional.isPresent()) {
-            Item result = ItemMapper.mapperItemDtoToItem(item);
-            result.setOwner(userId);
-            result = itemRepository.save(result);
-            return ItemMapper.mapperItemToDto(result);
-        } else {
+    public ItemDto addToUser(Long userId, ItemDto itemDto) {
+        Item item = ItemMapper.mapperItemDtoToItem(itemDto);
+
+        try {
+            Optional<User> optional = userRepository.findById(userId);
+            if (optional.isEmpty()) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+            item.setOwner(optional.get());
+            item = itemRepository.save(item);
+            return ItemMapper.mapperItemToDto(item);
+        } catch (DataIntegrityViolationException exception) {
             throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         }
     }
 
+    @Transactional
     @Override
-    public ItemDto updateToUser(Long userId, ItemDto item) {
+    public ItemDto updateToUser(Long userId, ItemDto itemDto) {
         try {
+            User user = userRepository.getById(userId);
+            Item item = itemRepository.getById(itemDto.getId());
 
-            Optional<User> optionalUser = userRepository.findById(userId);
-            if (optionalUser.isEmpty()) throw new ShareitException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-            User resultUser = optionalUser.get();
+            if (!item.getOwner().getId().equals(user.getId())) throw new ShareitException(ITEM_ERROR__VALID__ITEM__USER_NOT_OWNER);
 
-            Optional<Item> optionalItem = itemRepository.findById(item.getId());
-            if (optionalItem.isEmpty()) throw new ShareitException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
-            Item resultItem = optionalItem.get();
+            if (itemDto.getName() != null && !itemDto.getName().equals(item.getName())) item.setName(itemDto.getName());
+            if (itemDto.getDescription() != null && !itemDto.getDescription().equals(item.getDescription())) item.setDescription(itemDto.getDescription());
+            if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
 
-            if (item.getName() != null && !item.getName().equals(resultItem.getName())) resultItem.setName(item.getName());
-            if (item.getDescription() != null && !item.getDescription().equals(resultItem.getDescription())) resultItem.setDescription(item.getDescription());
-            if (item.getAvailable() != null) resultItem.setAvailable(item.getAvailable());
+            item = itemRepository.save(item);
+            return ItemMapper.mapperItemToDto(item);
 
-            resultItem = itemRepository.save(resultItem);
-            return ItemMapper.mapperItemToDto(resultItem);
-
-        } catch (NoSuchElementException exception) {
+        } catch (DataIntegrityViolationException exception) {
             throw new ShareitException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
         }
     }

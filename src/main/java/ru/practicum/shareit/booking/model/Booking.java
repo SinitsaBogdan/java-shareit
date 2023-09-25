@@ -1,14 +1,17 @@
 package ru.practicum.shareit.booking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.catalina.User;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.util.EnumBookingState;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 /**
  * TODO Sprint add-bookings.
@@ -23,22 +26,24 @@ import java.time.Instant;
 public class Booking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @ManyToOne
-//    @JoinColumn(name = "item_id")
-    @Column(name = "item_id")
-    private Long itemId;
+    @Column(name = "approved")
+    @Enumerated(EnumType.STRING)
+    private EnumBookingState approved;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-    @Column(name = "user_id")
-    private Long userId;
+    @OneToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     @Column(name = "time_start")
-    private Instant start;
+    private LocalDateTime start;
 
     @Column(name = "time_end")
-    private Instant end;
+    private LocalDateTime end;
 }

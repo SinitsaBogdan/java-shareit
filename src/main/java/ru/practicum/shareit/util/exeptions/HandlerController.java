@@ -9,11 +9,27 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class HandlerController {
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(@NotNull ShareitException exception) {
-        return new ResponseEntity<>(
-                ErrorResponse.builder().name(exception.getName()).description(exception.getDescription()).build(),
-                HttpStatus.valueOf(exception.getHttpStatusCode())
-        );
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<Response> handleException(@NotNull BusinessException exception) {
+        Response response = new Response(exception.getMessage(), null);
+        return new ResponseEntity<>(response, exception.getHttpStatus());
+    }
+
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<Response> handleException(@NotNull ServiceException exception) {
+        Response response = new Response(exception.getMessage(), null);
+        return new ResponseEntity<>(response, exception.getHttpStatus());
+    }
+
+    @ExceptionHandler(RepositoryException.class)
+    public ResponseEntity<Response> handleException(@NotNull RepositoryException exception) {
+        Response response = new Response(exception.getMessage(), null);
+        return new ResponseEntity<>(response, exception.getHttpStatus());
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<Response> handleException(@NotNull CustomException exception) {
+        Response response = new Response(exception.getMessage(), null);
+        return new ResponseEntity<>(response, exception.getHttpStatus());
     }
 }

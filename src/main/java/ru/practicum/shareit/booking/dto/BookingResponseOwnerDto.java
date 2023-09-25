@@ -3,7 +3,9 @@ package ru.practicum.shareit.booking.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import javax.validation.constraints.NotNull;
@@ -15,14 +17,17 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class BookingDto {
+public class BookingResponseOwnerDto {
 
-    @NotNull
+    private Long id;
+
     private LocalDateTime start;
 
-    @NotNull
     private LocalDateTime end;
 
-    private Long itemId;
+    private String status;
+
+    private UserDto booker;
+
+    private ItemDto item;
 }

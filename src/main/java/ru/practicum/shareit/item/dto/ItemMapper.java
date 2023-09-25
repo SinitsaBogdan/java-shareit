@@ -3,6 +3,9 @@ package ru.practicum.shareit.item.dto;
 import org.jetbrains.annotations.NotNull;
 import ru.practicum.shareit.item.model.Item;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ItemMapper {
 
     public static ItemDto mapperItemToDto(@NotNull Item item) {

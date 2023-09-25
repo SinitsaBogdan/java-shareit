@@ -36,7 +36,7 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto getById(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
         log.info("   GET [http://localhost:8080/items/{}] : Запрос на получение вещи по id : {} от пользователя id : {}", itemId, itemId, userId);
-        return itemService.getById(itemId);
+        return itemService.getById(userId, itemId);
     }
 
     /**
@@ -58,7 +58,7 @@ public class ItemController {
         /* TODO не обрабатываетася userId
         *   */
         log.info("  POST [http://localhost:8080/items] : Запрос на добавление вещи от пользователя id : {} - {}", userId, item);
-        return itemService.addToUser(userId, item);
+        return itemService.add(userId, item);
     }
 
     /**
@@ -69,7 +69,7 @@ public class ItemController {
     public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long itemId, @RequestBody ItemDto item) {
         log.info(" PATCH [http://localhost:8080/items] : Запрос на обновление вещи от пользователя id : {} - {}", userId, item);
         item.setId(itemId);
-        return itemService.updateToUser(userId, item);
+        return itemService.update(userId, item);
     }
 
     /**
@@ -77,7 +77,7 @@ public class ItemController {
      * вещи пользователя
      **/
     @DeleteMapping("/{itemDtoId}")
-    public void delete(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long itemId) {
-        log.info(" DELETE [http://localhost:8080/items/{}] : Запрос на удаление вещи id : {} от пользователя id : {}", itemId, itemId, userId);
+    public void delete(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long itemDtoId) {
+        log.info(" DELETE [http://localhost:8080/items/{}] : Запрос на удаление вещи id : {} от пользователя id : {}", itemDtoId, itemDtoId, userId);
     }
 }

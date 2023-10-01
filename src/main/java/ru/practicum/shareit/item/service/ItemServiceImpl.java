@@ -2,12 +2,14 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repo.CommentRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -31,22 +33,50 @@ public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
     private UserRepository userRepository;
     private BookingRepository bookingRepository;
+    private CommentRepository commentRepository;
 
     @Override
     public List<ItemDto> getAllByUserId(Long userId) {
-        Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        return optional.get().getItems().stream()
-                .map(ItemMapper::mapperItemToDto)
-                .peek(item -> {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-                    List<Booking> bookingLastList = bookingRepository.findLastBookingToItem(item.getId(), LocalDateTime.now());
-                    if (!bookingLastList.isEmpty()) item.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
+        List<ItemDto> result = new ArrayList<>();
 
-                    List<Booking> bookingNextList = bookingRepository.findNextActualBookingToItem(item.getId(), LocalDateTime.now());
-                    if (!bookingNextList.isEmpty()) item.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
-                })
-                .collect(Collectors.toList());
+        itemRepository.findByOwner_id(optionalUser.get().getId())
+                .forEach(item -> {
+
+                    ItemDto itemDto = ItemMapper.mapperItemToDto(item);
+
+                    List<Booking> bookingLastList = bookingRepository.findListToLastBooking(item.getId(), LocalDateTime.now());
+                    if (!bookingLastList.isEmpty()) itemDto.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
+
+                    List<Booking> bookingNextList = bookingRepository.findListToNextBooking(item.getId(), LocalDateTime.now());
+                    if (!bookingNextList.isEmpty()) itemDto.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
+
+                    result.add(itemDto);
+                });
+
+        return result;
+    }
+
+    @Override
+    public ItemDto getById(Long userId, Long itemId) {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+        ItemDto itemDto = ItemMapper.mapperItemToDto(optionalItem.get());
+
+        if (optionalItem.get().getOwner().getId().equals(userId)) {
+
+            List<Booking> bookingLastList = bookingRepository.findListToLastBooking(optionalItem.get().getId(), LocalDateTime.now());
+            if (!bookingLastList.isEmpty()) itemDto.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
+
+            List<Booking> bookingNextList = bookingRepository.findListToNextBooking(optionalItem.get().getId(), LocalDateTime.now());
+            if (!bookingNextList.isEmpty()) itemDto.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
+
+            System.out.println(bookingLastList);
+            System.out.println(bookingNextList);
+        }
+        return itemDto;
     }
 
     @Override
@@ -57,24 +87,7 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public ItemDto getById(Long userId, Long itemId) {
-        Optional<Item> optional = itemRepository.findById(itemId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
-        ItemDto itemDto = ItemMapper.mapperItemToDto(optional.get());
-
-        if (optional.get().getOwner().getId().equals(userId)) {
-
-            List<Booking> bookingLastList = bookingRepository.findLastBookingToItem(itemId, LocalDateTime.now());
-            if (!bookingLastList.isEmpty()) itemDto.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
-
-            List<Booking> bookingNextList = bookingRepository.findNextActualBookingToItem(itemId, LocalDateTime.now());
-            if (!bookingNextList.isEmpty()) itemDto.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
-        }
-        return itemDto;
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     @Override
     public ItemDto add(Long userId, ItemDto itemDto) {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
@@ -83,6 +96,30 @@ public class ItemServiceImpl implements ItemService {
         item.setOwner(optional.get());
         item = itemRepository.save(item);
         return ItemMapper.mapperItemToDto(item);
+    }
+
+    @Transactional
+    @Override
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
+
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
+        Optional<Booking> optionalBooking = bookingRepository.findFirstBookingByOwnerAndItemOrderByStartAsc(optionalUser.get(), optionalItem.get());
+
+        if (optionalBooking.isEmpty()) throw new ServiceException("Пользователь не совершал бронирований этой вещи", 404);
+        if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException("Нельзя оставлять отзыв до завершения бронирования", 400);
+
+        Comment comment = CommentMapper.mapperCommentDtoToComment(commentDto);
+        comment.setItem(optionalItem.get());
+        comment.setUser(optionalUser.get());
+        comment.setCreated(LocalDateTime.now());
+
+        comment = commentRepository.save(comment);
+        return CommentMapper.mapperCommentToDto(comment);
     }
 
     @Transactional

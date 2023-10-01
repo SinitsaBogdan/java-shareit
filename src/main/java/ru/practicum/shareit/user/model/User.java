@@ -51,7 +51,6 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                ", items=" + items +
                 '}';
     }
 }

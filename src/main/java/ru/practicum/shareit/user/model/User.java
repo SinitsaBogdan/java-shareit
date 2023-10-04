@@ -34,16 +34,16 @@ public class User {
     private String name;
 
     @CustomValidEmail(error = USER_ERROR__VALID__EMAIL)
-    @Column(name = "email", length = 36, unique=true)
+    @Column(name = "email", length = 36, unique = true)
     private String email;
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private List<Item> items = new ArrayList<>();
+    private final List<Item> items = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private List<Booking> bookings = new ArrayList<>();
+    private final List<Booking> bookings = new ArrayList<>();
 
     @Override
     public String toString() {

@@ -1,13 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingResponseBookerDto;
-import ru.practicum.shareit.booking.dto.BookingResponseOwnerDto;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -18,7 +15,6 @@ import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
     private ItemRepository itemRepository;
 
     @Override
-    public List<BookingResponseOwnerDto> getAll(Long userId, String state) {
+    public List<BookingResponseDto> getAll(Long userId, String state) {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
@@ -49,12 +45,12 @@ public class BookingServiceImpl implements BookingService {
         else throw new ServiceException(String.format("Unknown state: %s", state), 500);
 
         return list.stream()
-                .map(BookingMapper::mapperBookingResponseOwnerToDto)
+                .map(BookingMapper::mapperBookingResponseBookerToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingResponseOwnerDto> getAllInItemOwner(Long userId, String state) {
+    public List<BookingResponseDto> getAllInItemOwner(Long userId, String state) {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
@@ -69,29 +65,31 @@ public class BookingServiceImpl implements BookingService {
         else throw new ServiceException(String.format("Unknown state: %s", state), 500);
 
         return list.stream()
-                .map(BookingMapper::mapperBookingResponseOwnerToDto)
+                .map(BookingMapper::mapperBookingResponseBookerToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public BookingResponseOwnerDto getById(Long userId, Long bookingId) {
-        try {
-            Optional<Booking> optional = bookingRepository.findById(bookingId);
-            if (!optional.get().getItem().getOwner().getId().equals(userId) && !optional.get().getOwner().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__USER_NOT_OWNER_ITEM);
-            return BookingMapper.mapperBookingResponseOwnerToDto(optional.get());
-        } catch (NoSuchElementException exception) {
-            throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
+    public BookingResponseDto getById(Long userId, Long bookingId) {
+
+        Optional<Booking> optional = bookingRepository.findById(bookingId);
+        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
+
+        Booking booking = optional.get();
+        if (!booking.getItem().getOwner().getId().equals(userId) && !booking.getOwner().getId().equals(userId)) {
+            throw new ServiceException(BOOKING_ERROR__USER_NOT_OWNER_ITEM);
         }
+
+        return BookingMapper.mapperBookingResponseBookerToDto(optional.get());
     }
 
-    @Transactional
     @Override
-    public BookingResponseOwnerDto add(Long userId, BookingDto bookingDto) {
-        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingDto);
+    public BookingResponseDto add(Long userId, BookingRequestDto bookingRequestDto) {
+        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Optional<Item> optionalItem = itemRepository.findById(bookingDto.getItemId());
+        Optional<Item> optionalItem = itemRepository.findById(bookingRequestDto.getItemId());
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
         Item item = optionalItem.get();
 
@@ -101,23 +99,16 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getEnd().isBefore(booking.getStart()) || booking.getEnd().equals(booking.getStart())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME);
         if (!booking.getStart().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME__START_TIME);
 
-        try {
+        booking.setOwner(optionalUser.get());
+        booking.setItem(optionalItem.get());
+        booking.setApproved(WAITING);
+        booking = bookingRepository.save(booking);
 
-            booking.setOwner(optionalUser.get());
-            booking.setItem(optionalItem.get());
-            booking.setApproved(WAITING);
-            booking = bookingRepository.save(booking);
-
-            return BookingMapper.mapperBookingResponseOwnerToDto(booking);
-
-        } catch (DataIntegrityViolationException exception) {
-            throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        }
+        return BookingMapper.mapperBookingResponseBookerToDto(booking);
     }
 
-    @Transactional
     @Override
-    public BookingResponseBookerDto updateApproved(Long userId, Long bookingId, Boolean approved) {
+    public BookingResponseDto updateApproved(Long userId, Long bookingId, Boolean approved) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);

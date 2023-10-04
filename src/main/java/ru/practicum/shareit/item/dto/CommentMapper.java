@@ -2,7 +2,6 @@ package ru.practicum.shareit.item.dto;
 
 import org.jetbrains.annotations.NotNull;
 import ru.practicum.shareit.item.model.Comment;
-import ru.practicum.shareit.item.model.Item;
 
 public class CommentMapper {
 

@@ -19,22 +19,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     Optional<Booking> findFirstBookingByOwnerAndItemOrderByStartAsc(User user, Item item);
 
-
-
-
-    // Выборка списка бронирований для определения последнего бронирования вещи
     @Query("select b from Booking b where b.item.id = :itemId and b.start <= :actual and b.approved = 'APPROVED' order by b.end desc")
     List<Booking> findListToLastBooking(Long itemId, LocalDateTime actual);
 
-    // Выборка списка бронирований для определения следующего бронирования вещи
     @Query("select b from Booking b where b.item.id = :itemId and b.start > :actual and b.approved = 'APPROVED' order by b.start asc")
     List<Booking> findListToNextBooking(Long itemId, LocalDateTime actual);
-
-
-
-
-
-
 
     List<Booking> findByOwnerAndStartAfterOrderByStartDesc(User owner, LocalDateTime actual);
 

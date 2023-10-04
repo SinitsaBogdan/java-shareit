@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -16,7 +17,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.repo.ItemRepository;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service
-@Transactional(readOnly=true)
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
@@ -72,22 +71,18 @@ public class ItemServiceImpl implements ItemService {
 
             List<Booking> bookingNextList = bookingRepository.findListToNextBooking(optionalItem.get().getId(), LocalDateTime.now());
             if (!bookingNextList.isEmpty()) itemDto.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
-
-            System.out.println(bookingLastList);
-            System.out.println(bookingNextList);
         }
         return itemDto;
     }
 
     @Override
-    public List<ItemDto> getBySearchText(String text) {
+    public List<ItemDto> getBySearchText(@NotNull String text) {
         if (text.isEmpty()) return new ArrayList<>();
         return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true).stream()
                 .map(ItemMapper::mapperItemToDto)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     @Override
     public ItemDto add(Long userId, ItemDto itemDto) {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
@@ -98,7 +93,6 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.mapperItemToDto(item);
     }
 
-    @Transactional
     @Override
     public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
 
@@ -122,9 +116,8 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.mapperCommentToDto(comment);
     }
 
-    @Transactional
     @Override
-    public ItemDto update(Long userId, ItemDto itemDto) {
+    public ItemDto update(Long userId, @NotNull ItemDto itemDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Item> optionalItem = itemRepository.findById(itemDto.getId());
 

@@ -3,6 +3,7 @@ package ru.practicum.shareit.util.exeptions;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 
 @Slf4j
@@ -12,7 +13,7 @@ public class RepositoryException extends RuntimeException {
 
     HttpStatus httpStatus;
 
-    public RepositoryException(ErrorMessage message) {
+    public RepositoryException(@NotNull ErrorMessage message) {
         super(message.getDescription());
         this.httpStatus = HttpStatus.valueOf(message.getHttpStatusCode());
         log.debug("{} | {}", message.getHttpStatusCode(), message);

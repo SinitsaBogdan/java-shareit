@@ -1,20 +1,19 @@
 package ru.practicum.shareit.item.repo;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    Optional<Item> findById(Long itemId);
+    @NotNull Optional<Item> findById(@NotNull Long itemId);
 
     List<Item> findByOwner_id(Long userId);
 
-    /* TODO переопределить запрос через Query*/
     List<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(String nameSearch, String descriptionSearch, Boolean available);
 }

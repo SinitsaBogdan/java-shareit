@@ -3,7 +3,7 @@ package ru.practicum.shareit.item.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.booking.dto.BookingShortDto;
+import ru.practicum.shareit.booking.dto.BookingResponseShortDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,9 +26,9 @@ public class ItemDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean available;
 
-    private BookingShortDto lastBooking;
+    private BookingResponseShortDto lastBooking;
 
-    private BookingShortDto nextBooking;
+    private BookingResponseShortDto nextBooking;
 
     private List<CommentDto> comments;
 }

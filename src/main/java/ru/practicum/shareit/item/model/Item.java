@@ -10,9 +10,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Builder
@@ -41,11 +39,11 @@ public class Item {
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
-    private List<Booking> bookings = new ArrayList<>();
+    private final List<Booking> bookings = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "item")
-    private List<Comment> comments = new ArrayList<>();
+    private final List<Comment> comments = new ArrayList<>();
 
     @Override
     public String toString() {

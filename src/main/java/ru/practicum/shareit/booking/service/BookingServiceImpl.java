@@ -30,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
     private ItemRepository itemRepository;
 
     @Override
-    public List<BookingResponseDto> getAll(Long userId, String state) {
+    public List<BookingResponseDto> getAll(long userId, String state) {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
@@ -50,7 +50,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAllInItemOwner(Long userId, String state) {
+    public List<BookingResponseDto> getAllInItemOwner(long userId, String state) {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
@@ -70,7 +70,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto getById(Long userId, Long bookingId) {
+    public BookingResponseDto getById(long userId, long bookingId) {
 
         Optional<Booking> optional = bookingRepository.findById(bookingId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
@@ -84,7 +84,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto add(Long userId, BookingRequestDto bookingRequestDto) {
+    public BookingResponseDto add(long userId, BookingRequestDto bookingRequestDto) {
         Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
@@ -108,7 +108,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingResponseDto updateApproved(Long userId, Long bookingId, Boolean approved) {
+    public BookingResponseDto updateApproved(long userId, long bookingId, boolean approved) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);

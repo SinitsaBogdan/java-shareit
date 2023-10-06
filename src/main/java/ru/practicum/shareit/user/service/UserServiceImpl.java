@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(Long userId) {
+    public UserDto getById(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         return UserMapper.mapperUserToDto(optionalUser.get());
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteById(Long userId) {
+    public void deleteById(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         userRepository.deleteById(userId);

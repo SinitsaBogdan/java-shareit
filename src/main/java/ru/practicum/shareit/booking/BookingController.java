@@ -26,7 +26,7 @@ public class BookingController {
      * Запрос всех записей бронирования пользователя
      **/
     @GetMapping
-    public List<BookingResponseDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingResponseDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "ALL") String state) {
         log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
         return bookingService.getAll(userId, state);
     }
@@ -35,7 +35,7 @@ public class BookingController {
      * Запрос записи бронирования по ID
      **/
     @GetMapping("/{bookingId}")
-    public BookingResponseDto getById(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long bookingId) {
+    public BookingResponseDto getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId) {
         log.info("   GET [http://localhost:8080/bookings/{}] : Запрос на получение бронирования по id : {}", bookingId, bookingId);
         return bookingService.getById(userId, bookingId);
     }
@@ -44,7 +44,7 @@ public class BookingController {
      * Получение списка бронирований для всех вещей текущего пользователя
      **/
     @GetMapping("/owner")
-    public List<BookingResponseDto> getById(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingResponseDto> getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "ALL") String state) {
         log.info("   GET [http://localhost:8080/bookings/owner?state={}] : Запрос на получение всех бронирований пользователя", state);
         return bookingService.getAllInItemOwner(userId, state);
     }
@@ -53,7 +53,7 @@ public class BookingController {
      * Добавление новой записи бронирования пользователя
      **/
     @PostMapping
-    public BookingResponseDto add(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @RequestBody @Valid BookingRequestDto bookingRequestDto) {
+    public BookingResponseDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid BookingRequestDto bookingRequestDto) {
         System.out.println(bookingRequestDto);
         log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", bookingRequestDto);
         return bookingService.add(userId, bookingRequestDto);
@@ -63,7 +63,7 @@ public class BookingController {
      * Подтверждение бронирования
      **/
     @PatchMapping("/{bookingId}")
-    public BookingResponseDto add(@RequestHeader(value = "X-Sharer-User-Id") Long userId, @PathVariable Long bookingId, @RequestParam(defaultValue = "") Boolean approved) {
+    public BookingResponseDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId, @RequestParam(defaultValue = "") boolean approved) {
         log.info("  POST [http://localhost:8080/bookings/{}?approved={}] : Запрос на добавление бронирования - {}", bookingId, approved, bookingId);
         return bookingService.updateApproved(userId, bookingId, approved);
     }

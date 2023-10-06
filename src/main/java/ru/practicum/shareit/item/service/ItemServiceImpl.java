@@ -35,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
     private CommentRepository commentRepository;
 
     @Override
-    public List<ItemDto> getAllByUserId(Long userId) {
+    public List<ItemDto> getAllByUserId(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
@@ -59,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto getById(Long userId, Long itemId) {
+    public ItemDto getById(long userId, long itemId) {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
         ItemDto itemDto = ItemMapper.mapperItemToDto(optionalItem.get());
@@ -84,7 +84,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto add(Long userId, ItemDto itemDto) {
+    public ItemDto add(long userId, ItemDto itemDto) {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
@@ -94,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
+    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
@@ -117,7 +117,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto update(Long userId, @NotNull ItemDto itemDto) {
+    public ItemDto update(long userId, @NotNull ItemDto itemDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Item> optionalItem = itemRepository.findById(itemDto.getId());
 

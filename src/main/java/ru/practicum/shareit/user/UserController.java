@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -32,7 +33,7 @@ public class UserController {
      * Запрос пользователя по ID
      **/
     @GetMapping("/{userId}")
-    public UserDto getById(@PathVariable Long userId) {
+    public UserDto getById(@PathVariable long userId) {
         log.info("   GET [http://localhost:8080/users/{}] : Запрос на получение пользователя id : {}", userId, userId);
         return userService.getById(userId);
     }
@@ -50,7 +51,7 @@ public class UserController {
      * Обновление существующего пользователя
      **/
     @PatchMapping("/{userId}")
-    public UserDto update(@PathVariable Long userId, @RequestBody UserDto user) {
+    public UserDto update(@PathVariable long userId, @RequestBody @NotNull UserDto user) {
         user.setId(userId);
         log.info(" PATCH [http://localhost:8080/users] : Запрос на обновление пользователя - {}", user);
         return userService.update(user);
@@ -60,7 +61,7 @@ public class UserController {
      * Удаление существующего пользователя
      **/
     @DeleteMapping("/{userId}")
-    public void delete(@PathVariable Long userId) {
+    public void delete(@PathVariable long userId) {
         log.info(" DELETE [http://localhost:8080/users/{}] : Запрос на удаление пользователя id : {}", userId, userId);
         userService.deleteById(userId);
     }

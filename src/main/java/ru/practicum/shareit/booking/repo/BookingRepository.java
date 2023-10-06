@@ -20,34 +20,34 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Optional<Booking> findFirstBookingByOwnerAndItemOrderByStartAsc(User user, Item item);
 
     @Query("select b from Booking b where b.item.id = :itemId and b.start <= :actual and b.approved = 'APPROVED' order by b.end desc")
-    List<Booking> findListToLastBooking(Long itemId, LocalDateTime actual);
+    List<Booking> findListToLastBooking(long itemId, LocalDateTime actual);
 
     @Query("select b from Booking b where b.item.id = :itemId and b.start > :actual and b.approved = 'APPROVED' order by b.start asc")
-    List<Booking> findListToNextBooking(Long itemId, LocalDateTime actual);
+    List<Booking> findListToNextBooking(long itemId, LocalDateTime actual);
 
     List<Booking> findByOwnerAndStartAfterOrderByStartDesc(User owner, LocalDateTime actual);
 
     @Query("select b from Booking b where b.owner.id = :userId and b.approved = :approved order by start desc")
-    List<Booking> findAllBookingState(Long userId, EnumBookingState approved);
+    List<Booking> findAllBookingState(long userId, EnumBookingState approved);
 
     @Query("select b from Booking b where b.item.owner.id = :userId and b.approved = :approved order by start desc")
-    List<Booking> findAllOwnerBookingState(Long userId, EnumBookingState approved);
+    List<Booking> findAllOwnerBookingState(long userId, EnumBookingState approved);
 
     @Query("select b from Booking b where b.item.owner.id = :userId order by start desc")
-    List<Booking> findByBookingOwner(Long userId);
+    List<Booking> findByBookingOwner(long userId);
 
     @Query("select b from Booking b where b.item.owner.id = :userId and b.start >= :actual order by start desc")
-    List<Booking> findByBookingOwnerAndStartAfter(Long userId, LocalDateTime actual);
+    List<Booking> findByBookingOwnerAndStartAfter(long userId, LocalDateTime actual);
 
     @Query("select b from Booking b where b.item.owner.id = :userId and b.end <= :actual order by start desc")
-    List<Booking> findAllBookingOwnerStatePast(Long userId, LocalDateTime actual);
+    List<Booking> findAllBookingOwnerStatePast(long userId, LocalDateTime actual);
 
     @Query("select b from Booking b where b.item.owner.id = :userId and b.start <= :actual and b.end >= :actual order by start desc")
-    List<Booking> findAllBookingOwnerStateCurrent(Long userId, LocalDateTime actual);
+    List<Booking> findAllBookingOwnerStateCurrent(long userId, LocalDateTime actual);
 
     @Query("select b from Booking b where b.owner.id = :userId and b.end <= :actual order by start desc")
-    List<Booking> findAllBookingStatePast(Long userId, LocalDateTime actual);
+    List<Booking> findAllBookingStatePast(long userId, LocalDateTime actual);
 
     @Query("select b from Booking b where b.owner.id = :userId and b.start <= :actual and b.end >= :actual order by start desc")
-    List<Booking> findAllBookingStateCurrent(Long userId, LocalDateTime actual);
+    List<Booking> findAllBookingStateCurrent(long userId, LocalDateTime actual);
 }

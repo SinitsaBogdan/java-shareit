@@ -2,17 +2,8 @@ package ru.practicum.shareit.booking.dto;
 
 import org.jetbrains.annotations.NotNull;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.dto.UserDto;
 
 public class BookingMapper {
-
-    public static BookingResponseShortDto mapperBookingToShortDto(@NotNull Booking booking) {
-        return BookingResponseShortDto.builder()
-                .id(booking.getId())
-                .bookerId(booking.getUser().getId())
-                .build();
-    }
 
     public static Booking mapperBookingDtoToBooking(@NotNull BookingRequestDto booking) {
         return Booking.builder()
@@ -23,16 +14,10 @@ public class BookingMapper {
 
     public static BookingResponseDto mapperBookingResponseBookerToDto(@NotNull Booking booking) {
 
-        ItemDto item = ItemDto.builder()
-                .id(booking.getItem().getId())
-                .name(booking.getItem().getName()).build();
-
-        UserDto user = UserDto.builder().id(booking.getUser().getId()).build();
-
         return BookingResponseDto.builder()
                 .id(booking.getId())
-                .item(item)
-                .booker(user)
+                .item(new BookingResponseDto.LocalItem(booking.getItem().getId(), booking.getItem().getName()))
+                .booker(new BookingResponseDto.LocalBooker(booking.getUser().getId()))
                 .start(booking.getStart())
                 .end(booking.getEnd())
                 .status(booking.getApproved().name())

@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.booking.dto.BookingResponseShortDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,19 +15,25 @@ public class ItemDto {
     private Long id;
 
     @NotBlank
-    private String name;
+    private final String name;
 
     @NotBlank
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String description;
+    private final String description;
 
     @NotNull
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Boolean available;
+    private final Boolean available;
 
-    private BookingResponseShortDto lastBooking;
+    private LocalBooker lastBooking;
 
-    private BookingResponseShortDto nextBooking;
+    private LocalBooker nextBooking;
 
-    private List<CommentDto> comments;
+    private final List<CommentDto> comments;
+
+    @Data
+    public static class LocalBooker {
+        private final Long id;
+        private final Long bookerId;
+    }
 }

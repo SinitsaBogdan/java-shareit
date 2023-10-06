@@ -11,7 +11,7 @@ public class UserDto {
 
     private Long id;
 
-    private String name;
+    private final String name;
 
-    private String email;
+    private final String email;
 }

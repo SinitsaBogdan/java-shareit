@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -47,10 +46,10 @@ public class ItemServiceImpl implements ItemService {
                     ItemDto itemDto = ItemMapper.mapperItemToDto(item);
 
                     List<Booking> bookingLastList = bookingRepository.findListToLastBooking(item.getId(), LocalDateTime.now());
-                    if (!bookingLastList.isEmpty()) itemDto.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
+                    if (!bookingLastList.isEmpty()) itemDto.setLastBooking(new ItemDto.LocalBooker(bookingLastList.get(0).getId(), bookingLastList.get(0).getUser().getId()));
 
                     List<Booking> bookingNextList = bookingRepository.findListToNextBooking(item.getId(), LocalDateTime.now());
-                    if (!bookingNextList.isEmpty()) itemDto.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
+                    if (!bookingNextList.isEmpty()) itemDto.setNextBooking(new ItemDto.LocalBooker(bookingNextList.get(0).getId(), bookingNextList.get(0).getUser().getId()));
 
                     result.add(itemDto);
                 });
@@ -67,10 +66,10 @@ public class ItemServiceImpl implements ItemService {
         if (optionalItem.get().getUser().getId().equals(userId)) {
 
             List<Booking> bookingLastList = bookingRepository.findListToLastBooking(optionalItem.get().getId(), LocalDateTime.now());
-            if (!bookingLastList.isEmpty()) itemDto.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
+            if (!bookingLastList.isEmpty()) itemDto.setLastBooking(new ItemDto.LocalBooker(bookingLastList.get(0).getId(), bookingLastList.get(0).getUser().getId()));
 
             List<Booking> bookingNextList = bookingRepository.findListToNextBooking(optionalItem.get().getId(), LocalDateTime.now());
-            if (!bookingNextList.isEmpty()) itemDto.setNextBooking(BookingMapper.mapperBookingToShortDto(bookingNextList.get(0)));
+            if (!bookingNextList.isEmpty()) itemDto.setNextBooking(new ItemDto.LocalBooker(bookingNextList.get(0).getId(), bookingNextList.get(0).getUser().getId()));
         }
         return itemDto;
     }

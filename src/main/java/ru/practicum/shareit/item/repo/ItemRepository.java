@@ -13,7 +13,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @NotNull Optional<Item> findById(long itemId);
 
-    List<Item> findByOwner_id(long userId);
+    List<Item> findByUser_id(long userId);
 
     List<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(String nameSearch, String descriptionSearch, boolean available);
 }

@@ -1,9 +1,6 @@
 package ru.practicum.shareit.booking.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.util.EnumBookingState;
@@ -11,8 +8,10 @@ import ru.practicum.shareit.util.EnumBookingState;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
 @Builder
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -27,17 +26,19 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private EnumBookingState approved;
 
-    @OneToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User owner;
-
     @Column(name = "time_start")
     private LocalDateTime start;
 
     @Column(name = "time_end")
     private LocalDateTime end;
+
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

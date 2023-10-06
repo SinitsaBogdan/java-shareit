@@ -36,9 +36,9 @@ public class BookingServiceImpl implements BookingService {
 
         List<Booking> list;
 
-        if      (ALL.name().equals(state)) list = bookingRepository.findByOwnerOrderByStartDesc(optional.get());
+        if      (ALL.name().equals(state)) list = bookingRepository.findByUserOrderByStartDesc(optional.get());
         else if (PAST.name().equals(state)) list = bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now());
-        else if (FUTURE.name().equals(state)) list = bookingRepository.findByOwnerAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now());
+        else if (FUTURE.name().equals(state)) list = bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now());
         else if (CURRENT.name().equals(state)) list = bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now());
         else if (WAITING.name().equals(state)) list = bookingRepository.findAllBookingState(optional.get().getId(), WAITING);
         else if (REJECTED.name().equals(state)) list = bookingRepository.findAllBookingState(optional.get().getId(), REJECTED);
@@ -56,12 +56,12 @@ public class BookingServiceImpl implements BookingService {
 
         List<Booking> list;
 
-        if      (ALL.name().equals(state)) list = bookingRepository.findByBookingOwner(optional.get().getId());
-        else if (PAST.name().equals(state)) list = bookingRepository.findAllBookingOwnerStatePast(optional.get().getId(), LocalDateTime.now());
-        else if (FUTURE.name().equals(state)) list = bookingRepository.findByBookingOwnerAndStartAfter(optional.get().getId(), LocalDateTime.now());
-        else if (CURRENT.name().equals(state)) list = bookingRepository.findAllBookingOwnerStateCurrent(optional.get().getId(), LocalDateTime.now());
-        else if (WAITING.name().equals(state)) list = bookingRepository.findAllOwnerBookingState(optional.get().getId(), WAITING);
-        else if (REJECTED.name().equals(state)) list = bookingRepository.findAllOwnerBookingState(optional.get().getId(), REJECTED);
+        if      (ALL.name().equals(state)) list = bookingRepository.findByBookingUser(optional.get().getId());
+        else if (PAST.name().equals(state)) list = bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now());
+        else if (FUTURE.name().equals(state)) list = bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now());
+        else if (CURRENT.name().equals(state)) list = bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now());
+        else if (WAITING.name().equals(state)) list = bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING);
+        else if (REJECTED.name().equals(state)) list = bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED);
         else throw new ServiceException(String.format("Unknown state: %s", state), 500);
 
         return list.stream()
@@ -76,7 +76,7 @@ public class BookingServiceImpl implements BookingService {
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
 
         Booking booking = optional.get();
-        if (!booking.getItem().getOwner().getId().equals(userId) && !booking.getOwner().getId().equals(userId)) {
+        if (!booking.getItem().getUser().getId().equals(userId) && !booking.getUser().getId().equals(userId)) {
             throw new ServiceException(BOOKING_ERROR__USER_NOT_OWNER_ITEM);
         }
 
@@ -93,13 +93,13 @@ public class BookingServiceImpl implements BookingService {
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
         Item item = optionalItem.get();
 
-        if (item.getOwner().getId().equals(userId)) throw new ServiceException("Владелец вещи не может создать бронирование на ту же вещь", 404);
+        if (item.getUser().getId().equals(userId)) throw new ServiceException("Владелец вещи не может создать бронирование на ту же вещь", 404);
         if (!item.getAvailable()) throw new ServiceException(BOOKING_ERROR__AVAILABLE_FALSE);
 
         if (booking.getEnd().isBefore(booking.getStart()) || booking.getEnd().equals(booking.getStart())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME);
         if (!booking.getStart().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME__START_TIME);
 
-        booking.setOwner(optionalUser.get());
+        booking.setUser(optionalUser.get());
         booking.setItem(optionalItem.get());
         booking.setApproved(WAITING);
         booking = bookingRepository.save(booking);
@@ -118,8 +118,8 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = optionalBooking.get();
 
-        if (optionalBooking.get().getOwner().getId().equals(userId)) throw new ServiceException("Недостаточно прав для смены статуса бронирования", 404);
-        if (!optionalBooking.get().getItem().getOwner().getId().equals(userId)) throw new ServiceException("Пользователь не является владельцем вещи", 400);
+        if (optionalBooking.get().getUser().getId().equals(userId)) throw new ServiceException("Недостаточно прав для смены статуса бронирования", 404);
+        if (!optionalBooking.get().getItem().getUser().getId().equals(userId)) throw new ServiceException("Пользователь не является владельцем вещи", 400);
         if (optionalBooking.get().getApproved().equals(APPROVED)) throw new ServiceException("Бронирование уже потдверждено", 400);
 
         booking.setApproved(approved ? APPROVED : REJECTED);

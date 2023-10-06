@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
 
         List<ItemDto> result = new ArrayList<>();
 
-        itemRepository.findByOwner_id(optionalUser.get().getId())
+        itemRepository.findByUser_id(optionalUser.get().getId())
                 .forEach(item -> {
 
                     ItemDto itemDto = ItemMapper.mapperItemToDto(item);
@@ -64,7 +64,7 @@ public class ItemServiceImpl implements ItemService {
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
         ItemDto itemDto = ItemMapper.mapperItemToDto(optionalItem.get());
 
-        if (optionalItem.get().getOwner().getId().equals(userId)) {
+        if (optionalItem.get().getUser().getId().equals(userId)) {
 
             List<Booking> bookingLastList = bookingRepository.findListToLastBooking(optionalItem.get().getId(), LocalDateTime.now());
             if (!bookingLastList.isEmpty()) itemDto.setLastBooking(BookingMapper.mapperBookingToShortDto(bookingLastList.get(0)));
@@ -88,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        item.setOwner(optional.get());
+        item.setUser(optional.get());
         item = itemRepository.save(item);
         return ItemMapper.mapperItemToDto(item);
     }
@@ -102,7 +102,7 @@ public class ItemServiceImpl implements ItemService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Optional<Booking> optionalBooking = bookingRepository.findFirstBookingByOwnerAndItemOrderByStartAsc(optionalUser.get(), optionalItem.get());
+        Optional<Booking> optionalBooking = bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(optionalUser.get(), optionalItem.get());
 
         if (optionalBooking.isEmpty()) throw new ServiceException("Пользователь не совершал бронирований этой вещи", 404);
         if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException("Нельзя оставлять отзыв до завершения бронирования", 400);
@@ -127,7 +127,7 @@ public class ItemServiceImpl implements ItemService {
         User user = optionalUser.get();
         Item item = optionalItem.get();
 
-        if (!item.getOwner().getId().equals(user.getId())) throw new ServiceException(ITEM_ERROR__VALID__ITEM__USER_NOT_OWNER);
+        if (!item.getUser().getId().equals(user.getId())) throw new ServiceException(ITEM_ERROR__VALID__ITEM__USER_NOT_OWNER);
 
         if (itemDto.getName() != null && !itemDto.getName().equals(item.getName())) item.setName(itemDto.getName());
         if (itemDto.getDescription() != null && !itemDto.getDescription().equals(item.getDescription())) item.setDescription(itemDto.getDescription());

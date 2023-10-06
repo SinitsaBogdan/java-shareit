@@ -10,7 +10,7 @@ public class BookingMapper {
     public static BookingResponseShortDto mapperBookingToShortDto(@NotNull Booking booking) {
         return BookingResponseShortDto.builder()
                 .id(booking.getId())
-                .bookerId(booking.getOwner().getId())
+                .bookerId(booking.getUser().getId())
                 .build();
     }
 
@@ -27,7 +27,7 @@ public class BookingMapper {
                 .id(booking.getItem().getId())
                 .name(booking.getItem().getName()).build();
 
-        UserDto user = UserDto.builder().id(booking.getOwner().getId()).build();
+        UserDto user = UserDto.builder().id(booking.getUser().getId()).build();
 
         return BookingResponseDto.builder()
                 .id(booking.getId())

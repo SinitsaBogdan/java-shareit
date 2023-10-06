@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.util.EnumBookingState.APPROVED;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service
@@ -39,17 +40,30 @@ public class ItemServiceImpl implements ItemService {
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         List<ItemDto> result = new ArrayList<>();
+        LocalDateTime actual = LocalDateTime.now();
+        List<Item> items = itemRepository.findByUser_id(optionalUser.get().getId());
+        List<Booking> bookings = bookingRepository.findByItem_User_id(userId);
 
-        itemRepository.findByUser_id(optionalUser.get().getId())
-                .forEach(item -> {
+        items.forEach(item -> {
 
                     ItemDto itemDto = ItemMapper.mapperItemToDto(item);
 
-                    List<Booking> bookingLastList = bookingRepository.findListToLastBooking(item.getId(), LocalDateTime.now());
-                    if (!bookingLastList.isEmpty()) itemDto.setLastBooking(new ItemDto.LocalBooker(bookingLastList.get(0).getId(), bookingLastList.get(0).getUser().getId()));
+                    Booking bookingNext = bookings.stream()
+                            .filter(booking -> booking.getItem().getId().equals(item.getId()))
+                            .filter(booking -> booking.getStart().isAfter(actual) || booking.getStart().equals(actual))
+                            .filter(booking -> booking.getApproved().equals(APPROVED))
+                            .min(Comparator.comparing(Booking::getStart))
+                            .orElse(null);
 
-                    List<Booking> bookingNextList = bookingRepository.findListToNextBooking(item.getId(), LocalDateTime.now());
-                    if (!bookingNextList.isEmpty()) itemDto.setNextBooking(new ItemDto.LocalBooker(bookingNextList.get(0).getId(), bookingNextList.get(0).getUser().getId()));
+                    Booking bookingLast = bookings.stream()
+                            .filter(booking -> booking.getItem().getId().equals(item.getId()))
+                            .filter(booking -> booking.getStart().isBefore(actual))
+                            .filter(booking -> booking.getApproved().equals(APPROVED))
+                            .min(Comparator.comparing(Booking::getEnd))
+                            .orElse(null);
+
+                    itemDto.setLastBooking(bookingLast != null ? new ItemDto.LocalBooker(bookingLast.getId(), bookingLast.getUser().getId()) : null);
+                    itemDto.setNextBooking(bookingNext != null ? new ItemDto.LocalBooker(bookingNext.getId(), bookingNext.getUser().getId()) : null);
 
                     result.add(itemDto);
                 });

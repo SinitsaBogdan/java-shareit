@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.util.validation.annotation.CustomValidEmail;
 import ru.practicum.shareit.util.validation.annotation.CustomValidNotBlank;
@@ -45,4 +46,9 @@ public class User {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private final List<Booking> bookings = new ArrayList<>();
+
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private final List<Comment> comments = new ArrayList<>();
 }

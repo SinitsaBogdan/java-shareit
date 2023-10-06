@@ -25,9 +25,9 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 @AllArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
-    private BookingRepository bookingRepository;
-    private UserRepository userRepository;
-    private ItemRepository itemRepository;
+    private final BookingRepository bookingRepository;
+    private final UserRepository userRepository;
+    private final ItemRepository itemRepository;
 
     @Override
     public List<BookingResponseDto> getAll(long userId, String state) {

@@ -20,7 +20,7 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<UserDto> getAll() {

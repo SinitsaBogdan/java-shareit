@@ -29,10 +29,10 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    private ItemRepository itemRepository;
-    private UserRepository userRepository;
-    private BookingRepository bookingRepository;
-    private CommentRepository commentRepository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<ItemDto> getAllByUserId(long userId) {

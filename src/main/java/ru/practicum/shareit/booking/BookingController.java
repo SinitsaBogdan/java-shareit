@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/bookings")
 public class BookingController {
 
-    private BookingService bookingService;
+    private final BookingService bookingService;
 
     /**
      * Запрос всех записей бронирования пользователя

@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
     /** Запрос всех записей вещей пользователя **/
     @GetMapping

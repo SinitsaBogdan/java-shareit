@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
@@ -27,6 +28,7 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
@@ -97,6 +99,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto add(long userId, ItemDto itemDto) {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
         Optional<User> optional = userRepository.findById(userId);
@@ -107,6 +110,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
@@ -130,6 +134,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto update(long userId, @NotNull ItemDto itemDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Item> optionalItem = itemRepository.findById(itemDto.getId());

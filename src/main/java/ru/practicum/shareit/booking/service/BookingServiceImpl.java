@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -25,6 +26,7 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
@@ -141,6 +143,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto add(long userId, BookingRequestDto bookingRequestDto) {
         Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -165,6 +168,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingResponseDto updateApproved(long userId, long bookingId, boolean approved) {
 
         Optional<User> optionalUser = userRepository.findById(userId);

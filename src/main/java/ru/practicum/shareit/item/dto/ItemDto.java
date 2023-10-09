@@ -4,17 +4,36 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 
-/**
- * TODO Sprint add-controllers.
- */
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemDto {
 
     private Long id;
-    private String name;
-    private String description;
-    private Boolean available;
+
+    @NotBlank
+    private final String name;
+
+    @NotBlank
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final String description;
+
+    @NotNull
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private final Boolean available;
+
+    private LocalBooker lastBooking;
+
+    private LocalBooker nextBooking;
+
+    private final List<CommentDto> comments;
+
+    @Data
+    public static class LocalBooker {
+        private final Long id;
+        private final Long bookerId;
+    }
 }

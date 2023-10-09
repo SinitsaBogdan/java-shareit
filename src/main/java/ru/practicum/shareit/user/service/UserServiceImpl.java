@@ -1,25 +1,28 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
-import ru.practicum.shareit.util.Validator;
-import ru.practicum.shareit.util.exeptions.ShareitException;
+import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.util.exeptions.ErrorMessage.REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID_DUPLICATE__EMAIL;
-
 
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<UserDto> getAll() {
@@ -29,45 +32,52 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getById(Long userId) {
-        Validator.checkIdInUserRepo(userId, userRepository);
-        User result = userRepository.findById(userId);
-        return UserMapper.mapperUserToDto(result);
+    public UserDto getById(long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        return UserMapper.mapperUserToDto(optionalUser.get());
     }
 
     @Override
+    @Transactional
     public UserDto add(UserDto user) {
-        Validator.checkValidUser(user, userRepository);
         User result = UserMapper.mapperUserDtoToUser(user);
-        result = userRepository.save(result);
-        return UserMapper.mapperUserToDto(result);
-    }
-
-    @Override
-    public UserDto update(UserDto user) {
-        Validator.checkIdInUserRepo(user.getId(), userRepository);
-        User update = UserMapper.mapperUserDtoToUser(user);
-        User result = userRepository.findById(user.getId());
-
-        System.out.println(result);
-        System.out.println(update);
-
-        if (update.getName() != null && !update.getName().equals(result.getName())) result.setName(update.getName());
-        if (update.getEmail() != null && !update.getEmail().equals(result.getEmail())) {
-            if (userRepository.checkEmailDuplicate(update.getEmail())) throw new ShareitException(USER_ERROR__VALID_DUPLICATE__EMAIL);
-            userRepository.removeDataEmail(result.getEmail());
-            userRepository.addDataEmail(update.getEmail());
-            result.setEmail(update.getEmail());
+        try {
+            result = userRepository.save(result);
+            return UserMapper.mapperUserToDto(result);
+        } catch (DataIntegrityViolationException exception) {
+            throw new ServiceException(USER_ERROR__VALID_DUPLICATE__EMAIL);
         }
-
-        result = userRepository.update(result);
-        return UserMapper.mapperUserToDto(result);
     }
 
     @Override
-    public void deleteById(Long userId) {
-        Validator.checkIdInUserRepo(userId, userRepository);
-        User user = userRepository.findById(userId);
-        userRepository.deleteById(user);
+    @Transactional
+    public UserDto update(UserDto userDto) {
+        User update = UserMapper.mapperUserDtoToUser(userDto);
+
+        Optional<User> optionalUser = userRepository.findById(update.getId());
+
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        User user = optionalUser.get();
+
+        if (update.getName() != null && !update.getName().equals(user.getName())) user.setName(update.getName());
+        if (update.getEmail() != null && !update.getEmail().equals(user.getEmail())) user.setEmail(update.getEmail());
+
+        try {
+
+            user = userRepository.save(user);
+            return UserMapper.mapperUserToDto(user);
+
+        } catch (DataIntegrityViolationException exception) {
+            throw new ServiceException(USER_ERROR__VALID_DUPLICATE__EMAIL);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        userRepository.deleteById(userId);
     }
 }

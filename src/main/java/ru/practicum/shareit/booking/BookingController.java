@@ -3,9 +3,11 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
+import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -18,53 +20,51 @@ import java.util.List;
 @RequestMapping("/bookings")
 public class BookingController {
 
-    private BookingService bookingService;
+    private final BookingService bookingService;
 
     /**
-     * Запрос всех записей
-     * бронирования пользователя
+     * Запрос всех записей бронирования пользователя
      **/
     @GetMapping
-    public List<BookingDto> getAll() {
-        log.info("   GET [http://localhost:8080/bookings] : Запрос на получение всех бронирований");
-        return null;
+    public List<BookingResponseDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "ALL") String state) {
+        log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
+        return bookingService.getAll(userId, state);
     }
 
     /**
      * Запрос записи бронирования по ID
      **/
     @GetMapping("/{bookingId}")
-    public BookingDto getById(@PathVariable Long bookingId) {
+    public BookingResponseDto getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId) {
         log.info("   GET [http://localhost:8080/bookings/{}] : Запрос на получение бронирования по id : {}", bookingId, bookingId);
-        return null;
+        return bookingService.getById(userId, bookingId);
     }
 
     /**
-     * Добавление новой записи
-     * бронирования пользователя
+     * Получение списка бронирований для всех вещей текущего пользователя
+     **/
+    @GetMapping("/owner")
+    public List<BookingResponseDto> getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "ALL") String state) {
+        log.info("   GET [http://localhost:8080/bookings/owner?state={}] : Запрос на получение всех бронирований пользователя", state);
+        return bookingService.getAllInItemOwner(userId, state);
+    }
+
+    /**
+     * Добавление новой записи бронирования пользователя
      **/
     @PostMapping
-    public BookingDto add(@RequestBody BookingDto booking) {
-        log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", booking);
-        return null;
+    public BookingResponseDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid BookingRequestDto bookingRequestDto) {
+        System.out.println(bookingRequestDto);
+        log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", bookingRequestDto);
+        return bookingService.add(userId, bookingRequestDto);
     }
 
     /**
-     * Обновление существующей записи
-     * бронирования пользователя
+     * Подтверждение бронирования
      **/
-    @PatchMapping
-    public BookingDto update(@RequestBody BookingDto booking) {
-        log.info(" PATCH [http://localhost:8080/bookings] : Запрос на обновление бронирования - {}", booking);
-        return null;
-    }
-
-    /**
-     * Удаление существующей записи
-     * бронирования пользователя
-     **/
-    @DeleteMapping("/{bookingId}")
-    public void delete(@PathVariable Long bookingId) {
-        log.info(" DELETE [http://localhost:8080/bookings/{}] : Запрос на удаление бронирования id : {}", bookingId, bookingId);
+    @PatchMapping("/{bookingId}")
+    public BookingResponseDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId, @RequestParam(defaultValue = "") boolean approved) {
+        log.info("  POST [http://localhost:8080/bookings/{}?approved={}] : Запрос на добавление бронирования - {}", bookingId, approved, bookingId);
+        return bookingService.updateApproved(userId, bookingId, approved);
     }
 }

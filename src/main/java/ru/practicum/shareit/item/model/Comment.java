@@ -1,12 +1,13 @@
-package ru.practicum.shareit.booking.model;
+package ru.practicum.shareit.item.model;
 
 import lombok.*;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.EnumBookingState;
+import ru.practicum.shareit.util.validation.annotation.CustomValidNotBlank;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static ru.practicum.shareit.util.exeptions.ErrorMessage.COMMENT_ERROR__VALID_TEXT;
 
 @Builder
 @Getter
@@ -15,22 +16,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "bookings")
-public class Booking {
+@Table(name = "comments")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "approved")
-    @Enumerated(EnumType.STRING)
-    private EnumBookingState approved;
+    @Column(name = "text")
+    @CustomValidNotBlank(error = COMMENT_ERROR__VALID_TEXT)
+    private String text;
 
-    @Column(name = "time_start")
-    private LocalDateTime start;
-
-    @Column(name = "time_end")
-    private LocalDateTime end;
+    @Column(name = "created")
+    private LocalDateTime created;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)

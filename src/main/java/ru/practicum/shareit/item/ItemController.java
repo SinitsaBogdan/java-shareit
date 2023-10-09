@@ -3,78 +3,69 @@ package ru.practicum.shareit.item;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
+import javax.validation.Valid;
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
 
-    private ItemService itemService;
+    private final ItemService itemService;
 
-    /**
-     * Запрос всех записей
-     * вещей пользователя
-     **/
+    /** Запрос всех записей вещей пользователя **/
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("   GET [http://localhost:8080/items] : Запрос на получение всех вещей от пользователя id : {}", userId);
         return itemService.getAllByUserId(userId);
     }
 
-    /**
-     * Запрос записи вещи пользователя по ID
-     **/
+    /** Запрос записи вещи пользователя по ID **/
     @GetMapping("/{itemId}")
-    public ItemDto getById(@RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId, @PathVariable Long itemId) {
+    public ItemDto getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId) {
         log.info("   GET [http://localhost:8080/items/{}] : Запрос на получение вещи по id : {} от пользователя id : {}", itemId, itemId, userId);
-        return itemService.getById(itemId);
+        return itemService.getById(userId, itemId);
     }
 
-    /**
-     * Запрос записей
-     * вещей по поиску в text (название или описание)
-     **/
+    /** Запрос записей вещей по поиску в text (название или описание) **/
     @GetMapping("/search")
-    public List<ItemDto> getAllToSearchText(@RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId, @RequestParam(defaultValue = "") String text) {
+    public List<ItemDto> getAllToSearchText(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "") String text) {
         log.info("   GET [http://localhost:8080/items/search?text={}] : Запрос на поиск вещей по фильтру text : {} от пользователя id : {} ", text, text, userId);
         return itemService.getBySearchText(text.toLowerCase());
     }
 
-    /**
-     * Добавление новой записи
-     * вещи пользователя
-     **/
+    /** Добавление новой записи вещи пользователя **/
     @PostMapping
-    public ItemDto add(@RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId, @RequestBody ItemDto item) {
+    public ItemDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto item) {
+        /* TODO не обрабатываетася userId
+        *   */
         log.info("  POST [http://localhost:8080/items] : Запрос на добавление вещи от пользователя id : {} - {}", userId, item);
-        return itemService.addToUser(userId, item);
+        return itemService.add(userId, item);
     }
 
-    /**
-     * Обновление существующей записи
-     * вещи пользователя
-     **/
+    /** Добавление комментария к вещи **/
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody CommentDto commentDto) {
+        log.info("  POST [http://localhost:8080/items/{}/comment] : Запрос на добавление отзыва к вещи от пользователя id : {} - {}", itemId, userId, commentDto);
+        return itemService.addComment(userId, itemId, commentDto);
+    }
+
+    /** Обновление существующей записи вещи пользователя **/
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId, @PathVariable Long itemId, @RequestBody ItemDto item) {
+    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody ItemDto item) {
         log.info(" PATCH [http://localhost:8080/items] : Запрос на обновление вещи от пользователя id : {} - {}", userId, item);
         item.setId(itemId);
-        return itemService.updateToUser(userId, item);
+        return itemService.update(userId, item);
     }
 
-    /**
-     * Удаление существующей записи
-     * вещи пользователя
-     **/
+    /** Удаление существующей записи вещи пользователя **/
     @DeleteMapping("/{itemDtoId}")
-    public void delete(@RequestHeader(value = "X-Sharer-User-Id", defaultValue = "") Long userId, @PathVariable Long itemId) {
-        log.info(" DELETE [http://localhost:8080/items/{}] : Запрос на удаление вещи id : {} от пользователя id : {}", itemId, itemId, userId);
+    public void delete(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemDtoId) {
+        log.info(" DELETE [http://localhost:8080/items/{}] : Запрос на удаление вещи id : {} от пользователя id : {}", itemDtoId, itemDtoId, userId);
     }
 }

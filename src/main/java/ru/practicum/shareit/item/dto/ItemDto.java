@@ -29,6 +29,9 @@ public class ItemDto {
 
     private LocalBooker nextBooking;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long requestId;
+
     private final List<CommentDto> comments;
 
     @Data

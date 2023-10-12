@@ -50,7 +50,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where b.user.id = :userId and b.end <= :actual order by b.start desc")
     List<Booking> findAllBookingStatePast(long userId, LocalDateTime actual);
 
-    @Query("select b from Booking b where b.user.id = :userId and b.start <= :actual and b.end >= :actual order by b.start desc")
+    @Query("select b from Booking b where b.user.id = :userId and b.start <= :actual and b.end >= :actual order by b.start asc")
     List<Booking> findAllBookingStateCurrent(long userId, LocalDateTime actual);
 
     void deleteAll();

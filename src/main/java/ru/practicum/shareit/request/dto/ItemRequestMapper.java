@@ -5,11 +5,11 @@ import ru.practicum.shareit.request.model.ItemRequest;
 
 public class ItemRequestMapper {
 
-    public static @NotNull ItemRequestDto mapperItemRequestToDto(ItemRequest itemRequest) {
-        return new ItemRequestDto();
+    public static @NotNull ItemRequestDto mapperItemRequestToDto(@NotNull ItemRequest itemRequest) {
+        return ItemRequestDto.builder().description(itemRequest.getText()).build();
     }
 
-    public static @NotNull ItemRequest mapperItemRequestDtoToItemRequest(ItemRequestDto itemRequestDto) {
-        return new ItemRequest();
+    public static @NotNull ItemRequest mapperItemRequestDtoToItemRequest(@NotNull ItemRequestDto itemRequestDto) {
+        return ItemRequest.builder().text(itemRequestDto.getDescription()).build();
     }
 }

@@ -10,6 +10,7 @@ public enum ErrorMessage {
     REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID("Указанный id вещи отсутствует в системе", 404),
     REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID("Указанный id пользователя отсутствует в системе", 404),
     REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID("Указанный id бронирования отсутствует в системе", 404),
+    REPOSITORY_ERROR__REQUEST__ID_NOT_IN_REPO__ID("Указанный id запроса отсутствует в системе", 404),
 
     ITEM_ERROR__VALID__NAME("Поле name отсутствует или не в верном формате", 400),
     ITEM_ERROR__VALID__DESCRIPTION("Поле description отсутствует или не в верном формате", 400),
@@ -25,6 +26,7 @@ public enum ErrorMessage {
     BOOKING_ERROR__AVAILABLE_FALSE("Вещь не доступна для бронирования", 400),
     BOOKING_ERROR__VALID_DATETIME("Время окончания бронирования не может быть меньше или равной началу бронирования", 400),
     BOOKING_ERROR__VALID_DATETIME__START_TIME("Дата начала бронирования не должна быть в прошлом", 400),
+
 
     COMMENT_ERROR__VALID_TEXT("Текст отзыва не может быть null или пустым", 400)
     ;

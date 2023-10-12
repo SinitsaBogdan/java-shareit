@@ -3,13 +3,14 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.util.exeptions.BusinessException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -31,11 +32,12 @@ public class BookingController {
     public List<BookingResponseDto> getAll(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "0") @Min(0) int from,
             @RequestParam(defaultValue = "10") int size
     ) {
         log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
-        return bookingService.getAll(userId, state, PageRequest.of(from, size));
+        if (from < 0 || size < 1) throw new BusinessException("Некорректные параметры поиска", 400);
+        return bookingService.getAll(userId, state, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 
     /**
@@ -58,7 +60,8 @@ public class BookingController {
             @RequestParam(defaultValue = "10") int size
     ) {
         log.info("   GET [http://localhost:8080/bookings/owner?state={}] : Запрос на получение всех бронирований пользователя", state);
-        return bookingService.getAllInItemOwner(userId, state, PageRequest.of(from, size));
+        if (from < 0 || size < 1) throw new BusinessException("Некорректные параметры поиска", 400);
+        return bookingService.getAllInItemOwner(userId, state, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 
     /**

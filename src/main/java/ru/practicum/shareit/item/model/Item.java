@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -31,6 +32,11 @@ public class Item {
 
     @Column(name = "available")
     private Boolean available;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private ItemRequest request;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)

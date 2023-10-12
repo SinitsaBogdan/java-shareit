@@ -5,12 +5,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.dto.ItemRequestMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,14 +34,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        itemRequestRepository.findByItemRequestByUser(optionalUser.get());
+        itemRequestRepository.findByUser(optionalUser.get());
         return null;
     }
 
     @Override
     public List<ItemRequestDto> findAll(long userId, int from, int size) {
-        Pageable pagingSort = PageRequest.of(from, size);
-        itemRequestRepository.findByItemRequest(pagingSort);
+        Pageable paging = PageRequest.of(from, size);
+        itemRequestRepository.findItemRequest(userId, paging);
         return null;
     }
 
@@ -47,6 +52,14 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestDto add(long userId, ItemRequestDto requestDto) {
-        return null;
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        ItemRequest request = ItemRequestMapper.mapperItemRequestDtoToItemRequest(requestDto);
+
+        request.setUser(optionalUser.get());
+        request.setCreated(LocalDateTime.now());
+        request = itemRequestRepository.save(request);
+
+        return ItemRequestMapper.mapperItemRequestToDto(request);
     }
 }

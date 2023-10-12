@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
@@ -34,12 +36,12 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    public List<BookingResponseDto> getAll(long userId, String state) {
+    public List<BookingResponseDto> getAll(long userId, String state, Pageable pageable) {
 
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        List<Booking> list = null;
+        Page<Booking> list = null;
         EnumBookingState status;
 
         try {
@@ -50,27 +52,27 @@ public class BookingServiceImpl implements BookingService {
 
         switch (status) {
             case ALL : {
-                list = bookingRepository.findByUserOrderByStartDesc(optional.get());
+                list = bookingRepository.findByUserOrderByStartDesc(optional.get(), pageable);
                 break;
             }
             case PAST : {
-                list = bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case FUTURE : {
-                list = bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now());
+                list = bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now(), pageable);
                 break;
             }
             case CURRENT : {
-                list = bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case WAITING : {
-                list = bookingRepository.findAllBookingState(optional.get().getId(), WAITING);
+                list = bookingRepository.findAllBookingState(optional.get().getId(), WAITING, pageable);
                 break;
             }
             case REJECTED : {
-                list = bookingRepository.findAllBookingState(optional.get().getId(), REJECTED);
+                list = bookingRepository.findAllBookingState(optional.get().getId(), REJECTED, pageable);
                 break;
             }
         }
@@ -81,12 +83,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponseDto> getAllInItemOwner(long userId, String state) {
+    public List<BookingResponseDto> getAllInItemOwner(long userId, String state, Pageable pageable) {
 
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        List<Booking> list = null;
+        Page<Booking> list = null;
         EnumBookingState status;
 
         try {
@@ -97,27 +99,27 @@ public class BookingServiceImpl implements BookingService {
 
         switch (status) {
             case ALL : {
-                list = bookingRepository.findByBookingUser(optional.get().getId());
+                list = bookingRepository.findByBookingUser(optional.get().getId(), pageable);
                 break;
             }
             case PAST : {
-                list = bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case FUTURE : {
-                list = bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case CURRENT : {
-                list = bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case WAITING : {
-                list = bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING);
+                list = bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING, pageable);
                 break;
             }
             case REJECTED : {
-                list = bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED);
+                list = bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED, pageable);
                 break;
             }
         }

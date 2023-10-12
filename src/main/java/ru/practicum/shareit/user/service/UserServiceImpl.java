@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto add(UserDto user) {
+    public UserDto save(UserDto user) {
         User result = UserMapper.mapperUserDtoToUser(user);
         try {
             result = userRepository.save(result);

@@ -1,12 +1,9 @@
 package ru.practicum.shareit.request.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -40,12 +37,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> findAll(long userId, int from, int size) {
+    public List<ItemRequestDto> findAll(long userId, Pageable pageable) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Pageable paging = PageRequest.of(from, size);
-        return itemRequestRepository.findItemRequest(userId, paging).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
+        return itemRequestRepository.findItemRequest(userId, pageable).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
     }
 
     @Override

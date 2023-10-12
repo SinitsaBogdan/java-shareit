@@ -1,22 +1,21 @@
 package ru.practicum.shareit.request.repo;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ItemRequestRepository {
 
-    Boolean checkId(Long id);
+public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long>  {
 
-    List<ItemRequest> findAll();
+    Optional<ItemRequest> findById(long requestId);
 
-    ItemRequest findById(Long itemRequestId);
+    Optional<ItemRequest> findByItemRequestByIdAndUser(long requestId, User user);
 
-    ItemRequest save(ItemRequest user);
+    List<ItemRequest> findByItemRequestByUser(User user);
 
-    ItemRequest update(ItemRequest user);
-
-    void deleteAll();
-
-    void deleteById(Long itemRequestId);
+    List<ItemRequest> findByItemRequest(Pageable pageable);
 }

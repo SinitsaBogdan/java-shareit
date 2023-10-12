@@ -13,12 +13,15 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.util.exeptions.ErrorMessage.REPOSITORY_ERROR__REQUEST__ID_NOT_IN_REPO__ID;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID;
 
 @Service
@@ -33,21 +36,27 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> findAll(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-
-        itemRequestRepository.findByUser(optionalUser.get());
-        return null;
+        return itemRequestRepository.findByUser(optionalUser.get()).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ItemRequestDto> findAll(long userId, int from, int size) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
         Pageable paging = PageRequest.of(from, size);
-        itemRequestRepository.findItemRequest(userId, paging);
-        return null;
+        return itemRequestRepository.findItemRequest(userId, paging).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
     }
 
     @Override
     public ItemRequestDto findOne(long userId, long requestId) {
-        return null;
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
+        Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(requestId);
+        if (optionalItemRequest.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__REQUEST__ID_NOT_IN_REPO__ID);
+
+        return ItemRequestMapper.mapperItemRequestToDto(optionalItemRequest.get());
     }
 
     @Override

@@ -11,6 +11,8 @@ import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.CommentRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -32,6 +34,7 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
@@ -102,9 +105,17 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto add(long userId, ItemDto itemDto) {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
-        Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        item.setUser(optional.get());
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
+        if (itemDto.getRequestId() != null) {
+            Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+            if (optionalItemRequest.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__REQUEST__ID_NOT_IN_REPO__ID);
+            item.setRequest(optionalItemRequest.get());
+        }
+
+        item.setUser(optionalUser.get());
         item = itemRepository.save(item);
         return ItemMapper.mapperItemToDto(item);
     }

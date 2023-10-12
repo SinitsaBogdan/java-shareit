@@ -18,7 +18,6 @@ import ru.practicum.shareit.util.EnumBookingState;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -53,6 +52,7 @@ public class BookingServiceImpl implements BookingService {
         switch (status) {
             case ALL : {
                 list = bookingRepository.findByUserOrderByStartDesc(optional.get(), pageable);
+                System.out.println(list);
                 break;
             }
             case PAST : {
@@ -77,9 +77,9 @@ public class BookingServiceImpl implements BookingService {
             }
         }
 
-        return list != null ? list.stream()
+        return list.stream()
                 .map(BookingMapper::mapperBookingResponseBookerToDto)
-                .collect(Collectors.toList()) : new ArrayList<>();
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -123,7 +123,6 @@ public class BookingServiceImpl implements BookingService {
                 break;
             }
         }
-
 
         return list.stream()
                 .map(BookingMapper::mapperBookingResponseBookerToDto)

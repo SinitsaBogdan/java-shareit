@@ -2,6 +2,8 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -26,9 +28,14 @@ public class BookingController {
      * Запрос всех записей бронирования пользователя
      **/
     @GetMapping
-    public List<BookingResponseDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingResponseDto> getAll(
+            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
-        return bookingService.getAll(userId, state);
+        return bookingService.getAll(userId, state, PageRequest.of(from, size));
     }
 
     /**
@@ -44,9 +51,14 @@ public class BookingController {
      * Получение списка бронирований для всех вещей текущего пользователя
      **/
     @GetMapping("/owner")
-    public List<BookingResponseDto> getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "ALL") String state) {
+    public List<BookingResponseDto> getById(
+            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         log.info("   GET [http://localhost:8080/bookings/owner?state={}] : Запрос на получение всех бронирований пользователя", state);
-        return bookingService.getAllInItemOwner(userId, state);
+        return bookingService.getAllInItemOwner(userId, state, PageRequest.of(from, size));
     }
 
     /**

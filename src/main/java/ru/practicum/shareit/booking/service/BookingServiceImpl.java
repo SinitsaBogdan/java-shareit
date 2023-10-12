@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
@@ -13,10 +15,10 @@ import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
+import ru.practicum.shareit.util.exeptions.CustomException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,94 +36,94 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    public List<BookingResponseDto> getAll(long userId, String state) {
+    public List<BookingResponseDto> getAll(long userId, String state, Pageable pageable) {
 
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        List<Booking> list = null;
+        Page<Booking> list = null;
         EnumBookingState status;
 
         try {
             status = EnumBookingState.valueOf(state);
         } catch (IllegalArgumentException exception) {
-            throw new ServiceException(String.format("Unknown state: %s", state), 500);
+            throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
 
         switch (status) {
             case ALL : {
-                list = bookingRepository.findByUserOrderByStartDesc(optional.get());
+                list = bookingRepository.findByUserOrderByStartDesc(optional.get(), pageable);
+                System.out.println(list);
                 break;
             }
             case PAST : {
-                list = bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case FUTURE : {
-                list = bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now());
+                list = bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now(), pageable);
                 break;
             }
             case CURRENT : {
-                list = bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case WAITING : {
-                list = bookingRepository.findAllBookingState(optional.get().getId(), WAITING);
+                list = bookingRepository.findAllBookingState(optional.get().getId(), WAITING, pageable);
                 break;
             }
             case REJECTED : {
-                list = bookingRepository.findAllBookingState(optional.get().getId(), REJECTED);
+                list = bookingRepository.findAllBookingState(optional.get().getId(), REJECTED, pageable);
                 break;
             }
         }
 
-        return list != null ? list.stream()
+        return list.stream()
                 .map(BookingMapper::mapperBookingResponseBookerToDto)
-                .collect(Collectors.toList()) : new ArrayList<>();
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingResponseDto> getAllInItemOwner(long userId, String state) {
+    public List<BookingResponseDto> getAllInItemOwner(long userId, String state, Pageable pageable) {
 
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        List<Booking> list = null;
+        Page<Booking> list = null;
         EnumBookingState status;
 
         try {
             status = EnumBookingState.valueOf(state);
         } catch (IllegalArgumentException exception) {
-            throw new ServiceException(String.format("Unknown state: %s", state), 500);
+            throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
 
         switch (status) {
             case ALL : {
-                list = bookingRepository.findByBookingUser(optional.get().getId());
+                list = bookingRepository.findByBookingUser(optional.get().getId(), pageable);
                 break;
             }
             case PAST : {
-                list = bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case FUTURE : {
-                list = bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case CURRENT : {
-                list = bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now());
+                list = bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable);
                 break;
             }
             case WAITING : {
-                list = bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING);
+                list = bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING, pageable);
                 break;
             }
             case REJECTED : {
-                list = bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED);
+                list = bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED, pageable);
                 break;
             }
         }
-
 
         return list.stream()
                 .map(BookingMapper::mapperBookingResponseBookerToDto)
@@ -130,6 +132,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingResponseDto getById(long userId, long bookingId) {
+
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<Booking> optional = bookingRepository.findById(bookingId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
@@ -144,18 +149,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingResponseDto add(long userId, BookingRequestDto bookingRequestDto) {
-        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
+    public BookingResponseDto save(long userId, BookingRequestDto bookingRequestDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<Item> optionalItem = itemRepository.findById(bookingRequestDto.getItemId());
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+
         Item item = optionalItem.get();
+        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
 
-        if (item.getUser().getId().equals(userId)) throw new ServiceException("Владелец вещи не может создать бронирование на ту же вещь", 404);
+        if (item.getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__FAIL_PARAM_BOOKING__OWNER_ID);
         if (!item.getAvailable()) throw new ServiceException(BOOKING_ERROR__AVAILABLE_FALSE);
-
         if (booking.getEnd().isBefore(booking.getStart()) || booking.getEnd().equals(booking.getStart())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME);
         if (!booking.getStart().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME__START_TIME);
 
@@ -179,9 +184,9 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = optionalBooking.get();
 
-        if (optionalBooking.get().getUser().getId().equals(userId)) throw new ServiceException("Недостаточно прав для смены статуса бронирования", 404);
-        if (!optionalBooking.get().getItem().getUser().getId().equals(userId)) throw new ServiceException("Пользователь не является владельцем вещи", 400);
-        if (optionalBooking.get().getApproved().equals(APPROVED)) throw new ServiceException("Бронирование уже потдверждено", 400);
+        if (booking.getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER);
+        if (!booking.getItem().getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER_NOT_IN_BOOKING);
+        if (booking.getApproved().equals(APPROVED)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__BOOKING__APPROVE);
 
         booking.setApproved(approved ? APPROVED : REJECTED);
         return BookingMapper.mapperBookingResponseBookerToDto(bookingRepository.save(booking));

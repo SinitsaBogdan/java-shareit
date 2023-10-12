@@ -30,7 +30,7 @@ public class ItemRequestController {
      * Запрос на получение всех запросов вещей
      **/
     @GetMapping("/all")
-    public List<ItemRequestDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "0") int from, @RequestParam(defaultValue = "0") int size) {
+    public List<ItemRequestDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "0") int from, @RequestParam(defaultValue = "10") int size) {
         log.info("   GET [http://localhost:8080/requests/all] : Запрос на получение всех запросов вещей");
         return itemRequestService.findAll(userId, from, size);
     }

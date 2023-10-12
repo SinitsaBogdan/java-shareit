@@ -41,7 +41,7 @@ public class UserController {
     @PostMapping
     public UserDto add(@RequestBody UserDto user) {
         log.info("  POST [http://localhost:8080/users] : Запрос на добавление пользователя - {}", user);
-        return userService.add(user);
+        return userService.save(user);
     }
 
     /**

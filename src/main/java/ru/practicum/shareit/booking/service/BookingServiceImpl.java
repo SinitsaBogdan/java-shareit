@@ -145,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingResponseDto add(long userId, BookingRequestDto bookingRequestDto) {
+    public BookingResponseDto save(long userId, BookingRequestDto bookingRequestDto) {
         Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);

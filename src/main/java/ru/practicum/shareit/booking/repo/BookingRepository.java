@@ -17,17 +17,17 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    Page<Booking> findByUserOrderByStartDesc(User user, Pageable pageable);
-
-    List<Booking> findByItem_User_id(long userId);
-
     Optional<Booking> findFirstBookingByUserAndItemOrderByStartAsc(User user, Item item);
+
+    List<Booking> findByItem_User(User user);
 
     @Query("select b from Booking b where b.item.id = :itemId and b.start <= :actual and b.approved = 'APPROVED' order by b.end desc")
     List<Booking> findListToLastBooking(long itemId, LocalDateTime actual);
 
     @Query("select b from Booking b where b.item.id = :itemId and b.start > :actual and b.approved = 'APPROVED' order by b.start asc")
     List<Booking> findListToNextBooking(long itemId, LocalDateTime actual);
+
+    Page<Booking> findByUserOrderByStartDesc(User user, Pageable pageable);
 
     Page<Booking> findByUserAndStartAfterOrderByStartDesc(User user, LocalDateTime actual, Pageable pageable);
 
@@ -54,6 +54,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("select b from Booking b where b.user.id = :userId and b.start <= :actual and b.end >= :actual order by b.start asc")
     Page<Booking> findAllBookingStateCurrent(long userId, LocalDateTime actual, Pageable pageable);
-
-    void deleteAll();
 }

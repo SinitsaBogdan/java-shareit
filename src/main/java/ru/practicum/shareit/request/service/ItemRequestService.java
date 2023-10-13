@@ -13,5 +13,5 @@ public interface ItemRequestService {
 
     ItemRequestDto findOne(long userId, long requestId);
 
-    ItemRequestDto add(long userId, ItemRequestDto requestDto);
+    ItemRequestDto save(long userId, ItemRequestDto requestDto);
 }

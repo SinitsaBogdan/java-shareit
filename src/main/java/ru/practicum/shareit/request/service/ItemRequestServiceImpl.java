@@ -56,7 +56,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto add(long userId, ItemRequestDto requestDto) {
+    public ItemRequestDto save(long userId, ItemRequestDto requestDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         ItemRequest request = ItemRequestMapper.mapperItemRequestDtoToItemRequest(requestDto);

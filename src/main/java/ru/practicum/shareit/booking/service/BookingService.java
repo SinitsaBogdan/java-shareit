@@ -14,7 +14,7 @@ public interface BookingService {
 
     List<BookingResponseDto> getAllInItemOwner(long userId, String state, Pageable pageable);
 
-    BookingResponseDto add(long userId, BookingRequestDto bookingRequestDto);
+    BookingResponseDto save(long userId, BookingRequestDto bookingRequestDto);
 
     BookingResponseDto updateApproved(long userId, long bookingId, boolean approved);
 }

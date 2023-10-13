@@ -23,16 +23,22 @@ class BookingRequestDtoTest {
     @Autowired
     private JacksonTester<BookingRequestDto> json;
 
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
+
     @Test
-    @DisplayName("Сериализация объекта в json ( itemId, start, end )")
+    @DisplayName("Сериализация BookingRequestDto объекта в json ( itemId, start, end )")
     public void testUserDto__ItemIdStartEnd() throws Exception {
-        BookingRequestDto bookingRequestDto = BookingRequestDto.builder()
+        BookingRequestDto dto = BookingRequestDto.builder()
                 .itemId(1L)
                 .start(LocalDateTime.of(2023, 10, 1, 10, 0))
                 .end(LocalDateTime.of(2023, 10, 1, 12, 0))
                 .build();
 
-        JsonContent<BookingRequestDto> result = json.write(bookingRequestDto);
+        JsonContent<BookingRequestDto> result = json.write(dto);
+
+        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(dto);
+        assertEquals(0, violations.size());
 
         assertThat(result).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
         assertThat(result).extractingJsonPathStringValue("$.start").isEqualTo("2023-10-01T10:00:00");
@@ -42,46 +48,37 @@ class BookingRequestDtoTest {
     @Test
     @DisplayName("Проверка валидации поля ItemId - @Positive")
     public void testUserDto__ItemId_Positive() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        BookingRequestDto bookingRequestDto = BookingRequestDto.builder()
+        BookingRequestDto dto = BookingRequestDto.builder()
                 .itemId(-1L)
                 .start(LocalDateTime.of(2023, 10, 1, 10, 0))
                 .end(LocalDateTime.of(2023, 10, 1, 12, 0))
                 .build();
 
-        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(bookingRequestDto);
+        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
     @DisplayName("Проверка валидации поля Start - @NotNull")
     public void testUserDto__Start_NotNull() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        BookingRequestDto bookingRequestDto = BookingRequestDto.builder()
+        BookingRequestDto dto = BookingRequestDto.builder()
                 .itemId(1L)
-                .end(LocalDateTime.of(2023, 10, 1, 12, 0))
+                .end(LocalDateTime.of(2023, 10, 1, 10, 0))
                 .build();
 
-        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(bookingRequestDto);
+        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
     @DisplayName("Проверка валидации поля End - @NotNull")
     public void testUserDto__End_NotNull() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        BookingRequestDto bookingRequestDto = BookingRequestDto.builder()
+        BookingRequestDto dto = BookingRequestDto.builder()
                 .itemId(1L)
                 .start(LocalDateTime.of(2023, 10, 1, 10, 0))
                 .build();
 
-        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(bookingRequestDto);
+        Set<ConstraintViolation<BookingRequestDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 }

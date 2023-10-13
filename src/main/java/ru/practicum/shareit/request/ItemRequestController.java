@@ -57,6 +57,6 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid ItemRequestDto requestDto) {
         log.info("  POST [http://localhost:8080/requests] : Запрос на добавление запроса вещи - {}", requestDto);
-        return itemRequestService.add(userId, requestDto);
+        return itemRequestService.save(userId, requestDto);
     }
 }

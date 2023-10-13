@@ -22,22 +22,22 @@ class ItemDtoTest {
     @Autowired
     private JacksonTester<ItemDto> json;
 
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
+
     @Test
     @DisplayName("Сериализация ItemDto объекта в json")
     public void testItemDto() throws Exception {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        ItemDto itemDto = ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .name("item-1")
                 .description("description")
                 .available(true)
                 .build();
 
-        JsonContent<ItemDto> result = json.write(itemDto);
+        JsonContent<ItemDto> result = json.write(dto);
 
-        Set<ConstraintViolation<ItemDto>> violations = validator.validate(itemDto);
+        Set<ConstraintViolation<ItemDto>> violations = validator.validate(dto);
         assertEquals(0, violations.size());
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
@@ -50,84 +50,69 @@ class ItemDtoTest {
     }
 
     @Test
-    @DisplayName("Сериализация ItemDto объекта в json")
+    @DisplayName("Проверка валидации поля name - @NotBlank")
     public void testItemDto__Name_NotBlank__Empty() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        ItemDto itemDto = ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .name("")
                 .description("description")
                 .available(true)
                 .build();
 
-        Set<ConstraintViolation<ItemDto>> violations = validator.validate(itemDto);
+        Set<ConstraintViolation<ItemDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
-    @DisplayName("Сериализация ItemDto объекта в json")
+    @DisplayName("Проверка валидации поля name - @NotBlank")
     public void testItemDto__Name_NotBlank__Null() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        ItemDto itemDto = ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .description("description")
                 .available(true)
                 .build();
 
-        Set<ConstraintViolation<ItemDto>> violations = validator.validate(itemDto);
+        Set<ConstraintViolation<ItemDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
-    @DisplayName("Сериализация ItemDto объекта в json")
+    @DisplayName("Проверка валидации поля description - @NotBlank")
     public void testItemDto__Description_NotBlank__Empty() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        ItemDto itemDto = ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .name("item-1")
                 .description("")
                 .available(true)
                 .build();
 
-        Set<ConstraintViolation<ItemDto>> violations = validator.validate(itemDto);
+        Set<ConstraintViolation<ItemDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
-    @DisplayName("Сериализация ItemDto объекта в json")
+    @DisplayName("Проверка валидации поля description - @NotBlank")
     public void testItemDto__Description_NotBlank__Null() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        ItemDto itemDto = ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .name("item-1")
                 .available(true)
                 .build();
 
-        Set<ConstraintViolation<ItemDto>> violations = validator.validate(itemDto);
+        Set<ConstraintViolation<ItemDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
-    @DisplayName("Сериализация ItemDto объекта в json")
+    @DisplayName("Проверка валидации поля available - @NotNull")
     public void testItemDto__Available_NotNul() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
-
-        ItemDto itemDto = ItemDto.builder()
+        ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .name("item-1")
                 .description("description")
                 .build();
 
-        Set<ConstraintViolation<ItemDto>> violations = validator.validate(itemDto);
+        Set<ConstraintViolation<ItemDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 }

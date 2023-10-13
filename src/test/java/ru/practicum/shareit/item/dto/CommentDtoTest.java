@@ -23,22 +23,22 @@ class CommentDtoTest {
     @Autowired
     private JacksonTester<CommentDto> json;
 
-    @Test
-    @DisplayName("Сериализация CommentDto объекта в json")
-    public void testCommentDto() throws Exception {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
 
-        CommentDto commentDto = CommentDto.builder()
+    @Test
+    @DisplayName("Сериализация CommentDto объекта в json ( id, authorName, created, text )")
+    public void testCommentDto() throws Exception {
+        CommentDto dto = CommentDto.builder()
                 .id(1L)
                 .authorName("user")
                 .created(LocalDateTime.of(2023, 10, 1, 10, 0))
                 .text("text item")
                 .build();
 
-        JsonContent<CommentDto> result = json.write(commentDto);
+        JsonContent<CommentDto> result = json.write(dto);
 
-        Set<ConstraintViolation<CommentDto>> violations = validator.validate(commentDto);
+        Set<ConstraintViolation<CommentDto>> violations = validator.validate(dto);
         assertEquals(0, violations.size());
 
         assertThat(result).extractingJsonPathNumberValue("$.id").isEqualTo(1);
@@ -50,27 +50,18 @@ class CommentDtoTest {
     @Test
     @DisplayName("Проверка валидации поля Text - @NotBlank")
     public void testCommentDto__Text_NotBlank__Empty() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
+        CommentDto dto = CommentDto.builder().text("").build();
 
-        CommentDto commentDto = CommentDto.builder()
-                .text("")
-                .build();
-
-        Set<ConstraintViolation<CommentDto>> violations = validator.validate(commentDto);
+        Set<ConstraintViolation<CommentDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 
     @Test
     @DisplayName("Проверка валидации поля Text - @NotBlank")
     public void testCommentDto__Text_NotBlank__Null() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        Validator validator = factory.getValidator();
+        CommentDto dto = CommentDto.builder().build();
 
-        CommentDto commentDto = CommentDto.builder()
-                .build();
-
-        Set<ConstraintViolation<CommentDto>> violations = validator.validate(commentDto);
+        Set<ConstraintViolation<CommentDto>> violations = validator.validate(dto);
         assertEquals(1, violations.size());
     }
 }

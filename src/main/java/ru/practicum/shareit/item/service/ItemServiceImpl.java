@@ -103,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto add(long userId, ItemDto itemDto) {
+    public ItemDto saveItem(long userId, ItemDto itemDto) {
         Item item = ItemMapper.mapperItemDtoToItem(itemDto);
 
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -122,7 +122,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
+    public CommentDto saveComment(long userId, long itemId, CommentDto commentDto) {
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
@@ -146,7 +146,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto update(long userId, @NotNull ItemDto itemDto) {
+    public ItemDto updateItem(long userId, @NotNull ItemDto itemDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         Optional<Item> optionalItem = itemRepository.findById(itemDto.getId());
 

@@ -19,7 +19,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ItemRequestDto {
 
-    @Positive
     private Long id;
 
     @NotBlank

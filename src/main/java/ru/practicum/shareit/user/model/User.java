@@ -30,25 +30,25 @@ public class User {
     private Long id;
 
     @CustomValidNotBlank(error = USER_ERROR__VALID_EMPTY__NAME)
-    @Column(name = "name", length = 20)
+    @Column(name = "name", length = 20, nullable = false)
     private String name;
 
     @CustomValidEmail(error = USER_ERROR__VALID__EMAIL)
-    @Column(name = "email", length = 36, unique = true)
+    @Column(name = "email", length = 36, unique = true, nullable = false)
     private String email;
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private final List<Item> items = new ArrayList<>();
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private final List<Booking> bookings = new ArrayList<>();
 
     @ToString.Exclude
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     private final List<Comment> comments = new ArrayList<>();
 }

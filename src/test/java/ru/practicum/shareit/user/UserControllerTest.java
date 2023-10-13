@@ -2,7 +2,6 @@ package ru.practicum.shareit.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,10 +33,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 
     @MockBean
-    UserService userService;
+    private UserService service;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @Autowired
     private MockMvc mvc;
@@ -49,10 +48,9 @@ class UserControllerTest {
             .build();
 
     @Test
-    @Order(1)
     @DisplayName("Сохранение нового пользователя")
-    void saveNewUser() throws Exception {
-        when(userService.save(any())).thenReturn(userDto);
+    public void saveNewUser() throws Exception {
+        when(service.save(any())).thenReturn(userDto);
 
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(userDto))
@@ -67,11 +65,10 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(2)
     @DisplayName("Обновление существующего пользователя")
-    void updateUser() throws Exception {
+    public void updateUser() throws Exception {
         UserDto update = UserDto.builder().id(1L).name("update").email("mail@mail.ru").build();
-        when(userService.update(any())).thenReturn(update);
+        when(service.update(any())).thenReturn(update);
 
         mvc.perform(patch("/users/1")
                         .content(mapper.writeValueAsString(
@@ -88,10 +85,9 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(3)
     @DisplayName("Запрос всех пользователей")
-    void findAllUsers() throws Exception {
-        when(userService.getAll()).thenReturn(List.of(userDto));
+    public void findAllUsers() throws Exception {
+        when(service.getAll()).thenReturn(List.of(userDto));
 
         mvc.perform(get("/users")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -103,10 +99,9 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(4)
     @DisplayName("Запрос пользователя по ID")
-    void findUserById() throws Exception {
-        when(userService.getById(anyLong())).thenReturn(userDto);
+    public void findUserById() throws Exception {
+        when(service.getById(anyLong())).thenReturn(userDto);
 
         mvc.perform(get("/users/1")
                         .characterEncoding(StandardCharsets.UTF_8)
@@ -119,13 +114,9 @@ class UserControllerTest {
     }
 
     @Test
-    @Order(5)
     @DisplayName("Удаление существующего пользователя")
-    void deleteUser() throws Exception {
+    public void deleteUser() throws Exception {
         mvc.perform(delete("/users/1")
-                        .content(mapper.writeValueAsString(
-                                UserDto.builder().name("update").build()
-                        ))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

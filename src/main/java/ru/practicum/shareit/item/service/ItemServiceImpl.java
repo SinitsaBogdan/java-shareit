@@ -47,7 +47,7 @@ public class ItemServiceImpl implements ItemService {
         List<ItemDto> result = new ArrayList<>();
         LocalDateTime actual = LocalDateTime.now();
         List<Item> items = itemRepository.findByUser_id(optionalUser.get().getId());
-        List<Booking> bookings = bookingRepository.findByItem_User_id(userId);
+        List<Booking> bookings = bookingRepository.findByItem_User(optionalUser.get());
 
         items.forEach(item -> {
 
@@ -96,7 +96,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getBySearchText(@NotNull String text) {
         if (text.isEmpty()) return new ArrayList<>();
-        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true).stream()
+        return itemRepository.findSearch(text).stream()
                 .map(ItemMapper::mapperItemToDto)
                 .collect(Collectors.toList());
     }

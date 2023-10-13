@@ -13,10 +13,6 @@ import java.util.Optional;
 
 public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long>  {
 
-    Optional<ItemRequest> findById(long requestId);
-
-    Optional<ItemRequest> findByIdAndUser(long requestId, User user);
-
     List<ItemRequest> findByUser(User user);
 
     @Query("select r from ItemRequest r where r.user.id <> :userId")

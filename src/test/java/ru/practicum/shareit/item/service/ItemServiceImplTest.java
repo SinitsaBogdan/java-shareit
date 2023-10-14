@@ -214,7 +214,7 @@ class ItemServiceImplTest {
                 ServiceException.class,
                 () -> service.saveComment(1L, 1L, CommentDto.builder().build()));
 
-        Assertions.assertEquals(BOOKING_ERROR__BLOCK_SAVE_BOOKING.getDescription(), exception.getMessage());
+        Assertions.assertEquals(BOOKING_ERROR__BLOCK_SAVE_BOOKING__DATETIME.getDescription(), exception.getMessage());
     }
 
     @Test
@@ -226,9 +226,10 @@ class ItemServiceImplTest {
     }
 
     @Test
-    @DisplayName("Тестирование метода - service.updateItem")
+    @DisplayName("Тестирование метода - service.updateItem : not valid param userId")
     public void updateItem__Fail_Valid_Param_UserId() {
-        when(userRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(userRepository.findById(anyLong()))
+                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
         final ServiceException exception = Assertions.assertThrows(
                 ServiceException.class,
@@ -238,7 +239,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    @DisplayName("Тестирование метода - service.updateItem")
+    @DisplayName("Тестирование метода - service.updateItem : not valid param itemId")
     public void updateItem__Fail_Valid_Param_ItemId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user_1));
         when(itemRepository.findById(anyLong()))

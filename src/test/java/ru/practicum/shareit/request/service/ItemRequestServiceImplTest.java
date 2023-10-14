@@ -28,27 +28,62 @@ class ItemRequestServiceImplTest {
 
     @Test
     @DisplayName("Тестирование метода - service.findAll_v1")
-    public void findAll_v1() {
+    public void findAll_v1__Valid_Param() {
         when(userRepository.findById(anyLong())).thenReturn(null);
-        when(requestRepository.findByUser(any())).thenReturn(null);    }
+        when(requestRepository.findByUser(any())).thenReturn(null);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.findAll_v1 : not valid param userId")
+    public void findAll_v1__Fail_Valid_Param_UserId() {
+        when(userRepository.findById(anyLong())).thenReturn(null);
+        when(requestRepository.findByUser(any())).thenReturn(null);
+    }
 
     @Test
     @DisplayName("Тестирование метода - service.findAll_v2")
-    public void findAll_v2() {
+    public void findAll_v2__Valid_Param() {
+        when(userRepository.findById(anyLong())).thenReturn(null);
+        when(requestRepository.findItemRequest(anyLong(), any())).thenReturn(null);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.findAll_v2 : not valid param userId")
+    public void findAll_v2__Fail_Valid_Param_UserId() {
         when(userRepository.findById(anyLong())).thenReturn(null);
         when(requestRepository.findItemRequest(anyLong(), any())).thenReturn(null);
     }
 
     @Test
     @DisplayName("Тестирование метода - service.findOne")
-    public void findOne() {
+    public void findOne__Valid_Param() {
+        when(userRepository.findById(anyLong())).thenReturn(null);
+        when(requestRepository.findById(anyLong())).thenReturn(null);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.findOne : not valid param userId")
+    public void findOne__Fail_Valid_Param_UserId() {
+        when(userRepository.findById(anyLong())).thenReturn(null);
+        when(requestRepository.findById(anyLong())).thenReturn(null);
+    }
+    @Test
+    @DisplayName("Тестирование метода - service.findOne : not valid param requestId")
+    public void findOne__Fail_Valid_Param_RequestId() {
         when(userRepository.findById(anyLong())).thenReturn(null);
         when(requestRepository.findById(anyLong())).thenReturn(null);
     }
 
     @Test
     @DisplayName("Тестирование метода - service.save")
-    public void save() {
+    public void save__Valid_Param() {
+        when(requestRepository.findById(anyLong())).thenReturn(null);
+        when(requestRepository.save(any())).thenReturn(null);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.save : not valid param userId")
+    public void save__Fail_Valid_Param_UserId() {
         when(requestRepository.findById(anyLong())).thenReturn(null);
         when(requestRepository.save(any())).thenReturn(null);
     }

@@ -42,19 +42,14 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDto save(UserDto user) {
         User result = UserMapper.mapperUserDtoToUser(user);
-        try {
-            result = userRepository.save(result);
-            return UserMapper.mapperUserToDto(result);
-        } catch (DataIntegrityViolationException exception) {
-            throw new ServiceException(USER_ERROR__VALID_DUPLICATE__EMAIL);
-        }
+        result = userRepository.save(result);
+        return UserMapper.mapperUserToDto(result);
     }
 
     @Override
     @Transactional
     public UserDto update(UserDto userDto) {
         User update = UserMapper.mapperUserDtoToUser(userDto);
-
         Optional<User> optionalUser = userRepository.findById(update.getId());
 
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);

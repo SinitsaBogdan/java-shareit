@@ -1,9 +1,6 @@
 package ru.practicum.shareit.user.repo;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -17,6 +14,8 @@ class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final User user = User.builder().name("user-1").email("mail@mail.ru").build();
 
     @Test
     @DisplayName("CONFIG")
@@ -65,12 +64,10 @@ class UserRepositoryTest {
 
         @Test
         @DisplayName("Проверка валидации поля email - unique")
-        public void save__Fail_Name_Unique() {
-            User user = User.builder().name("user").email("mail@mail.ru").build();
+        public void save__Fail_Email_Unique() {
             userRepository.save(user);
-
-            User user_unique = User.builder().name("user").email("mail@mail.ru").build();
-            Assertions.assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(user_unique));
+            User unique = User.builder().name("user").email("mail@mail.ru").build();
+            Assertions.assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(unique));
         }
     }
 
@@ -78,12 +75,15 @@ class UserRepositoryTest {
     @DisplayName("REPOSITORY")
     public class Repository {
 
+        @BeforeEach
+        public void beforeEach() {
+            Assertions.assertNull(user.getId());
+            userRepository.save(user);
+        }
+
         @Test
         @DisplayName("Успешное сохранение объекта в таблицу USERS")
         public void save() {
-            User user = User.builder().name("user-1").email("mail@mail.ru").build();
-            Assertions.assertNull(user.getId());
-            userRepository.save(user);
             Assertions.assertNotNull(user.getId());
         }
     }

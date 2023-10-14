@@ -24,9 +24,7 @@ class ItemRequestServiceImplTest {
     private ItemRequestRepository requestRepository;
 
     @InjectMocks
-    private ItemRequestService service;
-
-    private ItemRequest model;
+    private ItemRequestServiceImpl service;
 
     @Test
     @DisplayName("Тестирование метода - service.findAll_v1")

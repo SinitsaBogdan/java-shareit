@@ -26,7 +26,8 @@ public enum ErrorMessage {
     BOOKING_ERROR__AVAILABLE_FALSE("Вещь не доступна для бронирования", 400),
     BOOKING_ERROR__VALID_DATETIME("Время окончания бронирования не может быть меньше или равной началу бронирования", 400),
     BOOKING_ERROR__VALID_DATETIME__START_TIME("Дата начала бронирования не должна быть в прошлом", 400),
-
+    BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY("Пользователь не совершал бронирований этой вещи", 404),
+    BOOKING_ERROR__BLOCK_SAVE_BOOKING("Нельзя оставлять отзыв до завершения бронирования", 400),
 
     COMMENT_ERROR__VALID_TEXT("Текст отзыва не может быть null или пустым", 400)
     ;

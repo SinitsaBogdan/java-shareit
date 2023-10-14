@@ -28,9 +28,7 @@ class BookingServiceImplTest {
     private BookingRepository bookingRepository;
 
     @InjectMocks
-    private BookingService service;
-
-    private Booking model;
+    private BookingServiceImpl service;
 
     @Test
     @DisplayName("Тестирование метода - service.getAll")

@@ -15,6 +15,7 @@ import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
+import ru.practicum.shareit.util.exeptions.CustomException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
@@ -46,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             status = EnumBookingState.valueOf(state);
         } catch (IllegalArgumentException exception) {
-            throw new ServiceException(String.format("Unknown state: %s", state), 500);
+            throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
 
         switch (status) {
@@ -94,7 +95,7 @@ public class BookingServiceImpl implements BookingService {
         try {
             status = EnumBookingState.valueOf(state);
         } catch (IllegalArgumentException exception) {
-            throw new ServiceException(String.format("Unknown state: %s", state), 500);
+            throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
 
         switch (status) {
@@ -149,17 +150,17 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingResponseDto save(long userId, BookingRequestDto bookingRequestDto) {
-        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<Item> optionalItem = itemRepository.findById(bookingRequestDto.getItemId());
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+
         Item item = optionalItem.get();
+        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
 
         if (item.getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__FAIL_PARAM_BOOKING__OWNER_ID);
         if (!item.getAvailable()) throw new ServiceException(BOOKING_ERROR__AVAILABLE_FALSE);
-
         if (booking.getEnd().isBefore(booking.getStart()) || booking.getEnd().equals(booking.getStart())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME);
         if (!booking.getStart().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME__START_TIME);
 
@@ -183,9 +184,9 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = optionalBooking.get();
 
-        if (optionalBooking.get().getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER);
-        if (!optionalBooking.get().getItem().getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER_NOT_IN_BOOKING);
-        if (optionalBooking.get().getApproved().equals(APPROVED)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__BOOKING__APPROVE);
+        if (booking.getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER);
+        if (!booking.getItem().getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER_NOT_IN_BOOKING);
+        if (booking.getApproved().equals(APPROVED)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__BOOKING__APPROVE);
 
         booking.setApproved(approved ? APPROVED : REJECTED);
         return BookingMapper.mapperBookingResponseBookerToDto(bookingRepository.save(booking));

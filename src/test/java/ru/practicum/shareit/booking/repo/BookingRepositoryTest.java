@@ -1,12 +1,11 @@
 package ru.practicum.shareit.booking.repo;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.ItemRepository;
@@ -67,10 +66,6 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка валидации поля approved - nullable")
         public void save__Fail_Approved_nullable() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-
             Booking booking = Booking.builder()
                     .start(LocalDateTime.of(2023, 10, 20, 10, 0))
                     .end(LocalDateTime.of(2023, 10, 20, 16, 0))
@@ -84,10 +79,6 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка валидации поля start - nullable")
         public void save__Fail_Start_nullable() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-
             Booking booking = Booking.builder()
                     .approved(EnumBookingState.APPROVED)
                     .end(LocalDateTime.of(2023, 10, 20, 16, 0))
@@ -101,10 +92,6 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка валидации поля end - nullable")
         public void save__Fail_End_nullable() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-
             Booking booking = Booking.builder()
                     .approved(EnumBookingState.APPROVED)
                     .start(LocalDateTime.of(2023, 10, 20, 10, 0))
@@ -120,61 +107,133 @@ class BookingRepositoryTest {
     @DisplayName("REPOSITORY")
     public class Repository {
 
-        @Test
-        @DisplayName("Успешное сохранение объекта в таблицу BOOKINGS")
-        public void save() {
+        @BeforeEach
+        public void beforeEach() {
             userRepository.save(user_1);
             userRepository.save(user_2);
             itemRepository.save(item);
-
             Assertions.assertNull(booking.getId());
             bookingRepository.save(booking);
+        }
+
+        @Test
+        @DisplayName("Успешное сохранение объекта в таблицу BOOKINGS")
+        public void save() {
             Assertions.assertNotNull(booking.getId());
         }
 
         @Test
         @DisplayName("Проверка метода - findFirstBookingByUserAndItemOrderByStartAsc")
         public void findFirstBookingByUserAndItemOrderByStartAsc() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-            bookingRepository.save(booking);
-
             Assertions.assertTrue(bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(user_2, item).isPresent());
         }
 
         @Test
         @DisplayName("Проверка метода - findByItem_User_id")
         public void findByItem_User_id() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-            bookingRepository.save(booking);
-
             Assertions.assertEquals(bookingRepository.findByItem_User(user_1).size(), 1);
         }
 
         @Test
         @DisplayName("Проверка метода - findListToLastBooking")
         public void findListToLastBooking() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-            bookingRepository.save(booking);
-
             Assertions.assertEquals(bookingRepository.findListToLastBooking(item.getId(), LocalDateTime.of(2024, 10, 20, 10, 0)).size(), 1);
         }
 
         @Test
         @DisplayName("Проверка метода - findListToNextBooking")
         public void findListToNextBooking() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
-            itemRepository.save(item);
-            bookingRepository.save(booking);
-
-            Assertions.assertEquals(bookingRepository.findListToLastBooking(item.getId(), LocalDateTime.of(2024, 10, 20, 10, 0)).size(), 1);
+            Assertions.assertEquals(bookingRepository.findListToNextBooking(item.getId(), LocalDateTime.of(2020, 10, 20, 10, 0)).size(), 1);
         }
 
+        @Test
+        @DisplayName("Проверка метода - findByUserOrderByStartDesc")
+        public void findByUserOrderByStartDesc() {
+            Page<Booking> result = bookingRepository.findByUserOrderByStartDesc(user_2, PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findByUserAndStartAfterOrderByStartDesc")
+        public void findByUserAndStartAfterOrderByStartDesc() {
+            Page<Booking> result = bookingRepository.findByUserAndStartAfterOrderByStartDesc(user_2, LocalDateTime.now(), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findAllBookingState")
+        public void findAllBookingState() {
+            Page<Booking> result = bookingRepository.findAllBookingState(user_2.getId(), EnumBookingState.APPROVED, PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findAllUserBookingState")
+        public void findAllUserBookingState() {
+            Page<Booking> result = bookingRepository.findAllUserBookingState(user_1.getId(), EnumBookingState.APPROVED, PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findByBookingUser")
+        public void findByBookingUser() {
+            Page<Booking> result = bookingRepository.findByBookingUser(user_1.getId(), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findByBookingUserAndStartAfter")
+        public void findByBookingUserAndStartAfter() {
+            Page<Booking> result = bookingRepository.findByBookingUserAndStartAfter(user_1.getId(), LocalDateTime.now(), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findAllBookingUserStatePast")
+        public void findAllBookingUserStatePast() {
+            Page<Booking> result = bookingRepository.findAllBookingUserStatePast(user_1.getId(), LocalDateTime.of(2024, 10, 20, 10, 0), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findAllBookingUserStateCurrent")
+        public void findAllBookingUserStateCurrent() {
+            Page<Booking> result = bookingRepository.findAllBookingUserStateCurrent(user_1.getId(), LocalDateTime.of(2023, 10, 20, 14, 0), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findAllBookingStatePast")
+        public void findAllBookingStatePast() {
+            Page<Booking> result = bookingRepository.findAllBookingStatePast(user_2.getId(), LocalDateTime.of(2023, 10, 25, 10, 0), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
+
+        @Test
+        @DisplayName("Проверка метода - findAllBookingStateCurrent")
+        public void findAllBookingStateCurrent() {
+            Page<Booking> result = bookingRepository.findAllBookingStateCurrent(user_2.getId(), LocalDateTime.of(2023, 10, 20, 15, 0), PageRequest.of(0, 3));
+            Assertions.assertEquals(result.getSize(), 3);
+            Assertions.assertTrue(result.get().findFirst().isPresent());
+            Assertions.assertEquals(result.get().findFirst().get(), booking);
+        }
     }
 }

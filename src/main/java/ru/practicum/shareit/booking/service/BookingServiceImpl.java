@@ -132,6 +132,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingResponseDto getById(long userId, long bookingId) {
 
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
         Optional<Booking> optional = bookingRepository.findById(bookingId);
         if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
 
@@ -154,7 +157,7 @@ public class BookingServiceImpl implements BookingService {
         if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
         Item item = optionalItem.get();
 
-        if (item.getUser().getId().equals(userId)) throw new ServiceException("Владелец вещи не может создать бронирование на ту же вещь", 404);
+        if (item.getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__FAIL_PARAM_BOOKING__OWNER_ID);
         if (!item.getAvailable()) throw new ServiceException(BOOKING_ERROR__AVAILABLE_FALSE);
 
         if (booking.getEnd().isBefore(booking.getStart()) || booking.getEnd().equals(booking.getStart())) throw new ServiceException(BOOKING_ERROR__VALID_DATETIME);
@@ -180,9 +183,9 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = optionalBooking.get();
 
-        if (optionalBooking.get().getUser().getId().equals(userId)) throw new ServiceException("Недостаточно прав для смены статуса бронирования", 404);
-        if (!optionalBooking.get().getItem().getUser().getId().equals(userId)) throw new ServiceException("Пользователь не является владельцем вещи", 400);
-        if (optionalBooking.get().getApproved().equals(APPROVED)) throw new ServiceException("Бронирование уже потдверждено", 400);
+        if (optionalBooking.get().getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER);
+        if (!optionalBooking.get().getItem().getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__USER_NOT_IN_BOOKING);
+        if (optionalBooking.get().getApproved().equals(APPROVED)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__BOOKING__APPROVE);
 
         booking.setApproved(approved ? APPROVED : REJECTED);
         return BookingMapper.mapperBookingResponseBookerToDto(bookingRepository.save(booking));

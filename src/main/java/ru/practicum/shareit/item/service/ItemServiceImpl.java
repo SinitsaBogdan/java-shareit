@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
         List<ItemDto> result = new ArrayList<>();
         LocalDateTime actual = LocalDateTime.now();
-        List<Item> items = itemRepository.findByUser_id(optionalUser.get().getId());
+        List<Item> items = itemRepository.findByUser(optionalUser.get());
         List<Booking> bookings = bookingRepository.findByItem_User(optionalUser.get());
 
         items.forEach(item -> {

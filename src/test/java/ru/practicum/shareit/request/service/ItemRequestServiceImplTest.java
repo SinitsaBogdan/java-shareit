@@ -132,7 +132,8 @@ class ItemRequestServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.save : not valid param userId")
     public void save__Fail_Valid_Param_UserId() {
-        when(userRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(userRepository.findById(anyLong()))
+                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
         final ServiceException exception = Assertions.assertThrows(
                 ServiceException.class,

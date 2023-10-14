@@ -28,12 +28,12 @@ class BookingRepositoryTest {
     @Autowired
     private BookingRepository bookingRepository;
 
-    private final User user_1 = User.builder()
+    private final User user1 = User.builder()
             .name("user-2")
             .email("mail-1@mail.ru")
             .build();
 
-    private final User user_2 = User.builder()
+    private final User user2 = User.builder()
             .name("user-2")
             .email("mail-2@mail.ru")
             .build();
@@ -41,7 +41,7 @@ class BookingRepositoryTest {
     private final Item item = Item.builder()
             .name("item")
             .description("description")
-            .user(user_1)
+            .user(user1)
             .available(true)
             .build();
 
@@ -50,7 +50,7 @@ class BookingRepositoryTest {
             .start(LocalDateTime.of(2023, 10, 20, 10, 0))
             .end(LocalDateTime.of(2023, 10, 20, 16, 0))
             .item(item)
-            .user(user_2)
+            .user(user2)
             .build();
 
     @Test
@@ -70,7 +70,7 @@ class BookingRepositoryTest {
                     .start(LocalDateTime.of(2023, 10, 20, 10, 0))
                     .end(LocalDateTime.of(2023, 10, 20, 16, 0))
                     .item(item)
-                    .user(user_2)
+                    .user(user2)
                     .build();
 
             Assertions.assertThrows(DataIntegrityViolationException.class, () -> bookingRepository.save(booking));
@@ -83,7 +83,7 @@ class BookingRepositoryTest {
                     .approved(EnumBookingState.APPROVED)
                     .end(LocalDateTime.of(2023, 10, 20, 16, 0))
                     .item(item)
-                    .user(user_2)
+                    .user(user2)
                     .build();
 
             Assertions.assertThrows(DataIntegrityViolationException.class, () -> bookingRepository.save(booking));
@@ -96,7 +96,7 @@ class BookingRepositoryTest {
                     .approved(EnumBookingState.APPROVED)
                     .start(LocalDateTime.of(2023, 10, 20, 10, 0))
                     .item(item)
-                    .user(user_2)
+                    .user(user2)
                     .build();
 
             Assertions.assertThrows(DataIntegrityViolationException.class, () -> bookingRepository.save(booking));
@@ -109,8 +109,8 @@ class BookingRepositoryTest {
 
         @BeforeEach
         public void beforeEach() {
-            userRepository.save(user_1);
-            userRepository.save(user_2);
+            userRepository.save(user1);
+            userRepository.save(user2);
             itemRepository.save(item);
             Assertions.assertNull(booking.getId());
             bookingRepository.save(booking);
@@ -125,13 +125,13 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findFirstBookingByUserAndItemOrderByStartAsc")
         public void findFirstBookingByUserAndItemOrderByStartAsc() {
-            Assertions.assertTrue(bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(user_2, item).isPresent());
+            Assertions.assertTrue(bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(user2, item).isPresent());
         }
 
         @Test
         @DisplayName("Проверка метода - findByItem_User_id")
         public void findByItem_User_id() {
-            Assertions.assertEquals(bookingRepository.findByItem_User(user_1).size(), 1);
+            Assertions.assertEquals(bookingRepository.findByItem_User(user1).size(), 1);
         }
 
         @Test
@@ -149,7 +149,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findByUserOrderByStartDesc")
         public void findByUserOrderByStartDesc() {
-            Page<Booking> result = bookingRepository.findByUserOrderByStartDesc(user_2, PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findByUserOrderByStartDesc(user2, PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -158,7 +158,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findByUserAndStartAfterOrderByStartDesc")
         public void findByUserAndStartAfterOrderByStartDesc() {
-            Page<Booking> result = bookingRepository.findByUserAndStartAfterOrderByStartDesc(user_2, LocalDateTime.now(), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findByUserAndStartAfterOrderByStartDesc(user2, LocalDateTime.now(), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -167,7 +167,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findAllBookingState")
         public void findAllBookingState() {
-            Page<Booking> result = bookingRepository.findAllBookingState(user_2.getId(), EnumBookingState.APPROVED, PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findAllBookingState(user2.getId(), EnumBookingState.APPROVED, PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -176,7 +176,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findAllUserBookingState")
         public void findAllUserBookingState() {
-            Page<Booking> result = bookingRepository.findAllUserBookingState(user_1.getId(), EnumBookingState.APPROVED, PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findAllUserBookingState(user1.getId(), EnumBookingState.APPROVED, PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -185,7 +185,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findByBookingUser")
         public void findByBookingUser() {
-            Page<Booking> result = bookingRepository.findByBookingUser(user_1.getId(), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findByBookingUser(user1.getId(), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -194,7 +194,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findByBookingUserAndStartAfter")
         public void findByBookingUserAndStartAfter() {
-            Page<Booking> result = bookingRepository.findByBookingUserAndStartAfter(user_1.getId(), LocalDateTime.now(), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findByBookingUserAndStartAfter(user1.getId(), LocalDateTime.now(), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -203,7 +203,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findAllBookingUserStatePast")
         public void findAllBookingUserStatePast() {
-            Page<Booking> result = bookingRepository.findAllBookingUserStatePast(user_1.getId(), LocalDateTime.of(2024, 10, 20, 10, 0), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findAllBookingUserStatePast(user1.getId(), LocalDateTime.of(2024, 10, 20, 10, 0), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -212,7 +212,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findAllBookingUserStateCurrent")
         public void findAllBookingUserStateCurrent() {
-            Page<Booking> result = bookingRepository.findAllBookingUserStateCurrent(user_1.getId(), LocalDateTime.of(2023, 10, 20, 14, 0), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findAllBookingUserStateCurrent(user1.getId(), LocalDateTime.of(2023, 10, 20, 14, 0), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -221,7 +221,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findAllBookingStatePast")
         public void findAllBookingStatePast() {
-            Page<Booking> result = bookingRepository.findAllBookingStatePast(user_2.getId(), LocalDateTime.of(2023, 10, 25, 10, 0), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findAllBookingStatePast(user2.getId(), LocalDateTime.of(2023, 10, 25, 10, 0), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);
@@ -230,7 +230,7 @@ class BookingRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findAllBookingStateCurrent")
         public void findAllBookingStateCurrent() {
-            Page<Booking> result = bookingRepository.findAllBookingStateCurrent(user_2.getId(), LocalDateTime.of(2023, 10, 20, 15, 0), PageRequest.of(0, 3));
+            Page<Booking> result = bookingRepository.findAllBookingStateCurrent(user2.getId(), LocalDateTime.of(2023, 10, 20, 15, 0), PageRequest.of(0, 3));
             Assertions.assertEquals(result.getSize(), 3);
             Assertions.assertTrue(result.get().findFirst().isPresent());
             Assertions.assertEquals(result.get().findFirst().get(), booking);

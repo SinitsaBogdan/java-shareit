@@ -106,6 +106,7 @@ class ItemRequestServiceImplTest {
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
     }
+
     @Test
     @DisplayName("Тестирование метода - service.findOne : not valid param requestId")
     public void findOne__Fail_Valid_Param_RequestId() {

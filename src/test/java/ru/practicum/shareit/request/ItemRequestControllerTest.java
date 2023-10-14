@@ -41,8 +41,8 @@ class ItemRequestControllerTest {
     @DisplayName("Сохранение нового запроса вещи")
     public void saveItemRequest() throws Exception {
         ItemRequestDto request = ItemRequestDto.builder().description("description").build();
-        ItemRequestDto response = ItemRequestDto.builder().id(1L).description("description").created(LocalDateTime.of(2023, 10, 20, 10, 0)).items(new ArrayList<>()).build();
-        when(service.save(1L, any())).thenReturn(response);
+        ItemRequestDto response = ItemRequestDto.builder().id(1L).description("description").created(LocalDateTime.of(2023, 10, 20, 10, 0)).build();
+        when(service.save(anyLong(), any())).thenReturn(response);
 
         mvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", 1)

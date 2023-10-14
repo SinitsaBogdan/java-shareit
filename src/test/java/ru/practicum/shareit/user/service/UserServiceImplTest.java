@@ -30,13 +30,13 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl service;
 
-    private final User user_1 = User.builder().id(1L).name("user-1").email("mail1").build();
-    private final User user_2 = User.builder().id(2L).name("user-2").email("mail2").build();
+    private final User user1 = User.builder().id(1L).name("user-1").email("mail1").build();
+    private final User user2 = User.builder().id(2L).name("user-2").email("mail2").build();
 
     @Test
     @DisplayName("Тестирование метода - service.getAll")
     public void getAll() {
-        when(userRepository.findAll()).thenReturn(List.of(user_1, user_2));
+        when(userRepository.findAll()).thenReturn(List.of(user1, user2));
         List<UserDto> result = service.getAll();
         Assertions.assertNotNull(result);
         Assertions.assertEquals(result.size(), 2);
@@ -45,10 +45,10 @@ class UserServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.getById : 1L")
     public void getById_OK() {
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user_1));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         UserDto result = service.getById(1L);
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(result, UserMapper.mapperUserToDto(user_1));
+        Assertions.assertEquals(result, UserMapper.mapperUserToDto(user1));
     }
 
     @Test
@@ -67,19 +67,19 @@ class UserServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.save")
     public void save() {
-        when(userRepository.save(any())).thenReturn(user_1);
+        when(userRepository.save(any())).thenReturn(user1);
         UserDto result = service.save(UserDto.builder().name("user-1").email("mail-1").build());
     }
 
     @Test
     @DisplayName("Тестирование метода - service.update : valid model")
     public void update_OK() {
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user_1));
-        when(userRepository.save(any())).thenReturn(user_1);
-        UserDto result = service.update(UserMapper.mapperUserToDto(user_2));
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(userRepository.save(any())).thenReturn(user1);
+        UserDto result = service.update(UserMapper.mapperUserToDto(user2));
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(user_1.getName(), result.getName());
-        Assertions.assertEquals(user_1.getEmail(), result.getEmail());
+        Assertions.assertEquals(user1.getName(), result.getName());
+        Assertions.assertEquals(user1.getEmail(), result.getEmail());
     }
 
     @Test

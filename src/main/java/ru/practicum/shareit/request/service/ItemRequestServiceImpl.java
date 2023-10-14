@@ -40,7 +40,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     public List<ItemRequestDto> findAll(long userId, Pageable pageable) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-
         return itemRequestRepository.findItemRequest(userId, pageable).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
     }
 

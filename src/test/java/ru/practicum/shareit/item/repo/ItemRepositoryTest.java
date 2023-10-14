@@ -1,9 +1,6 @@
 package ru.practicum.shareit.item.repo;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +20,18 @@ class ItemRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    private final User user = User.builder()
+            .name("user-1")
+            .email("mail@mail.ru")
+            .build();
+
+    private final Item item = Item.builder()
+            .name("item")
+            .description("description")
+            .available(true)
+            .user(user)
+            .build();
 
     @Test
     @DisplayName("CONFIG")
@@ -72,62 +81,29 @@ class ItemRepositoryTest {
     @DisplayName("REPOSITORY")
     public class Repository {
 
+        @BeforeEach
+        public void beforeEach() {
+            userRepository.save(user);
+            Assertions.assertNull(item.getId());
+            itemRepository.save(item);
+        }
+
         @Test
         @DisplayName("Успешное сохранение объекта в таблицу ITEMS")
         public void save() {
-            Item item = Item.builder()
-                    .name("item")
-                    .description("description")
-                    .available(true)
-                    .build();
-
-            Assertions.assertNull(item.getId());
-            itemRepository.save(item);
             Assertions.assertNotNull(item.getId());
         }
 
         @Test
-        @DisplayName("Проверка метода - findByUser_id(long userId)")
-        public void findByUser_id() {
-
-            User user = User.builder()
-                    .name("user-1")
-                    .email("mail@mail.ru")
-                    .build();
-
-            Item item = Item.builder()
-                    .name("item")
-                    .description("description")
-                    .user(user)
-                    .available(true)
-                    .build();
-
-            userRepository.save(user);
-            itemRepository.save(item);
-
-            List<Item> result = itemRepository.findByUser_id(user.getId());
+        @DisplayName("Проверка метода - findByUser")
+        public void findByUser() {
+            List<Item> result = itemRepository.findByUser(user);
             Assertions.assertEquals(result.size(), 1);
         }
 
         @Test
-        @DisplayName("Проверка метода - findByUser_id(long userId)")
+        @DisplayName("Проверка метода - findSearch")
         public void findSearch() {
-
-            User user = User.builder()
-                    .name("user-1")
-                    .email("mail@mail.ru")
-                    .build();
-
-            Item item = Item.builder()
-                    .name("item")
-                    .description("description")
-                    .user(user)
-                    .available(true)
-                    .build();
-
-            userRepository.save(user);
-            itemRepository.save(item);
-
             List<Item> result = itemRepository.findSearch("item");
             Assertions.assertEquals(result.size(), 1);
         }

@@ -136,7 +136,7 @@ public class ItemServiceImpl implements ItemService {
         Optional<Booking> optionalBooking = bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(optionalUser.get(), optionalItem.get());
 
         if (optionalBooking.isEmpty()) throw new ServiceException(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY);
-        if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING);
+        if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__DATETIME);
 
         Comment comment = CommentMapper.mapperCommentDtoToComment(commentDto);
         comment.setItem(optionalItem.get());

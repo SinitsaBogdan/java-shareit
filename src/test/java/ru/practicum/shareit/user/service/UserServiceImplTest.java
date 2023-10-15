@@ -11,6 +11,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.util.List;
@@ -55,10 +56,10 @@ class UserServiceImplTest {
     @DisplayName("Тестирование метода - service.getById : not id")
     public void getById_Fail_Id() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getById(1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -85,10 +86,10 @@ class UserServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.update : fail model id")
     public void update_fail_model_id() {
-        when(userRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(userRepository.findById(anyLong())).thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getById(1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -98,10 +99,10 @@ class UserServiceImplTest {
     @DisplayName("Тестирование метода - service.deleteById : not id")
     public void deleteById() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.deleteById(1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());

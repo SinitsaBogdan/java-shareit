@@ -11,6 +11,8 @@ import ru.practicum.shareit.util.exeptions.BusinessException;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.util.exeptions.ErrorMessage.GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST;
+
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -38,7 +40,7 @@ public class ItemRequestController {
             @RequestParam(defaultValue = "10") int size
     ) {
         log.info("   GET [http://localhost:8080/requests/all] : Запрос на получение всех запросов вещей");
-        if (from < 0 || size < 1) throw new BusinessException("Некорректные параметры поиска", 400);
+        if (from < 0 || size < 1) throw new BusinessException(GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST);
         return itemRequestService.findAll(userId, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 

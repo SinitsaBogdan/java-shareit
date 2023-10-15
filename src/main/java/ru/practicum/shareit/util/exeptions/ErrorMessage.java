@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorMessage {
 
     GLOBAL_ERROR__NOT_HEADER_IN_REQUEST("В запросе отсутствует заголовок X-Sharer-User-Id", 500),
+    GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST("Некорректные параметры поиска", 400),
 
     REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID("Указанный id вещи отсутствует в системе", 404),
     REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID("Указанный id пользователя отсутствует в системе", 404),

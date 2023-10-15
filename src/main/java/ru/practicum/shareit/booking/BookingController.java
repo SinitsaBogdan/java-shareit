@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -38,7 +39,7 @@ public class BookingController {
     ) {
         log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
         if (from < 0 || size < 1) throw new BusinessException(GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST);
-        return bookingService.getAll(userId, state, PageRequest.of(from > 0 ? from / size : 0, size));
+        return bookingService.getAll(userId, state, PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("id")));
     }
 
     /**

@@ -16,6 +16,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
 import ru.practicum.shareit.util.exeptions.CustomException;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
@@ -39,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getAll(long userId, String state, Pageable pageable) {
 
         Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optional.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Page<Booking> list = null;
         EnumBookingState status;
@@ -87,7 +88,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingResponseDto> getAllInItemOwner(long userId, String state, Pageable pageable) {
 
         Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optional.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Page<Booking> list = null;
         EnumBookingState status;
@@ -134,10 +135,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto getById(long userId, long bookingId) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<Booking> optional = bookingRepository.findById(bookingId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
+        if (optional.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
 
         Booking booking = optional.get();
         if (!booking.getItem().getUser().getId().equals(userId) && !booking.getUser().getId().equals(userId)) {
@@ -151,10 +152,10 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     public BookingResponseDto save(long userId, BookingRequestDto bookingRequestDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<Item> optionalItem = itemRepository.findById(bookingRequestDto.getItemId());
-        if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+        if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
 
         Item item = optionalItem.get();
         Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
@@ -177,10 +178,10 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponseDto updateApproved(long userId, long bookingId, boolean approved) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        if (optionalBooking.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
+        if (optionalBooking.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID);
 
         Booking booking = optionalBooking.get();
 

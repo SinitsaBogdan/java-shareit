@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.util.exeptions.BusinessException;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.util.exeptions.ErrorMessage.REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID;
 
 @WebMvcTest(controllers = BookingController.class)
 public class BookingControllerTest {
@@ -55,6 +59,54 @@ public class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
+        ;
+    }
+
+    @Test
+    @DisplayName("Запрос всех записей бронирования пользователя : fail from")
+    public void findAllByUserIdAndStateInUser__Fail_From() throws Exception {
+        List<BookingResponseDto> response = List.of(
+                BookingResponseDto.builder().id(1L).build(),
+                BookingResponseDto.builder().id(2L).build(),
+                BookingResponseDto.builder().id(3L).build()
+        );
+
+        when(service.getAll(anyLong(), anyString(), any())).thenReturn(response);
+
+        mvc.perform(get("/bookings")
+                        .header("X-Sharer-User-Id", 1)
+                        .param("state", "ALL")
+                        .param("from", String.valueOf(-1))
+                        .param("size", String.valueOf(10))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
+        ;
+    }
+
+    @Test
+    @DisplayName("Запрос всех записей бронирования пользователя : fail size")
+    public void findAllByUserIdAndStateInUser__Fail_Size() throws Exception {
+        List<BookingResponseDto> response = List.of(
+                BookingResponseDto.builder().id(1L).build(),
+                BookingResponseDto.builder().id(2L).build(),
+                BookingResponseDto.builder().id(3L).build()
+        );
+
+        when(service.getAll(anyLong(), anyString(), any())).thenReturn(response);
+
+        mvc.perform(get("/bookings")
+                        .header("X-Sharer-User-Id", 1)
+                        .param("state", "ALL")
+                        .param("from", String.valueOf(0))
+                        .param("size", String.valueOf(0))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
         ;
     }
 
@@ -95,6 +147,55 @@ public class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
+        ;
+    }
+
+
+    @Test
+    @DisplayName("Запрос всех записей бронирования пользователя : fail from")
+    public void findAllByUserIdAndState__Fail_From() throws Exception {
+        List<BookingResponseDto> response = List.of(
+                BookingResponseDto.builder().id(1L).build(),
+                BookingResponseDto.builder().id(2L).build(),
+                BookingResponseDto.builder().id(3L).build()
+        );
+
+        when(service.getAllInItemOwner(anyLong(), anyString(), any())).thenReturn(response);
+
+        mvc.perform(get("/bookings/owner")
+                        .header("X-Sharer-User-Id", 1)
+                        .param("state", "ALL")
+                        .param("from", String.valueOf(-1))
+                        .param("size", String.valueOf(10))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
+        ;
+    }
+
+    @Test
+    @DisplayName("Запрос всех записей бронирования пользователя : fail size")
+    public void findAllByUserIdAndState__Fail_Size() throws Exception {
+        List<BookingResponseDto> response = List.of(
+                BookingResponseDto.builder().id(1L).build(),
+                BookingResponseDto.builder().id(2L).build(),
+                BookingResponseDto.builder().id(3L).build()
+        );
+
+        when(service.getAllInItemOwner(anyLong(), anyString(), any())).thenReturn(response);
+
+        mvc.perform(get("/bookings/owner")
+                        .header("X-Sharer-User-Id", 1)
+                        .param("state", "ALL")
+                        .param("from", String.valueOf(0))
+                        .param("size", String.valueOf(0))
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
         ;
     }
 

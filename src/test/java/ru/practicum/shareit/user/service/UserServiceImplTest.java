@@ -103,7 +103,7 @@ class UserServiceImplTest {
 
         final ServiceException exception = Assertions.assertThrows(
                 ServiceException.class,
-                () -> service.update(UserDto.builder().id(1L).email("mail1").build()));
+                () -> service.update(UserDto.builder().id(1L).name("user1").email("mail1").build()));
 
         Assertions.assertEquals(USER_ERROR__VALID_DUPLICATE__EMAIL.getDescription(), exception.getMessage());
     }

@@ -8,6 +8,7 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getById(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         return UserMapper.mapperUserToDto(optionalUser.get());
     }
 
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
         User update = UserMapper.mapperUserDtoToUser(userDto);
         Optional<User> optionalUser = userRepository.findById(update.getId());
 
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         User user = optionalUser.get();
 
         if (update.getName() != null && !update.getName().equals(user.getName())) user.setName(update.getName());
@@ -72,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteById(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         userRepository.deleteById(userId);
     }
 }

@@ -18,10 +18,4 @@ public class BusinessException extends RuntimeException {
         this.httpStatus = HttpStatus.valueOf(message.getHttpStatusCode());
         log.debug("{} | {}", message.getHttpStatusCode(), message);
     }
-
-    public BusinessException(String message, int statusCode) {
-        super(message);
-        this.httpStatus = HttpStatus.valueOf(statusCode);
-        log.debug("{} | {}", statusCode, message);
-    }
 }

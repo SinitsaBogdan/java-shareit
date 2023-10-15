@@ -15,7 +15,6 @@ import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
-import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.util.ArrayList;
 import java.util.List;

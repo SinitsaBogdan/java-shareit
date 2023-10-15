@@ -20,6 +20,7 @@ import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,46 +43,47 @@ public class BookingServiceImpl implements BookingService {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Page<Booking> list = null;
-        EnumBookingState status;
-
         try {
-            status = EnumBookingState.valueOf(state);
+
+            EnumBookingState status = EnumBookingState.valueOf(state);
+
+            switch (status) {
+                case ALL : {
+                    return bookingRepository.findByUserOrderByStartDesc(optional.get(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case PAST : {
+                    return bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case FUTURE : {
+                    return bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case CURRENT : {
+                    return bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case WAITING : {
+                    return bookingRepository.findAllBookingState(optional.get().getId(), WAITING, pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case REJECTED : {
+                    return bookingRepository.findAllBookingState(optional.get().getId(), REJECTED, pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                default: return new ArrayList<>();
+            }
+
         } catch (IllegalArgumentException exception) {
             throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
-
-        switch (status) {
-            case ALL : {
-                list = bookingRepository.findByUserOrderByStartDesc(optional.get(), pageable);
-                System.out.println(list);
-                break;
-            }
-            case PAST : {
-                list = bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now(), pageable);
-                break;
-            }
-            case FUTURE : {
-                list = bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now(), pageable);
-                break;
-            }
-            case CURRENT : {
-                list = bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable);
-                break;
-            }
-            case WAITING : {
-                list = bookingRepository.findAllBookingState(optional.get().getId(), WAITING, pageable);
-                break;
-            }
-            case REJECTED : {
-                list = bookingRepository.findAllBookingState(optional.get().getId(), REJECTED, pageable);
-                break;
-            }
-        }
-
-        return list.stream()
-                .map(BookingMapper::mapperBookingResponseBookerToDto)
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -90,45 +92,50 @@ public class BookingServiceImpl implements BookingService {
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Page<Booking> list = null;
-        EnumBookingState status;
 
         try {
-            status = EnumBookingState.valueOf(state);
+
+            EnumBookingState status = EnumBookingState.valueOf(state);
+
+            switch (status) {
+                case ALL : {
+                    return bookingRepository.findByBookingUser(optional.get().getId(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case PAST : {
+                    return bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case FUTURE : {
+                    return bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case CURRENT : {
+                    return bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case WAITING : {
+                    return bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING, pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                case REJECTED : {
+                    return bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED, pageable).stream()
+                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .collect(Collectors.toList());
+                }
+                default: return new ArrayList<>();
+            }
+
         } catch (IllegalArgumentException exception) {
             throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
 
-        switch (status) {
-            case ALL : {
-                list = bookingRepository.findByBookingUser(optional.get().getId(), pageable);
-                break;
-            }
-            case PAST : {
-                list = bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now(), pageable);
-                break;
-            }
-            case FUTURE : {
-                list = bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now(), pageable);
-                break;
-            }
-            case CURRENT : {
-                list = bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable);
-                break;
-            }
-            case WAITING : {
-                list = bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING, pageable);
-                break;
-            }
-            case REJECTED : {
-                list = bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED, pageable);
-                break;
-            }
-        }
 
-        return list.stream()
-                .map(BookingMapper::mapperBookingResponseBookerToDto)
-                .collect(Collectors.toList());
     }
 
     @Override

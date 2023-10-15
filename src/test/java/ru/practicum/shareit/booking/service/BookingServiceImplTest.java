@@ -88,12 +88,62 @@ class BookingServiceImplTest {
             .build();
 
     @Test
-    @DisplayName("Тестирование метода - service.getAll")
-    public void getAll__Valid_Param() {
+    @DisplayName("Тестирование метода - service.getAll : ALL")
+    public void getAll__Valid_Param_ALL() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(bookingRepository.findByUserOrderByStartDesc(any(), any())).thenReturn(Page.empty());
 
         List<BookingResponseDto> result = service.getAll(1L, "ALL", PageRequest.of(2, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAll : PAST")
+    public void getAll__Valid_Param_PAST() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllBookingStatePast(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAll(1L, "PAST", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAll : FUTURE")
+    public void getAll__Valid_Param_FUTURE() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findByUserAndStartAfterOrderByStartDesc(any(), any(), any())).thenReturn(Page.empty());
+
+        List<BookingResponseDto> result = service.getAll(1L, "FUTURE", PageRequest.of(2, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAll : CURRENT")
+    public void getAll__Valid_Param_CURRENT() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllBookingStateCurrent(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAll(1L, "CURRENT", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAll : WAITING")
+    public void getAll__Valid_Param_WAITING() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllBookingState(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAll(1L, "WAITING", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAll : REJECTED")
+    public void getAll__Valid_Param_REJECTED() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllBookingState(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAll(1L, "REJECTED", PageRequest.of(0, 2));
         Assertions.assertNotNull(result);
     }
 
@@ -123,12 +173,62 @@ class BookingServiceImplTest {
     }
 
     @Test
-    @DisplayName("Тестирование метода - service.getAllInItemOwner")
-    public void getAllInItemOwner__Valid_Param() {
+    @DisplayName("Тестирование метода - service.getAllInItemOwner : ALL")
+    public void getAllInItemOwner__Valid_Param_ALL() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findByBookingUser(anyLong(), any())).thenReturn(Page.empty());
+        when(bookingRepository.findByBookingUser(anyLong(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
 
-        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "ALL", PageRequest.of(2, 2));
+        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "ALL", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAllInItemOwner : PAST")
+    public void getAllInItemOwner__Valid_Param_PAST() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllBookingUserStatePast(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "PAST", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAllInItemOwner : FUTURE")
+    public void getAllInItemOwner__Valid_Param_FUTURE() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findByBookingUserAndStartAfter(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "FUTURE", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAllInItemOwner : CURRENT")
+    public void getAllInItemOwner__Valid_Param_CURRENT() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllBookingUserStateCurrent(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "CURRENT", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAllInItemOwner : WAITING")
+    public void getAllInItemOwner__Valid_Param_WAITING() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllUserBookingState(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "WAITING", PageRequest.of(0, 2));
+        Assertions.assertNotNull(result);
+    }
+
+    @Test
+    @DisplayName("Тестирование метода - service.getAllInItemOwner : REJECTED")
+    public void getAllInItemOwner__Valid_Param_REJECTED() {
+        when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(bookingRepository.findAllUserBookingState(anyLong(), any(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+
+        List<BookingResponseDto> result = service.getAllInItemOwner(1L, "REJECTED", PageRequest.of(0, 2));
         Assertions.assertNotNull(result);
     }
 

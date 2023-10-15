@@ -20,6 +20,7 @@ import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
@@ -80,10 +81,10 @@ class ItemServiceImplTest {
     @DisplayName("Тестирование метода - service.getAllByUserId : fail valid id")
     public void getAllByUserId__Fail_Valid_Param_Id() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getAllByUserId(1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -103,10 +104,10 @@ class ItemServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.getById : fail valid userId")
     public void getById__Fail_Valid_Param_UserId() {
-        when(userRepository.findById(any())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(userRepository.findById(any())).thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getById(1L, 1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -116,10 +117,10 @@ class ItemServiceImplTest {
     @DisplayName("Тестирование метода - service.getById : fail valid itemId")
     public void getById__Fail_Valid_Param_ItemId() {
         when(userRepository.findById(any())).thenReturn(Optional.of(user));
-        when(itemRepository.findById(any())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(itemRepository.findById(any())).thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getById(1L, 1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -155,10 +156,10 @@ class ItemServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.saveItem : not valid param")
     public void saveItem__Fail_Valid_Param_UserId() {
-        when(userRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(userRepository.findById(anyLong())).thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.saveItem(1L, ItemMapper.mapperItemToDto(item)));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -179,10 +180,10 @@ class ItemServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.saveComment : not valid param userId")
     public void saveComment__Fail_Valid_Param_UserId() {
-        when(userRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+        when(userRepository.findById(anyLong())).thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.saveComment(1L, 1L, CommentDto.builder().build()));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -192,10 +193,10 @@ class ItemServiceImplTest {
     @DisplayName("Тестирование метода - service.saveComment : not valid param itemId")
     public void saveComment__Fail_Valid_Param_ItemId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(itemRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID));
+        when(itemRepository.findById(anyLong())).thenThrow(new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.saveComment(1L, 1L, CommentDto.builder().build()));
 
         Assertions.assertEquals(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -206,10 +207,10 @@ class ItemServiceImplTest {
     public void saveComment__Fail_Empty_Booking() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
-        when(bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(any(), any())).thenThrow(new ServiceException(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY));
+        when(bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(any(), any())).thenThrow(new RepositoryException(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.saveComment(1L, 1L, CommentDto.builder().build()));
 
         Assertions.assertEquals(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY.getDescription(), exception.getMessage());
@@ -246,10 +247,10 @@ class ItemServiceImplTest {
     @DisplayName("Тестирование метода - service.updateItem : not valid param userId")
     public void updateItem__Fail_Valid_Param_UserId() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.updateItem(1L, ItemDto.builder().build()));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -260,10 +261,10 @@ class ItemServiceImplTest {
     public void updateItem__Fail_Valid_Param_ItemId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
         when(itemRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.updateItem(1L, ItemDto.builder().id(1L).build()));
 
         Assertions.assertEquals(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());

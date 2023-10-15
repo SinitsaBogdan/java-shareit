@@ -101,7 +101,7 @@ class UserServiceImplTest {
     public void update_fail_model_duplicate_email() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
 
-        final ServiceException exception = Assertions.assertThrows(
+        final Exception exception = Assertions.assertThrows(
                 ServiceException.class,
                 () -> service.update(UserDto.builder().id(1L).name("user1").email("mail1").build()));
 

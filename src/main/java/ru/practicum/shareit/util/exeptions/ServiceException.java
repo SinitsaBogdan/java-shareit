@@ -17,10 +17,4 @@ public class ServiceException extends RuntimeException {
         this.httpStatus = HttpStatus.valueOf(message.getHttpStatusCode());
         log.debug("{} | {}", message.getHttpStatusCode(), message);
     }
-
-    public ServiceException(String message, int statusCode) {
-        super(message);
-        this.httpStatus = HttpStatus.valueOf(statusCode);
-        log.debug("{} | {}", statusCode, message);
-    }
 }

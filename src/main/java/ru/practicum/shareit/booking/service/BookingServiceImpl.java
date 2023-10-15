@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +45,7 @@ public class BookingServiceImpl implements BookingService {
         try {
 
             EnumBookingState status = EnumBookingState.valueOf(state);
+            LocalDateTime time = LocalDateTime.now();
 
             switch (status) {
                 case ALL : {
@@ -54,17 +54,17 @@ public class BookingServiceImpl implements BookingService {
                             .collect(Collectors.toList());
                 }
                 case PAST : {
-                    return bookingRepository.findAllBookingStatePast(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                    return bookingRepository.findAllBookingStatePast(optional.get().getId(), time, pageable).stream()
                             .map(BookingMapper::mapperBookingResponseBookerToDto)
                             .collect(Collectors.toList());
                 }
                 case FUTURE : {
-                    return bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), LocalDateTime.now(), pageable).stream()
+                    return bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), time, pageable).stream()
                             .map(BookingMapper::mapperBookingResponseBookerToDto)
                             .collect(Collectors.toList());
                 }
                 case CURRENT : {
-                    return bookingRepository.findAllBookingStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                    return bookingRepository.findAllBookingStateCurrent(optional.get().getId(), time, pageable).stream()
                             .map(BookingMapper::mapperBookingResponseBookerToDto)
                             .collect(Collectors.toList());
                 }
@@ -96,6 +96,7 @@ public class BookingServiceImpl implements BookingService {
         try {
 
             EnumBookingState status = EnumBookingState.valueOf(state);
+            LocalDateTime time = LocalDateTime.now();
 
             switch (status) {
                 case ALL : {
@@ -104,17 +105,17 @@ public class BookingServiceImpl implements BookingService {
                             .collect(Collectors.toList());
                 }
                 case PAST : {
-                    return bookingRepository.findAllBookingUserStatePast(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                    return bookingRepository.findAllBookingUserStatePast(optional.get().getId(), time, pageable).stream()
                             .map(BookingMapper::mapperBookingResponseBookerToDto)
                             .collect(Collectors.toList());
                 }
                 case FUTURE : {
-                    return bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                    return bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), time, pageable).stream()
                             .map(BookingMapper::mapperBookingResponseBookerToDto)
                             .collect(Collectors.toList());
                 }
                 case CURRENT : {
-                    return bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), LocalDateTime.now(), pageable).stream()
+                    return bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), time, pageable).stream()
                             .map(BookingMapper::mapperBookingResponseBookerToDto)
                             .collect(Collectors.toList());
                 }
@@ -134,8 +135,6 @@ public class BookingServiceImpl implements BookingService {
         } catch (IllegalArgumentException exception) {
             throw new CustomException(String.format("Unknown state: %s", state), 500);
         }
-
-
     }
 
     @Override

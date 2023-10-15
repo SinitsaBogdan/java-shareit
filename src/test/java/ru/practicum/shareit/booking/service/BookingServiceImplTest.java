@@ -19,6 +19,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
 import ru.practicum.shareit.util.exeptions.CustomException;
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
 import java.time.LocalDateTime;
@@ -100,10 +101,10 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.getAll : not valid param userId")
     public void getAll__Fail_Valid_Param_UserId() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getAll(1L, "ALL", PageRequest.of(2, 2)));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -135,10 +136,10 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.getAllInItemOwner : not valid param userId")
     public void getAllInItemOwner__Fail_Valid_Param_UserId() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getAllInItemOwner(1L, "ALL", PageRequest.of(2, 2)));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -169,10 +170,10 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.getById : not valid param userId")
     public void getById__Fail_Valid_Param_UserId() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getById(1L, 1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -183,10 +184,10 @@ class BookingServiceImplTest {
     public void getById__Fail_Valid_Param_BookingId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(bookingRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.getById(1L, 1L));
 
         Assertions.assertEquals(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -226,10 +227,10 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.save : not valid param userId")
     public void save__Fail_Valid_Param_UserIdId() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.save(1L, BookingRequestDto.builder().build()));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -240,10 +241,10 @@ class BookingServiceImplTest {
     public void save__Fail_Valid_Param_ItemId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.save(1L, BookingRequestDto.builder().itemId(1L).build()));
 
         Assertions.assertEquals(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -324,10 +325,10 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.updateApproved : not valid param userId")
     public void updateApproved__Fail_Valid_Param_UserId() {
         when(userRepository.findById(anyLong()))
-                .thenThrow(new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
+                .thenThrow(new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.updateApproved(1L, 1L, true));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
@@ -337,10 +338,10 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.updateApproved : not valid param itemId")
     public void updateApproved__Fail_Valid_Param_ItemId() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(User.builder().build()));
-        when(bookingRepository.findById(anyLong())).thenThrow(new ServiceException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID));
+        when(bookingRepository.findById(anyLong())).thenThrow(new RepositoryException(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID));
 
-        final ServiceException exception = Assertions.assertThrows(
-                ServiceException.class,
+        final RepositoryException exception = Assertions.assertThrows(
+                RepositoryException.class,
                 () -> service.updateApproved(1L, 1L, true));
 
         Assertions.assertEquals(REPOSITORY_ERROR__BOOKING__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());

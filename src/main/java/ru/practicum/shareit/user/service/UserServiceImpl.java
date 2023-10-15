@@ -59,12 +59,9 @@ public class UserServiceImpl implements UserService {
         if (update.getEmail() != null && !update.getEmail().equals(user.getEmail())) user.setEmail(update.getEmail());
 
         try {
-
-            user = userRepository.save(user);
-            return UserMapper.mapperUserToDto(user);
-
+            return UserMapper.mapperUserToDto(userRepository.save(user));
         } catch (IllegalArgumentException exception) {
-            throw new ServiceException(USER_ERROR__VALID_DUPLICATE__EMAIL);
+            throw new RepositoryException(USER_ERROR__VALID_DUPLICATE__EMAIL);
         }
     }
 

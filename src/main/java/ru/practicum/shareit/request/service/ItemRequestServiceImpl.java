@@ -32,21 +32,21 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public List<ItemRequestDto> findAll(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         return itemRequestRepository.findByUser(optionalUser.get()).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
     }
 
     @Override
     public List<ItemRequestDto> findAll(long userId, Pageable pageable) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         return itemRequestRepository.findItemRequest(userId, pageable).stream().map(ItemRequestMapper::mapperItemRequestToDto).collect(Collectors.toList());
     }
 
     @Override
     public ItemRequestDto findOne(long userId, long requestId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(requestId);
         if (optionalItemRequest.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__REQUEST__ID_NOT_IN_REPO__ID);
@@ -57,7 +57,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     @Override
     public ItemRequestDto save(long userId, ItemRequestDto requestDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
         ItemRequest request = ItemRequestMapper.mapperItemRequestDtoToItemRequest(requestDto);
 
         request.setUser(optionalUser.get());

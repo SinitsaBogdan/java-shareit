@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
             user = userRepository.save(user);
             return UserMapper.mapperUserToDto(user);
 
-        } catch (DataIntegrityViolationException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new ServiceException(USER_ERROR__VALID_DUPLICATE__EMAIL);
         }
     }

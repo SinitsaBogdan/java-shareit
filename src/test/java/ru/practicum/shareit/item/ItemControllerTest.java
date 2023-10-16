@@ -51,8 +51,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-        ;
+                .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
@@ -71,8 +70,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("item-1"))
                 .andExpect(jsonPath("$.description").value("description-1"))
-                .andExpect(jsonPath("$.available").value(true))
-        ;
+                .andExpect(jsonPath("$.available").value(true));
     }
 
     @Test
@@ -92,8 +90,7 @@ class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-        ;
+                .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
@@ -113,8 +110,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("item-1"))
                 .andExpect(jsonPath("$.description").value("description-1"))
-                .andExpect(jsonPath("$.available").value(true))
-        ;
+                .andExpect(jsonPath("$.available").value(true));
     }
 
     @Test
@@ -134,8 +130,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.text").value("comment text"))
                 .andExpect(jsonPath("$.authorName").value("user"))
-                .andExpect(jsonPath("$.created").value("2023-10-20T10:00:00"))
-        ;
+                .andExpect(jsonPath("$.created").value("2023-10-20T10:00:00"));
     }
 
     @Test
@@ -155,8 +150,7 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("update"))
                 .andExpect(jsonPath("$.description").value("update"))
-                .andExpect(jsonPath("$.available").value(false))
-        ;
+                .andExpect(jsonPath("$.available").value(false));
     }
 
     @Test
@@ -166,7 +160,6 @@ class ItemControllerTest {
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-        ;
+                .andExpect(status().isOk());
     }
 }

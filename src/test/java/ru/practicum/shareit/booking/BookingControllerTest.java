@@ -54,8 +54,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3))
-        ;
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
     @Test
@@ -78,8 +77,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
-        ;
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
     }
 
     @Test
@@ -102,8 +100,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
-        ;
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
     }
 
     @Test
@@ -118,8 +115,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-        ;
+                .andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
@@ -142,8 +138,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3))
-        ;
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
 
@@ -167,8 +162,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
-        ;
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
     }
 
     @Test
@@ -191,8 +185,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"))
-        ;
+                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
     }
 
     @Test
@@ -214,19 +207,12 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-        ;
+                .andExpect(jsonPath("$.id").value(1));
     }
 
     @Test
     @DisplayName("Подтверждение бронирования")
     public void approveBooking() throws Exception {
-        BookingRequestDto request = BookingRequestDto.builder()
-                .itemId(1L)
-                .start(LocalDateTime.of(2023, 10, 20, 10, 0))
-                .end(LocalDateTime.of(2023, 10, 20, 10, 0))
-                .build();
-
         BookingResponseDto response = BookingResponseDto.builder().id(1L).build();
         when(service.updateApproved(anyLong(), anyLong(), anyBoolean())).thenReturn(response);
 
@@ -237,7 +223,6 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-        ;
+                .andExpect(jsonPath("$.id").value(1));
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.CommentRepository;
@@ -16,9 +15,9 @@ import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.repo.ItemRepository;
 
+import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
@@ -52,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
 
         items.forEach(item -> {
 
-                    ItemDto itemDto = ItemMapper.mapperItemToDto(item);
+                    ItemDto itemDto = Mappers.mapperEntityToDto(item);
 
                     Booking bookingNext = bookings.stream()
                             .filter(booking -> booking.getItem().getId().equals(item.getId()))
@@ -84,7 +83,7 @@ public class ItemServiceImpl implements ItemService {
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
-        ItemDto itemDto = ItemMapper.mapperItemToDto(optionalItem.get());
+        ItemDto itemDto = Mappers.mapperEntityToDto(optionalItem.get());
 
         if (optionalItem.get().getUser().getId().equals(userId)) {
 
@@ -101,7 +100,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getBySearchText(@NotNull String text) {
         if (text.isEmpty()) return new ArrayList<>();
         else return itemRepository.findSearch(text).stream()
-                .map(ItemMapper::mapperItemToDto)
+                .map(Mappers::mapperEntityToDto)
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +110,7 @@ public class ItemServiceImpl implements ItemService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Item item = ItemMapper.mapperItemDtoToItem(itemDto);
+        Item item = Mappers.mapperDtoToEntity(itemDto);
 
         if (itemDto.getRequestId() != null) {
             Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
@@ -121,7 +120,7 @@ public class ItemServiceImpl implements ItemService {
 
         item.setUser(optionalUser.get());
         item = itemRepository.save(item);
-        return ItemMapper.mapperItemToDto(item);
+        return Mappers.mapperEntityToDto(item);
     }
 
     @Override
@@ -139,13 +138,13 @@ public class ItemServiceImpl implements ItemService {
         if (optionalBooking.isEmpty()) throw new RepositoryException(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY);
         if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__DATETIME);
 
-        Comment comment = CommentMapper.mapperCommentDtoToComment(commentDto);
+        Comment comment = Mappers.mapperDtoToEntity(commentDto);
         comment.setItem(optionalItem.get());
         comment.setUser(optionalUser.get());
         comment.setCreated(LocalDateTime.now());
 
         comment = commentRepository.save(comment);
-        return CommentMapper.mapperCommentToDto(comment);
+        return Mappers.mapperEntityToDto(comment);
     }
 
     @Override
@@ -167,6 +166,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
 
         Item result = itemRepository.save(item);
-        return ItemMapper.mapperItemToDto(result);
+        return Mappers.mapperEntityToDto(result);
     }
 }

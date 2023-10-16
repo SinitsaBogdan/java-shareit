@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
+import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAll() {
         return userRepository.findAll().stream()
-                .map(UserMapper::mapperUserToDto)
+                .map(Mappers::mapperEntityToDto)
                 .collect(Collectors.toList());
     }
 
@@ -34,21 +34,19 @@ public class UserServiceImpl implements UserService {
     public UserDto getById(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        return UserMapper.mapperUserToDto(optionalUser.get());
+        return Mappers.mapperEntityToDto(optionalUser.get());
     }
 
     @Override
     @Transactional
     public UserDto save(UserDto user) {
-        User result = UserMapper.mapperUserDtoToUser(user);
-        result = userRepository.save(result);
-        return UserMapper.mapperUserToDto(result);
+        return Mappers.mapperEntityToDto(userRepository.save(Mappers.mapperDtoToEntity(user)));
     }
 
     @Override
     @Transactional
     public UserDto update(UserDto userDto) {
-        User update = UserMapper.mapperUserDtoToUser(userDto);
+        User update = Mappers.mapperDtoToEntity(userDto);
         Optional<User> optionalUser = userRepository.findById(update.getId());
 
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
@@ -58,7 +56,7 @@ public class UserServiceImpl implements UserService {
         if (update.getEmail() != null && !update.getEmail().equals(user.getEmail())) user.setEmail(update.getEmail());
 
         try {
-            return UserMapper.mapperUserToDto(userRepository.save(user));
+            return Mappers.mapperEntityToDto(userRepository.save(user));
         } catch (IllegalArgumentException exception) {
             throw new RepositoryException(USER_ERROR__VALID_DUPLICATE__EMAIL);
         }

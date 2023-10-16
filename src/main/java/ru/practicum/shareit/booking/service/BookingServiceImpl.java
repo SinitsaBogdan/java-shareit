@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
-import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
@@ -14,6 +13,7 @@ import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
+import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.CustomException;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
@@ -50,32 +50,32 @@ public class BookingServiceImpl implements BookingService {
             switch (status) {
                 case ALL : {
                     return bookingRepository.findByUserOrderByStartDesc(optional.get(), pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case PAST : {
                     return bookingRepository.findAllBookingStatePast(optional.get().getId(), time, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case FUTURE : {
                     return bookingRepository.findByUserAndStartAfterOrderByStartDesc(optional.get(), time, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case CURRENT : {
                     return bookingRepository.findAllBookingStateCurrent(optional.get().getId(), time, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case WAITING : {
                     return bookingRepository.findAllBookingState(optional.get().getId(), WAITING, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case REJECTED : {
                     return bookingRepository.findAllBookingState(optional.get().getId(), REJECTED, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 default: return new ArrayList<>();
@@ -101,32 +101,32 @@ public class BookingServiceImpl implements BookingService {
             switch (status) {
                 case ALL : {
                     return bookingRepository.findByBookingUser(optional.get().getId(), pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case PAST : {
                     return bookingRepository.findAllBookingUserStatePast(optional.get().getId(), time, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case FUTURE : {
                     return bookingRepository.findByBookingUserAndStartAfter(optional.get().getId(), time, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case CURRENT : {
                     return bookingRepository.findAllBookingUserStateCurrent(optional.get().getId(), time, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case WAITING : {
                     return bookingRepository.findAllUserBookingState(optional.get().getId(), WAITING, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 case REJECTED : {
                     return bookingRepository.findAllUserBookingState(optional.get().getId(), REJECTED, pageable).stream()
-                            .map(BookingMapper::mapperBookingResponseBookerToDto)
+                            .map(Mappers::mapperEntityToDto)
                             .collect(Collectors.toList());
                 }
                 default: return new ArrayList<>();
@@ -151,7 +151,7 @@ public class BookingServiceImpl implements BookingService {
             throw new ServiceException(BOOKING_ERROR__USER_NOT_OWNER_ITEM);
         }
 
-        return BookingMapper.mapperBookingResponseBookerToDto(optional.get());
+        return Mappers.mapperEntityToDto(booking);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class BookingServiceImpl implements BookingService {
         if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
 
         Item item = optionalItem.get();
-        Booking booking = BookingMapper.mapperBookingDtoToBooking(bookingRequestDto);
+        Booking booking = Mappers.mapperDtoToEntity(bookingRequestDto);
 
         if (item.getUser().getId().equals(userId)) throw new ServiceException(BOOKING_ERROR__FAIL_PARAM_BOOKING__OWNER_ID);
         if (!item.getAvailable()) throw new ServiceException(BOOKING_ERROR__AVAILABLE_FALSE);
@@ -176,7 +176,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setApproved(WAITING);
         booking = bookingRepository.save(booking);
 
-        return BookingMapper.mapperBookingResponseBookerToDto(booking);
+        return Mappers.mapperEntityToDto(booking);
     }
 
     @Override
@@ -196,6 +196,6 @@ public class BookingServiceImpl implements BookingService {
         if (booking.getApproved().equals(APPROVED)) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__BOOKING__APPROVE);
 
         booking.setApproved(approved ? APPROVED : REJECTED);
-        return BookingMapper.mapperBookingResponseBookerToDto(bookingRepository.save(booking));
+        return Mappers.mapperEntityToDto(bookingRepository.save(booking));
     }
 }

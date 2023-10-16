@@ -51,8 +51,7 @@ class ItemRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(response.getId()), Long.class))
-        ;
+                .andExpect(jsonPath("$.id", is(response.getId()), Long.class));
     }
 
     @Test
@@ -87,8 +86,7 @@ class ItemRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(3))
-        ;
+                .andExpect(jsonPath("$.length()").value(3));
     }
 
     @Test
@@ -117,8 +115,7 @@ class ItemRequestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
-        ;
+                .andExpect(jsonPath("$.length()").value(2));
     }
 
     @Test
@@ -142,7 +139,6 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.id").value(2))
                 .andExpect(jsonPath("$.description").value("description-2"))
                 .andExpect(jsonPath("$.created").value("2023-10-20T12:00:00"))
-                .andExpect(jsonPath("$.items.length()").value(0))
-        ;
+                .andExpect(jsonPath("$.items.length()").value(0));
     }
 }

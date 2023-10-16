@@ -60,8 +60,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
-                .andExpect(jsonPath("$.email", is(userDto.getEmail())))
-        ;
+                .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
     @Test
@@ -80,8 +79,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(update.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(update.getName())))
-                .andExpect(jsonPath("$.email", is(update.getEmail())))
-        ;
+                .andExpect(jsonPath("$.email", is(update.getEmail())));
     }
 
     @Test
@@ -94,8 +92,7 @@ class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-        ;
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
     @Test
@@ -110,8 +107,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
-                .andExpect(jsonPath("$.email", is(userDto.getEmail())))
-        ;
+                .andExpect(jsonPath("$.email", is(userDto.getEmail())));
     }
 
     @Test
@@ -120,7 +116,6 @@ class UserControllerTest {
         mvc.perform(delete("/users/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-        ;
+                .andExpect(status().isOk());
     }
 }

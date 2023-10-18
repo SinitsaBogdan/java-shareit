@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
-import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
+import ru.practicum.shareit.user.util.MapperUser;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAll() {
         return userRepository.findAll().stream()
-                .map(Mappers::mapperEntityToDto)
+                .map(MapperUser::mapperEntityToDto)
                 .collect(Collectors.toList());
     }
 
@@ -34,19 +34,19 @@ public class UserServiceImpl implements UserService {
     public UserDto getById(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        return Mappers.mapperEntityToDto(optionalUser.get());
+        return MapperUser.mapperEntityToDto(optionalUser.get());
     }
 
     @Override
     @Transactional
     public UserDto save(UserDto user) {
-        return Mappers.mapperEntityToDto(userRepository.save(Mappers.mapperDtoToEntity(user)));
+        return MapperUser.mapperEntityToDto(userRepository.save(MapperUser.mapperDtoToEntity(user)));
     }
 
     @Override
     @Transactional
     public UserDto update(UserDto userDto) {
-        User update = Mappers.mapperDtoToEntity(userDto);
+        User update = MapperUser.mapperDtoToEntity(userDto);
         Optional<User> optionalUser = userRepository.findById(update.getId());
 
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         if (update.getEmail() != null && !update.getEmail().equals(user.getEmail())) user.setEmail(update.getEmail());
 
         try {
-            return Mappers.mapperEntityToDto(userRepository.save(user));
+            return MapperUser.mapperEntityToDto(userRepository.save(user));
         } catch (IllegalArgumentException exception) {
             throw new RepositoryException(USER_ERROR__VALID_DUPLICATE__EMAIL);
         }

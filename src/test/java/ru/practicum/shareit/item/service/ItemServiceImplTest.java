@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
+import ru.practicum.shareit.item.util.MapperItem;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -19,7 +20,6 @@ import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.EnumBookingState;
-import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 
@@ -74,7 +74,7 @@ class ItemServiceImplTest {
         List<ItemDto> result = service.getAllByUserId(1L);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(result.size(), 1);
-        Assertions.assertEquals(Mappers.mapperEntityToDto(item), result.get(0));
+        Assertions.assertEquals(MapperItem.mapperEntityToDto(item), result.get(0));
     }
 
     @Test
@@ -98,7 +98,7 @@ class ItemServiceImplTest {
 
         ItemDto result = service.getById(1L, 1L);
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(Mappers.mapperEntityToDto(item), result);
+        Assertions.assertEquals(MapperItem.mapperEntityToDto(item), result);
     }
 
     @Test
@@ -160,7 +160,7 @@ class ItemServiceImplTest {
 
         final RepositoryException exception = Assertions.assertThrows(
                 RepositoryException.class,
-                () -> service.saveItem(1L, Mappers.mapperEntityToDto(item)));
+                () -> service.saveItem(1L, MapperItem.mapperEntityToDto(item)));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
     }

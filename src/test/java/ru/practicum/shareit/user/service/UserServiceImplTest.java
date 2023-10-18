@@ -7,10 +7,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.practicum.shareit.user.util.MapperUser;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
-import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 
 import java.util.List;
@@ -49,7 +49,7 @@ class UserServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user1));
         UserDto result = service.getById(1L);
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(result, Mappers.mapperEntityToDto(user1));
+        Assertions.assertEquals(result, MapperUser.mapperEntityToDto(user1));
     }
 
     @Test

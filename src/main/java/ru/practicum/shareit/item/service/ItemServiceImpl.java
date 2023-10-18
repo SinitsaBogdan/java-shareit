@@ -17,9 +17,10 @@ import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repo.ItemRepository;
 
-import ru.practicum.shareit.util.Mappers;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
+import ru.practicum.shareit.item.util.MapperComment;
+import ru.practicum.shareit.item.util.MapperItem;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -51,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
 
         items.forEach(item -> {
 
-                    ItemDto itemDto = Mappers.mapperEntityToDto(item);
+                    ItemDto itemDto = MapperItem.mapperEntityToDto(item);
 
                     Booking bookingNext = bookings.stream()
                             .filter(booking -> booking.getItem().getId().equals(item.getId()))
@@ -83,7 +84,7 @@ public class ItemServiceImpl implements ItemService {
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
-        ItemDto itemDto = Mappers.mapperEntityToDto(optionalItem.get());
+        ItemDto itemDto = MapperItem.mapperEntityToDto(optionalItem.get());
 
         if (optionalItem.get().getUser().getId().equals(userId)) {
 
@@ -100,7 +101,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> getBySearchText(@NotNull String text) {
         if (text.isEmpty()) return new ArrayList<>();
         else return itemRepository.findSearch(text).stream()
-                .map(Mappers::mapperEntityToDto)
+                .map(MapperItem::mapperEntityToDto)
                 .collect(Collectors.toList());
     }
 
@@ -110,7 +111,7 @@ public class ItemServiceImpl implements ItemService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        Item item = Mappers.mapperDtoToEntity(itemDto);
+        Item item = MapperItem.mapperDtoToEntity(itemDto);
 
         if (itemDto.getRequestId() != null) {
             Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
@@ -120,7 +121,7 @@ public class ItemServiceImpl implements ItemService {
 
         item.setUser(optionalUser.get());
         item = itemRepository.save(item);
-        return Mappers.mapperEntityToDto(item);
+        return MapperItem.mapperEntityToDto(item);
     }
 
     @Override
@@ -138,13 +139,13 @@ public class ItemServiceImpl implements ItemService {
         if (optionalBooking.isEmpty()) throw new RepositoryException(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY);
         if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__DATETIME);
 
-        Comment comment = Mappers.mapperDtoToEntity(commentDto);
+        Comment comment = MapperComment.mapperDtoToEntity(commentDto);
         comment.setItem(optionalItem.get());
         comment.setUser(optionalUser.get());
         comment.setCreated(LocalDateTime.now());
 
         comment = commentRepository.save(comment);
-        return Mappers.mapperEntityToDto(comment);
+        return MapperComment.mapperEntityToDto(comment);
     }
 
     @Override
@@ -166,6 +167,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
 
         Item result = itemRepository.save(item);
-        return Mappers.mapperEntityToDto(result);
+        return MapperItem.mapperEntityToDto(result);
     }
 }

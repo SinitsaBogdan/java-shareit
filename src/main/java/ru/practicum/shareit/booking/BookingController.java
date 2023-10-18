@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
@@ -15,6 +16,7 @@ import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @AllArgsConstructor
 @RequestMapping("/bookings")

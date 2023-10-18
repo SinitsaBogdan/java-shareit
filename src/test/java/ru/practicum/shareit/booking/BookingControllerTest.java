@@ -77,7 +77,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
+                .andExpect(jsonPath("$.error").value("getAll.from: must be greater than or equal to 0"));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
+                .andExpect(jsonPath("$.error").value("getAll.size: must be greater than or equal to 1"));
     }
 
     @Test
@@ -162,7 +162,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
+                .andExpect(jsonPath("$.error").value("getById.from: must be greater than or equal to 0"));
     }
 
     @Test
@@ -185,7 +185,7 @@ public class BookingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("Некорректные параметры поиска"));
+                .andExpect(jsonPath("$.error").value("getById.size: must be greater than or equal to 1"));
     }
 
     @Test

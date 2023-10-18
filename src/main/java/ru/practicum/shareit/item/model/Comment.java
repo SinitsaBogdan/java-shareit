@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.model;
 
 import lombok.*;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.validation.annotation.NotBlank;
+import ru.practicum.shareit.util.validation.annotation.CustomValidNotBlank;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -24,7 +24,7 @@ public class Comment {
     private Long id;
 
     @Column(name = "text", nullable = false, length = 512)
-    @NotBlank(error = COMMENT_ERROR__VALID_TEXT)
+    @CustomValidNotBlank(error = COMMENT_ERROR__VALID_TEXT)
     private String text;
 
     @Column(name = "created", nullable = false)

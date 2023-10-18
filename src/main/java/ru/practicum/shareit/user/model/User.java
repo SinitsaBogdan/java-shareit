@@ -5,13 +5,15 @@ import lombok.*;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.util.validation.annotation.NotBlank;
+import ru.practicum.shareit.util.validation.annotation.CustomValidEmail;
+import ru.practicum.shareit.util.validation.annotation.CustomValidNotBlank;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID_EMPTY__NAME;
+import static ru.practicum.shareit.util.exeptions.ErrorMessage.USER_ERROR__VALID__EMAIL;
 
 @Builder
 @Getter
@@ -27,10 +29,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(error = USER_ERROR__VALID_EMPTY__NAME)
+    @CustomValidNotBlank(error = USER_ERROR__VALID_EMPTY__NAME)
     @Column(name = "name", length = 20, nullable = false)
     private String name;
 
+    @CustomValidEmail(error = USER_ERROR__VALID__EMAIL)
     @Column(name = "email", length = 36, unique = true, nullable = false)
     private String email;
 

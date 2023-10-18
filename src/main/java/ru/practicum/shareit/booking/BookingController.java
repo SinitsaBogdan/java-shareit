@@ -8,16 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.util.exeptions.BusinessException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-
-import static ru.practicum.shareit.util.exeptions.ErrorMessage.GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST;
-
-/**
- * TODO Sprint add-bookings.
- */
 
 @Slf4j
 @RestController
@@ -34,11 +29,10 @@ public class BookingController {
     public List<BookingResponseDto> getAll(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
         log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
-        if (from < 0 || size < 1) throw new BusinessException(GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST);
         return bookingService.getAll(userId, state, PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("id")));
     }
 
@@ -61,11 +55,10 @@ public class BookingController {
     public List<BookingResponseDto> getById(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "ALL") String state,
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
         log.info("   GET [http://localhost:8080/bookings/owner?state={}] : Запрос на получение всех бронирований пользователя", state);
-        if (from < 0 || size < 1) throw new BusinessException(GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST);
         return bookingService.getAllInItemOwner(userId, state, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 

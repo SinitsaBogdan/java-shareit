@@ -6,12 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
-import ru.practicum.shareit.util.exeptions.BusinessException;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-import static ru.practicum.shareit.util.exeptions.ErrorMessage.GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST;
 
 @Slf4j
 @RestController
@@ -36,11 +36,10 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestDto> getAll(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
-            @RequestParam(defaultValue = "0") int from,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
         log.info("   GET [http://localhost:8080/requests/all] : Запрос на получение всех запросов вещей");
-        if (from < 0 || size < 1) throw new BusinessException(GLOBAL_ERROR__FAIL_PAGEABLE_IN_REQUEST);
         return itemRequestService.findAll(userId, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 

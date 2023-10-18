@@ -1,7 +1,7 @@
 package ru.practicum.shareit.util.validation.annotation;
 
 import ru.practicum.shareit.util.exeptions.ErrorMessage;
-import ru.practicum.shareit.util.validation.impl.CustomValidNotBlankValidator;
+import ru.practicum.shareit.util.validation.impl.CustomValidEmailValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -15,15 +15,15 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target({FIELD, PARAMETER})
 @Retention(RUNTIME)
-@Constraint(validatedBy = CustomValidNotBlankValidator.class)
+@Constraint(validatedBy = CustomValidEmailValidator.class)
 @Documented
-public @interface CustomValidNotBlank {
+public @interface Email {
 
     String message() default "{CapitalLetter.invalid}";
 
     Class<?>[] groups() default { };
 
-    Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default { };
 
     ErrorMessage error();
 }

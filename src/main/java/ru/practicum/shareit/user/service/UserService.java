@@ -10,7 +10,7 @@ public interface UserService {
 
     UserDto getById(long userId);
 
-    UserDto add(UserDto user);
+    UserDto save(UserDto user);
 
     UserDto update(UserDto user);
 

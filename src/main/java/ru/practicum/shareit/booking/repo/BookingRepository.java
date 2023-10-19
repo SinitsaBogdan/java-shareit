@@ -1,5 +1,7 @@
 package ru.practicum.shareit.booking.repo;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,11 +17,9 @@ import java.util.Optional;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    List<Booking> findByUserOrderByStartDesc(User user);
-
-    List<Booking> findByItem_User_id(long userId);
-
     Optional<Booking> findFirstBookingByUserAndItemOrderByStartAsc(User user, Item item);
+
+    List<Booking> findByItem_User(User user);
 
     @Query("select b from Booking b where b.item.id = :itemId and b.start <= :actual and b.approved = 'APPROVED' order by b.end desc")
     List<Booking> findListToLastBooking(long itemId, LocalDateTime actual);
@@ -27,29 +27,31 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("select b from Booking b where b.item.id = :itemId and b.start > :actual and b.approved = 'APPROVED' order by b.start asc")
     List<Booking> findListToNextBooking(long itemId, LocalDateTime actual);
 
-    List<Booking> findByUserAndStartAfterOrderByStartDesc(User user, LocalDateTime actual);
+    Page<Booking> findByUserOrderByStartDesc(User user, Pageable pageable);
+
+    Page<Booking> findByUserAndStartAfterOrderByStartDesc(User user, LocalDateTime actual, Pageable pageable);
 
     @Query("select b from Booking b where b.user.id = :userId and b.approved = :approved order by b.start desc")
-    List<Booking> findAllBookingState(long userId, EnumBookingState approved);
+    Page<Booking> findAllBookingState(long userId, EnumBookingState approved, Pageable pageable);
 
     @Query("select b from Booking b where b.item.user.id = :userId and b.approved = :approved order by b.start desc")
-    List<Booking> findAllUserBookingState(long userId, EnumBookingState approved);
+    Page<Booking> findAllUserBookingState(long userId, EnumBookingState approved, Pageable pageable);
 
     @Query("select b from Booking b where b.item.user.id = :userId order by b.start desc")
-    List<Booking> findByBookingUser(long userId);
+    Page<Booking> findByBookingUser(long userId, Pageable pageable);
 
     @Query("select b from Booking b where b.item.user.id = :userId and b.start >= :actual order by b.start desc")
-    List<Booking> findByBookingUserAndStartAfter(long userId, LocalDateTime actual);
+    Page<Booking> findByBookingUserAndStartAfter(long userId, LocalDateTime actual, Pageable pageable);
 
     @Query("select b from Booking b where b.item.user.id = :userId and b.end <= :actual order by b.start desc")
-    List<Booking> findAllBookingUserStatePast(long userId, LocalDateTime actual);
+    Page<Booking> findAllBookingUserStatePast(long userId, LocalDateTime actual, Pageable pageable);
 
     @Query("select b from Booking b where b.item.user.id = :userId and b.start <= :actual and b.end >= :actual order by b.start desc")
-    List<Booking> findAllBookingUserStateCurrent(long userId, LocalDateTime actual);
+    Page<Booking> findAllBookingUserStateCurrent(long userId, LocalDateTime actual, Pageable pageable);
 
     @Query("select b from Booking b where b.user.id = :userId and b.end <= :actual order by b.start desc")
-    List<Booking> findAllBookingStatePast(long userId, LocalDateTime actual);
+    Page<Booking> findAllBookingStatePast(long userId, LocalDateTime actual, Pageable pageable);
 
-    @Query("select b from Booking b where b.user.id = :userId and b.start <= :actual and b.end >= :actual order by b.start desc")
-    List<Booking> findAllBookingStateCurrent(long userId, LocalDateTime actual);
+    @Query("select b from Booking b where b.user.id = :userId and b.start <= :actual and b.end >= :actual order by b.start asc")
+    Page<Booking> findAllBookingStateCurrent(long userId, LocalDateTime actual, Pageable pageable);
 }

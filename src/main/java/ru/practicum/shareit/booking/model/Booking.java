@@ -22,23 +22,23 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "approved")
+    @Column(name = "approved", nullable = false, length = 15)
     @Enumerated(EnumType.STRING)
     private EnumBookingState approved;
 
-    @Column(name = "time_start")
+    @Column(name = "time_start", nullable = false)
     private LocalDateTime start;
 
-    @Column(name = "time_end")
+    @Column(name = "time_end", nullable = false)
     private LocalDateTime end;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 }

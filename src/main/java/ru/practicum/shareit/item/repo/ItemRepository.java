@@ -1,19 +1,19 @@
 package ru.practicum.shareit.item.repo;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    @NotNull Optional<Item> findById(long itemId);
+    List<Item> findByUser(User user);
 
-    List<Item> findByUser_id(long userId);
-
-    List<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(String nameSearch, String descriptionSearch, boolean available);
+    @Query("select i from Item i where i.available <> false and (lower(i.name) LIKE lower(concat('%',:text,'%')) or lower(i.description) LIKE lower(concat('%',:text,'%')))")
+    List<Item> findSearch(@Param("text") String text);
 }

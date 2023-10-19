@@ -41,18 +41,16 @@ public class ItemController {
 
     /** Добавление новой записи вещи пользователя **/
     @PostMapping
-    public ItemDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto item) {
-        /* TODO не обрабатываетася userId
-        *   */
+    public ItemDto saveItem(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid ItemDto item) {
         log.info("  POST [http://localhost:8080/items] : Запрос на добавление вещи от пользователя id : {} - {}", userId, item);
-        return itemService.add(userId, item);
+        return itemService.saveItem(userId, item);
     }
 
     /** Добавление комментария к вещи **/
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody CommentDto commentDto) {
+    public CommentDto saveComment(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody CommentDto commentDto) {
         log.info("  POST [http://localhost:8080/items/{}/comment] : Запрос на добавление отзыва к вещи от пользователя id : {} - {}", itemId, userId, commentDto);
-        return itemService.addComment(userId, itemId, commentDto);
+        return itemService.saveComment(userId, itemId, commentDto);
     }
 
     /** Обновление существующей записи вещи пользователя **/
@@ -60,7 +58,7 @@ public class ItemController {
     public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody ItemDto item) {
         log.info(" PATCH [http://localhost:8080/items] : Запрос на обновление вещи от пользователя id : {} - {}", userId, item);
         item.setId(itemId);
-        return itemService.update(userId, item);
+        return itemService.updateItem(userId, item);
     }
 
     /** Удаление существующей записи вещи пользователя **/

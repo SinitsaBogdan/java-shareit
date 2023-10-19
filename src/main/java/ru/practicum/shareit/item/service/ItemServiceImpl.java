@@ -7,17 +7,20 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
-import ru.practicum.shareit.item.dto.CommentMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.CommentRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.repo.ItemRepository;
 
+import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
+import ru.practicum.shareit.item.util.MapperComment;
+import ru.practicum.shareit.item.util.MapperItem;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,6 +35,7 @@ import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
+    private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
@@ -39,16 +43,16 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getAllByUserId(long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         List<ItemDto> result = new ArrayList<>();
         LocalDateTime actual = LocalDateTime.now();
-        List<Item> items = itemRepository.findByUser_id(optionalUser.get().getId());
-        List<Booking> bookings = bookingRepository.findByItem_User_id(userId);
+        List<Item> items = itemRepository.findByUser(optionalUser.get());
+        List<Booking> bookings = bookingRepository.findByItem_User(optionalUser.get());
 
         items.forEach(item -> {
 
-                    ItemDto itemDto = ItemMapper.mapperItemToDto(item);
+                    ItemDto itemDto = MapperItem.mapperEntityToDto(item);
 
                     Booking bookingNext = bookings.stream()
                             .filter(booking -> booking.getItem().getId().equals(item.getId()))
@@ -75,9 +79,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto getById(long userId, long itemId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
-        ItemDto itemDto = ItemMapper.mapperItemToDto(optionalItem.get());
+        if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+        ItemDto itemDto = MapperItem.mapperEntityToDto(optionalItem.get());
 
         if (optionalItem.get().getUser().getId().equals(userId)) {
 
@@ -93,54 +100,62 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getBySearchText(@NotNull String text) {
         if (text.isEmpty()) return new ArrayList<>();
-        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailable(text, text, true).stream()
-                .map(ItemMapper::mapperItemToDto)
+        else return itemRepository.findSearch(text).stream()
+                .map(MapperItem::mapperEntityToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public ItemDto add(long userId, ItemDto itemDto) {
-        Item item = ItemMapper.mapperItemDtoToItem(itemDto);
-        Optional<User> optional = userRepository.findById(userId);
-        if (optional.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        item.setUser(optional.get());
+    public ItemDto saveItem(long userId, ItemDto itemDto) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
+        Item item = MapperItem.mapperDtoToEntity(itemDto);
+
+        if (itemDto.getRequestId() != null) {
+            Optional<ItemRequest> optionalItemRequest = itemRequestRepository.findById(itemDto.getRequestId());
+            if (optionalItemRequest.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__REQUEST__ID_NOT_IN_REPO__ID);
+            item.setRequest(optionalItemRequest.get());
+        }
+
+        item.setUser(optionalUser.get());
         item = itemRepository.save(item);
-        return ItemMapper.mapperItemToDto(item);
+        return MapperItem.mapperEntityToDto(item);
     }
 
     @Override
     @Transactional
-    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
-
-        Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+    public CommentDto saveComment(long userId, long itemId, CommentDto commentDto) {
 
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
+
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
 
         Optional<Booking> optionalBooking = bookingRepository.findFirstBookingByUserAndItemOrderByStartAsc(optionalUser.get(), optionalItem.get());
 
-        if (optionalBooking.isEmpty()) throw new ServiceException("Пользователь не совершал бронирований этой вещи", 404);
-        if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException("Нельзя оставлять отзыв до завершения бронирования", 400);
+        if (optionalBooking.isEmpty()) throw new RepositoryException(BOOKING_ERROR__NOT_BOOKINGS_IN_REPOSITORY);
+        if (optionalBooking.get().getEnd().isAfter(LocalDateTime.now())) throw new ServiceException(BOOKING_ERROR__BLOCK_SAVE_BOOKING__DATETIME);
 
-        Comment comment = CommentMapper.mapperCommentDtoToComment(commentDto);
+        Comment comment = MapperComment.mapperDtoToEntity(commentDto);
         comment.setItem(optionalItem.get());
         comment.setUser(optionalUser.get());
         comment.setCreated(LocalDateTime.now());
 
         comment = commentRepository.save(comment);
-        return CommentMapper.mapperCommentToDto(comment);
+        return MapperComment.mapperEntityToDto(comment);
     }
 
     @Override
     @Transactional
-    public ItemDto update(long userId, @NotNull ItemDto itemDto) {
+    public ItemDto updateItem(long userId, @NotNull ItemDto itemDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        Optional<Item> optionalItem = itemRepository.findById(itemDto.getId());
+        if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
-        if (optionalUser.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
-        if (optionalItem.isEmpty()) throw new ServiceException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
+        Optional<Item> optionalItem = itemRepository.findById(itemDto.getId());
+        if (optionalItem.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__ITEM__ID_NOT_IN_REPO__ID);
 
         User user = optionalUser.get();
         Item item = optionalItem.get();
@@ -152,6 +167,6 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) item.setAvailable(itemDto.getAvailable());
 
         Item result = itemRepository.save(item);
-        return ItemMapper.mapperItemToDto(result);
+        return MapperItem.mapperEntityToDto(result);
     }
 }

@@ -9,9 +9,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -44,7 +41,7 @@ public class UserController {
     @PostMapping
     public UserDto add(@RequestBody UserDto user) {
         log.info("  POST [http://localhost:8080/users] : Запрос на добавление пользователя - {}", user);
-        return userService.add(user);
+        return userService.save(user);
     }
 
     /**

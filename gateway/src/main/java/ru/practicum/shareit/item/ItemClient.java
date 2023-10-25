@@ -39,23 +39,25 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId, parameters);
     }
 
-    public ResponseEntity<Object> getAllToSearchText(String text) {
-        Map<String, Object> parameters = Map.of();
-        return get("?text=" + text);
+    public ResponseEntity<Object> getAllToSearchText(long userId, String text) {
+        Map<String, Object> parameters = Map.of(
+                "X-Sharer-User-Id", userId
+        );
+        return get("/search?text=" + text, userId);
     }
 
     public ResponseEntity<Object> add(long userId, ItemDto itemDto) {
-        Map<String, Object> parameters = Map.of();
         return post("", userId, itemDto);
     }
 
     public ResponseEntity<Object> add(long userId, long itemId, CommentDto commentDto) {
-        Map<String, Object> parameters = Map.of();
         return post(String.format("/%s/comment", itemId), userId, commentDto);
     }
 
-    public ResponseEntity<Object> update(long userId, ItemDto itemDto) {
-        Map<String, Object> parameters = Map.of();
-        return patch("", itemDto);
+    public ResponseEntity<Object> update(long userId, long itemId, ItemDto itemDto) {
+        Map<String, Object> parameters = Map.of(
+                "X-Sharer-User-Id", userId
+        );
+        return patch("/" + itemId, userId, parameters, itemDto);
     }
 }

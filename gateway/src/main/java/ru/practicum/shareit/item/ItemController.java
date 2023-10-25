@@ -38,7 +38,7 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<Object> getAllToSearchText(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestParam(defaultValue = "") String text) {
         log.info("   GET [http://localhost:8080/items/search?text={}] : Запрос на поиск вещей по фильтру text : {} от пользователя id : {} ", text, text, userId);
-        return client.getAllToSearchText(text.toLowerCase());
+        return client.getAllToSearchText(userId, text.toLowerCase());
     }
 
     /** Добавление новой записи вещи пользователя **/
@@ -58,8 +58,8 @@ public class ItemController {
     /** Обновление существующей записи вещи пользователя **/
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> update(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody ItemDto item) {
-        log.info(" PATCH [http://localhost:8080/items] : Запрос на обновление вещи от пользователя id : {} - {}", userId, item);
+        log.info(" PATCH [http://localhost:8080/items{}] : Запрос на обновление вещи от пользователя id : {} - {}", itemId, userId, item);
         item.setId(itemId);
-        return client.update(userId, item);
+        return client.update(userId, itemId, item);
     }
 }

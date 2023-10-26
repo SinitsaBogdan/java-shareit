@@ -1,7 +1,6 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.PropertyValueException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -9,9 +8,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.user.util.MapperUser;
-import ru.practicum.shareit.util.exeptions.ServiceException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

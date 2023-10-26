@@ -310,14 +310,16 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.save")
     public void save__Valid_Param() {
 
+        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
+
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(bookingRepository.save(any())).thenReturn(booking4);
 
         BookingResponseDto result = service.save(2L, BookingRequestDto.builder()
                 .itemId(1L)
-                .start(LocalDateTime.of(2023, 10, 20, 10, 0))
-                .end(LocalDateTime.of(2023, 10, 20, 16, 0))
+                .start(dateTime)
+                .end(dateTime.plusDays(1))
                 .build());
 
         Assertions.assertNotNull(result);

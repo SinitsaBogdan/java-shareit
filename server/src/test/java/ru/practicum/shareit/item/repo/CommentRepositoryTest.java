@@ -6,7 +6,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import ru.practicum.shareit.item.model.Comment;
 
-import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 
 @DataJpaTest
@@ -29,17 +28,10 @@ class CommentRepositoryTest {
     public class Entity {
 
         @Test
-        @DisplayName("Проверка валидации поля text - @CustomValidNotBlank")
-        public void save__Fail_Text_CustomValidNotBlank() {
-            Comment comment = Comment.builder().text("").created(LocalDateTime.now()).build();
-            Assertions.assertThrows(ValidationException.class, () -> commentRepository.save(comment));
-        }
-
-        @Test
         @DisplayName("Проверка валидации поля text - nullable")
         public void save__Fail_Text_nullable() {
             Comment comment = Comment.builder().created(LocalDateTime.now()).build();
-            Assertions.assertThrows(ValidationException.class, () -> commentRepository.save(comment));
+            Assertions.assertThrows(DataIntegrityViolationException.class, () -> commentRepository.save(comment));
         }
 
         @Test

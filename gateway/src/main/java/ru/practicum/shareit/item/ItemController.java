@@ -50,7 +50,7 @@ public class ItemController {
 
     /** Добавление комментария к вещи **/
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> saveComment(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody CommentDto commentDto) {
+    public ResponseEntity<Object> saveComment(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId, @RequestBody @Valid CommentDto commentDto) {
         log.info("  POST [http://localhost:8080/items/{}/comment] : Запрос на добавление отзыва к вещи от пользователя id : {} - {}", itemId, userId, commentDto);
         return client.add(userId, itemId, commentDto);
     }

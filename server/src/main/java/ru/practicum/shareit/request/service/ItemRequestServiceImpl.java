@@ -54,6 +54,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
+    @Transactional
     public ItemRequestDto save(long userId, ItemRequestDto requestDto) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);

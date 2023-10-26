@@ -1,18 +1,18 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.validation.annotation.CustomValidNotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
-
-import static ru.practicum.shareit.util.exeptions.ErrorMessage.COMMENT_ERROR__VALID_TEXT;
 
 @Builder
 @Getter
 @Setter
 @ToString
+@Validated
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -23,8 +23,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
     @Column(name = "text", nullable = false, length = 512)
-    @CustomValidNotBlank(error = COMMENT_ERROR__VALID_TEXT)
     private String text;
 
     @Column(name = "created", nullable = false)

@@ -8,6 +8,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
+
 @Slf4j
 @Validated
 @Controller
@@ -23,9 +27,9 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<Object> getAll(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
-            @RequestParam String state,
-            @RequestParam int from,
-            @RequestParam int size
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
         log.info("   GET [http://localhost:8080/bookings?state={}] : Запрос на получение всех бронирований от пользователя {}", state, userId);
         return client.get(userId, state, from, size);
@@ -49,19 +53,19 @@ public class BookingController {
     @GetMapping("/owner")
     public ResponseEntity<Object> getById(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
-            @RequestParam String state,
-            @RequestParam int from,
-            @RequestParam int size
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
         log.info("   GET [http://localhost:8080/bookings/owner?state={}] : Запрос на получение всех бронирований пользователя", state);
-        return client.get(userId, state, from, size);
+        return client.getOwner(userId, state, from, size);
     }
 
     /**
      * Добавление новой записи бронирования пользователя
      **/
     @PostMapping
-    public ResponseEntity<Object> save(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody BookingRequestDto bookingRequestDto) {
+    public ResponseEntity<Object> save(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid BookingRequestDto bookingRequestDto) {
         log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", bookingRequestDto);
         return client.add(userId, bookingRequestDto);
     }

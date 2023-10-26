@@ -74,7 +74,7 @@ public class ItemServiceImpl implements ItemService {
                     result.add(itemDto);
                 });
 
-        return result;
+        return result.stream().sorted(Comparator.comparingLong(ItemDto::getId)).collect(Collectors.toList());
     }
 
     @Override

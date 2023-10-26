@@ -58,52 +58,6 @@ public class BookingControllerTest {
     }
 
     @Test
-    @DisplayName("Запрос всех записей бронирования пользователя : fail from")
-    public void findAllByUserIdAndStateInUser__Fail_From() throws Exception {
-        List<BookingResponseDto> response = List.of(
-                BookingResponseDto.builder().id(1L).build(),
-                BookingResponseDto.builder().id(2L).build(),
-                BookingResponseDto.builder().id(3L).build()
-        );
-
-        when(service.getAll(anyLong(), anyString(), any())).thenReturn(response);
-
-        mvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("state", "ALL")
-                        .param("from", String.valueOf(-1))
-                        .param("size", String.valueOf(10))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("getAll.from: must be greater than or equal to 0"));
-    }
-
-    @Test
-    @DisplayName("Запрос всех записей бронирования пользователя : fail size")
-    public void findAllByUserIdAndStateInUser__Fail_Size() throws Exception {
-        List<BookingResponseDto> response = List.of(
-                BookingResponseDto.builder().id(1L).build(),
-                BookingResponseDto.builder().id(2L).build(),
-                BookingResponseDto.builder().id(3L).build()
-        );
-
-        when(service.getAll(anyLong(), anyString(), any())).thenReturn(response);
-
-        mvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("state", "ALL")
-                        .param("from", String.valueOf(0))
-                        .param("size", String.valueOf(0))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("getAll.size: must be greater than or equal to 1"));
-    }
-
-    @Test
     @DisplayName("Запрос записи бронирования по ID")
     public void findByUserIdAndBookingId() throws Exception {
         BookingResponseDto response = BookingResponseDto.builder().id(1L).build();
@@ -139,53 +93,6 @@ public class BookingControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
-    }
-
-
-    @Test
-    @DisplayName("Запрос всех записей бронирования пользователя : fail from")
-    public void findAllByUserIdAndState__Fail_From() throws Exception {
-        List<BookingResponseDto> response = List.of(
-                BookingResponseDto.builder().id(1L).build(),
-                BookingResponseDto.builder().id(2L).build(),
-                BookingResponseDto.builder().id(3L).build()
-        );
-
-        when(service.getAllInItemOwner(anyLong(), anyString(), any())).thenReturn(response);
-
-        mvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("state", "ALL")
-                        .param("from", String.valueOf(-1))
-                        .param("size", String.valueOf(10))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("getById.from: must be greater than or equal to 0"));
-    }
-
-    @Test
-    @DisplayName("Запрос всех записей бронирования пользователя : fail size")
-    public void findAllByUserIdAndState__Fail_Size() throws Exception {
-        List<BookingResponseDto> response = List.of(
-                BookingResponseDto.builder().id(1L).build(),
-                BookingResponseDto.builder().id(2L).build(),
-                BookingResponseDto.builder().id(3L).build()
-        );
-
-        when(service.getAllInItemOwner(anyLong(), anyString(), any())).thenReturn(response);
-
-        mvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1)
-                        .param("state", "ALL")
-                        .param("from", String.valueOf(0))
-                        .param("size", String.valueOf(0))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error").value("getById.size: must be greater than or equal to 1"));
     }
 
     @Test

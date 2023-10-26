@@ -152,14 +152,4 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$.description").value("update"))
                 .andExpect(jsonPath("$.available").value(false));
     }
-
-    @Test
-    @DisplayName("Удаление существующей записи вещи пользователя")
-    public void deleteItem() throws Exception {
-        mvc.perform(delete("/items/1")
-                        .header("X-Sharer-User-Id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
 }

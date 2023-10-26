@@ -6,8 +6,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.ValidationException;
-
 @DataJpaTest
 @DisplayName("Интеграционное тестирование - UserRepository")
 class UserRepositoryTest {
@@ -35,10 +33,10 @@ class UserRepositoryTest {
         }
 
         @Test
-        @DisplayName("Проверка валидации поля name - @CustomValidNotBlank")
+        @DisplayName("Проверка валидации поля name")
         public void save__Fail_Name_CustomValidNotBlank() {
-            User user = User.builder().name("").email("mail@mail.ru").build();
-            Assertions.assertThrows(ValidationException.class, () -> userRepository.save(user));
+            User user = User.builder().email("mail@mail.ru").build();
+            Assertions.assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(user));
         }
 
         @Test
@@ -46,20 +44,6 @@ class UserRepositoryTest {
         public void save__Fail_Name_MaxLength36() {
             User user = User.builder().name("user").email("mail_BigName_BigName_BigName_BigName@mail.ru").build();
             Assertions.assertThrows(DataIntegrityViolationException.class, () -> userRepository.save(user));
-        }
-
-        @Test
-        @DisplayName("Проверка валидации поля email - @CustomValidEmail [ v1 ]")
-        public void save__Fail_Name_CustomValidEmail_v1() {
-            User user = User.builder().name("user").email("mail.mail.ru").build();
-            Assertions.assertThrows(ValidationException.class, () -> userRepository.save(user));
-        }
-
-        @Test
-        @DisplayName("Проверка валидации поля email - @CustomValidEmail [ v2 ]")
-        public void save__Fail_Name_CustomValidEmail_v2() {
-            User user = User.builder().name("user").email("mail@mail_ru").build();
-            Assertions.assertThrows(ValidationException.class, () -> userRepository.save(user));
         }
 
         @Test

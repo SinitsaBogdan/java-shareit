@@ -51,7 +51,7 @@ public class BookingController {
      * Получение списка бронирований для всех вещей текущего пользователя
      **/
     @GetMapping("/owner")
-    public ResponseEntity<Object> getById(
+    public ResponseEntity<Object> getByIdOwner(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,

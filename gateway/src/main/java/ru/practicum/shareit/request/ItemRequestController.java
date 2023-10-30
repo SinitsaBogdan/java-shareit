@@ -24,7 +24,7 @@ public class ItemRequestController {
      * Запрос на получение всех запросов вещей пользователя
      **/
     @GetMapping
-    public ResponseEntity<Object> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId) {
+    public ResponseEntity<Object> getAllOwner(@RequestHeader(value = "X-Sharer-User-Id") long userId) {
         log.info("   GET [http://localhost:8080/requests] : Запрос на получение всех запросов вещей");
         return client.get(userId);
     }
@@ -33,7 +33,7 @@ public class ItemRequestController {
      * Запрос на получение всех запросов вещей
      **/
     @GetMapping("/all")
-    public ResponseEntity<Object> getAll(
+    public ResponseEntity<Object> getUsersAll(
             @RequestHeader(value = "X-Sharer-User-Id") long userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Min(1) int size

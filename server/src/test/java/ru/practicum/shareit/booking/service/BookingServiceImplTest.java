@@ -13,11 +13,11 @@ import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.BookingResponseDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
+import ru.practicum.shareit.booking.util.BookingState;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
-import ru.practicum.shareit.util.BookingState;
 import ru.practicum.shareit.util.exeptions.CustomException;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
@@ -310,16 +310,14 @@ class BookingServiceImplTest {
     @DisplayName("Тестирование метода - service.save")
     public void save__Valid_Param() {
 
-        LocalDateTime dateTime = LocalDateTime.now().plusDays(1);
-
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user2));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         when(bookingRepository.save(any())).thenReturn(booking4);
 
         BookingResponseDto result = service.save(2L, BookingRequestDto.builder()
                 .itemId(1L)
-                .start(dateTime)
-                .end(dateTime.plusDays(1))
+                .start(LocalDateTime.of(2023, 11, 20, 10, 0))
+                .end(LocalDateTime.of(2023, 12, 20, 16, 0))
                 .build());
 
         Assertions.assertNotNull(result);

@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.util.BookingState.APPROVED;
+import static ru.practicum.shareit.booking.util.BookingState.APPROVED;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service

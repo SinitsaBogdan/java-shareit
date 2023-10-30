@@ -29,12 +29,12 @@ public class ItemClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> getItems(long userId) {
+    public ResponseEntity<Object> get(long userId) {
         Map<String, Object> parameters = Map.of();
         return get("", userId, parameters);
     }
 
-    public ResponseEntity<Object> getItemById(long userId, long itemId) {
+    public ResponseEntity<Object> getById(long userId, long itemId) {
         Map<String, Object> parameters = Map.of();
         return get("/" + itemId, userId, parameters);
     }

@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.model;
 import lombok.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.util.BookingState;
+import ru.practicum.shareit.booking.util.BookingState;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

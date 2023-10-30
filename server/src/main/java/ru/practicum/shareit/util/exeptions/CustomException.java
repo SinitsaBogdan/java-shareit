@@ -13,12 +13,6 @@ public class CustomException extends RuntimeException {
 
     HttpStatus httpStatus;
 
-    public CustomException(@NotNull ErrorMessage message) {
-        super(message.getDescription());
-        this.httpStatus = HttpStatus.valueOf(message.getHttpStatusCode());
-        log.debug("{} | {}", message.getHttpStatusCode(), message);
-    }
-
     public CustomException(String message, int statusCode) {
         super(message);
         this.httpStatus = HttpStatus.valueOf(statusCode);

@@ -24,14 +24,14 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<Object> getAll(@RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("   GET [http://localhost:8080/items] : Запрос на получение всех вещей от пользователя id : {}", userId);
-        return client.getItems(userId);
+        return client.get(userId);
     }
 
     /** Запрос записи вещи пользователя по ID **/
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getById(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long itemId) {
         log.info("   GET [http://localhost:8080/items/{}] : Запрос на получение вещи по id : {} от пользователя id : {}", itemId, itemId, userId);
-        return client.getItemById(userId, itemId);
+        return client.getById(userId, itemId);
     }
 
     /** Запрос записей вещей по поиску в text (название или описание) **/

@@ -30,6 +30,7 @@ public class BookingClient extends BaseClient {
 
     public ResponseEntity<Object> get(long userId, @NotNull String state, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
+                "X-Sharer-User-Id", userId,
                 "state", state,
                 "from", from,
                 "size", size

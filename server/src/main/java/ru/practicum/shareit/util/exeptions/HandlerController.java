@@ -11,12 +11,6 @@ import javax.validation.ValidationException;
 @ControllerAdvice
 public class HandlerController {
 
-    @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<Response> handleException(@NotNull BusinessException exception) {
-        Response response = new Response(exception.getMessage(), null);
-        return new ResponseEntity<>(response, exception.getHttpStatus());
-    }
-
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<Response> handleException(@NotNull ServiceException exception) {
         Response response = new Response(exception.getMessage(), null);

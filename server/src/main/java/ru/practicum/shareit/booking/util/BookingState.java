@@ -1,4 +1,4 @@
-package ru.practicum.shareit.util;
+package ru.practicum.shareit.booking.util;
 
 import java.util.Optional;
 

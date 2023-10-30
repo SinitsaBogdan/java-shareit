@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
+import ru.practicum.shareit.booking.util.BookingState;
 import ru.practicum.shareit.item.util.MapperItem;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -19,7 +20,6 @@ import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.request.repo.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
-import ru.practicum.shareit.util.BookingState;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
 

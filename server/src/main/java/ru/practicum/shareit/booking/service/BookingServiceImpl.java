@@ -12,7 +12,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repo.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
-import ru.practicum.shareit.util.BookingState;
+import ru.practicum.shareit.booking.util.BookingState;
 import ru.practicum.shareit.util.exeptions.CustomException;
 import ru.practicum.shareit.util.exeptions.RepositoryException;
 import ru.practicum.shareit.util.exeptions.ServiceException;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.util.BookingState.*;
+import static ru.practicum.shareit.booking.util.BookingState.*;
 import static ru.practicum.shareit.util.exeptions.ErrorMessage.*;
 
 @Service

@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -11,6 +10,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.client.BaseClient;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @Service
@@ -19,7 +19,7 @@ public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
 
     @Autowired
-    public BookingClient(@Value("${shareit-server.url}") String serverUrl, @NotNull RestTemplateBuilder builder) {
+    public BookingClient(@Value("${shareit-server.url}") String serverUrl, @NotNull @org.jetbrains.annotations.NotNull RestTemplateBuilder builder) {
         super(
                 builder
                         .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl + API_PREFIX))
@@ -64,7 +64,7 @@ public class BookingClient extends BaseClient {
         return post("", userId, bookingRequestDto);
     }
 
-    public ResponseEntity<Object> update(long userId, long bookingId, Boolean approved) {
+    public ResponseEntity<Object> approvedUp(long userId, long bookingId, Boolean approved) {
         return patch(String.format("/%s?approved=%s", bookingId, approved), userId);
     }
 }

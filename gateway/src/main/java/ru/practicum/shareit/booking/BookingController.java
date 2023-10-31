@@ -76,6 +76,6 @@ public class BookingController {
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> approved(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId, @RequestParam(defaultValue = "") boolean approved) {
         log.info("  POST [http://localhost:8080/bookings/{}?approved={}] : Запрос на добавление бронирования - {}", bookingId, approved, bookingId);
-        return client.update(userId, bookingId, approved);
+        return client.approvedUp(userId, bookingId, approved);
     }
 }

@@ -30,13 +30,11 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> get(long userId) {
-        Map<String, Object> parameters = Map.of();
-        return get("", userId, parameters);
+        return get("", userId);
     }
 
     public ResponseEntity<Object> getById(long userId, long itemId) {
-        Map<String, Object> parameters = Map.of();
-        return get("/" + itemId, userId, parameters);
+        return get("/" + itemId, userId);
     }
 
     public ResponseEntity<Object> getAllToSearchText(long userId, String text) {

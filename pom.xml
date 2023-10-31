@@ -25,6 +25,7 @@
 	<modules>
 		<module>server</module>
 		<module>gateway</module>
+		<module>shareit-util</module>
 	</modules>
 
 	<build>

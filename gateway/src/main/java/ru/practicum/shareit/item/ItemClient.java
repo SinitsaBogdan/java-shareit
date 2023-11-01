@@ -31,6 +31,7 @@ public class ItemClient extends BaseClient {
 
     public ResponseEntity<Object> get(long userId, int from, int size) {
         Map<String, Object> parameters = Map.of(
+                "X-Sharer-User-Id", userId,
                 "from", from,
                 "size", size
         );

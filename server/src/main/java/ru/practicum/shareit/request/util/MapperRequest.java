@@ -1,8 +1,8 @@
 package ru.practicum.shareit.request.util;
 
 import org.jetbrains.annotations.NotNull;
-import ru.practicum.shareit.item.util.MapperItem;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.util.MapperItem;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.util.exeptions.CustomException;

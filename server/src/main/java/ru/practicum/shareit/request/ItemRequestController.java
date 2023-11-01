@@ -22,12 +22,15 @@ import java.util.List;
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
+    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /**
      * Запрос на получение всех запросов вещей пользователя
      **/
     @GetMapping
-    public List<ItemRequestDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") long userId) {
+    public List<ItemRequestDto> getAll(
+            @RequestHeader(headerShareitUserId) long userId
+    ) {
         log.info("   GET [http://localhost:8080/requests] : Запрос на получение всех запросов вещей");
         return itemRequestService.findAll(userId);
     }
@@ -37,7 +40,7 @@ public class ItemRequestController {
      **/
     @GetMapping("/all")
     public List<ItemRequestDto> getAll(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) long userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
@@ -49,7 +52,10 @@ public class ItemRequestController {
      * Запрос на получение всех запросов вещей
      **/
     @GetMapping("/{requestId}")
-    public ItemRequestDto get(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long requestId) {
+    public ItemRequestDto get(
+            @RequestHeader(headerShareitUserId) long userId,
+            @PathVariable long requestId
+    ) {
         log.info("   GET [http://localhost:8080/requests/{}] : Запрос на получение всех запросов вещей", requestId);
         return itemRequestService.findOne(userId, requestId);
     }
@@ -58,11 +64,11 @@ public class ItemRequestController {
      * Добавление нового запроса вещи
      **/
     @PostMapping
-    public ItemRequestDto add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid ItemRequestDto requestDto) {
+    public ItemRequestDto add(
+            @RequestHeader(headerShareitUserId) long userId,
+            @RequestBody @Valid ItemRequestDto requestDto
+    ) {
         log.info("  POST [http://localhost:8080/requests] : Запрос на добавление запроса вещи - {}", requestDto);
-        ItemRequestDto result = itemRequestService.save(userId, requestDto);
-        log.info(String.valueOf(result));
-        System.out.println(result);
-        return result;
+        return itemRequestService.save(userId, requestDto);
     }
 }

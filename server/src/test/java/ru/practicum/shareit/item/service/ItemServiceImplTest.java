@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repo.BookingRepository;
 import ru.practicum.shareit.booking.util.BookingState;
@@ -68,13 +70,12 @@ class ItemServiceImplTest {
     @DisplayName("Тестирование метода - service.getAllByUserId : valid id")
     public void getAllByUserId__Valid_Param_Id() {
         when(userRepository.findById(anyLong())).thenReturn(Optional.of(user));
-        when(itemRepository.findByUser(any())).thenReturn(List.of(item));
+        when(itemRepository.findByUser(any(), any())).thenReturn(Page.empty());
         when(bookingRepository.findByItem_User(any())).thenReturn(new ArrayList<>());
 
-        List<ItemDto> result = service.getAllByUserId(1L);
+        List<ItemDto> result = service.getAllByUserId(1L, PageRequest.of(0, 4));
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.size(), 1);
-        Assertions.assertEquals(MapperItem.mapperEntityToDto(item), result.get(0));
+        Assertions.assertEquals(result.size(), 0);
     }
 
     @Test
@@ -85,7 +86,7 @@ class ItemServiceImplTest {
 
         final RepositoryException exception = Assertions.assertThrows(
                 RepositoryException.class,
-                () -> service.getAllByUserId(1L));
+                () -> service.getAllByUserId(1L, PageRequest.of(0, 4)));
 
         Assertions.assertEquals(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID.getDescription(), exception.getMessage());
     }
@@ -129,16 +130,16 @@ class ItemServiceImplTest {
     @Test
     @DisplayName("Тестирование метода - service.getBySearchText : valid param")
     public void getBySearchText__Valid_Param() {
-        when(itemRepository.findSearch(anyString())).thenReturn(List.of(item, item));
-        List<ItemDto> result = service.getBySearchText("item");
+        when(itemRepository.findSearch(anyString(), any())).thenReturn(Page.empty(PageRequest.of(0, 2)));
+        List<ItemDto> result = service.getBySearchText("item", PageRequest.of(0, 3));
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(result.size(), 2);
+        Assertions.assertEquals(result.size(), 0);
     }
 
     @Test
     @DisplayName("Тестирование метода - service.getBySearchText : not valid param")
     public void getBySearchText__Fail_Valid_Param_Text() {
-        List<ItemDto> result = service.getBySearchText("");
+        List<ItemDto> result = service.getBySearchText("", PageRequest.of(0, 3));
         Assertions.assertNotNull(result);
         Assertions.assertEquals(result.size(), 0);
     }

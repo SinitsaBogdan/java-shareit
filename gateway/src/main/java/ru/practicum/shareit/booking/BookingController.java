@@ -10,6 +10,7 @@ import ru.practicum.shareit.booking.dto.BookingRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
@@ -20,13 +21,14 @@ import javax.validation.constraints.PositiveOrZero;
 public class BookingController {
 
     private final BookingClient client;
+    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /**
      * Запрос всех записей бронирования пользователя
      **/
     @GetMapping
     public ResponseEntity<Object> getAll(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) @Positive long userId,
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Min(1) int size
@@ -40,8 +42,8 @@ public class BookingController {
      **/
     @GetMapping("/{bookingId}")
     public ResponseEntity<Object> getById(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
-            @PathVariable long bookingId
+            @RequestHeader(headerShareitUserId) @Positive long userId,
+            @PathVariable @Positive long bookingId
     ) {
         log.info("   GET [http://localhost:8080/bookings/{}] : Запрос на получение бронирования по id : {}", bookingId, bookingId);
         return client.get(userId, bookingId);
@@ -52,7 +54,7 @@ public class BookingController {
      **/
     @GetMapping("/owner")
     public ResponseEntity<Object> getByIdOwner(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) @Positive long userId,
             @RequestParam(defaultValue = "ALL") String state,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Min(1) int size
@@ -65,7 +67,10 @@ public class BookingController {
      * Добавление новой записи бронирования пользователя
      **/
     @PostMapping
-    public ResponseEntity<Object> save(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid BookingRequestDto bookingRequestDto) {
+    public ResponseEntity<Object> save(
+            @RequestHeader(headerShareitUserId) @Positive long userId,
+            @RequestBody @Valid BookingRequestDto bookingRequestDto
+    ) {
         log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", bookingRequestDto);
         return client.add(userId, bookingRequestDto);
     }
@@ -74,7 +79,11 @@ public class BookingController {
      * Подтверждение бронирования
      **/
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<Object> approved(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId, @RequestParam(defaultValue = "") boolean approved) {
+    public ResponseEntity<Object> approved(
+            @RequestHeader(headerShareitUserId) @Positive long userId,
+            @PathVariable @Positive long bookingId,
+            @RequestParam(defaultValue = "") boolean approved
+    ) {
         log.info("  POST [http://localhost:8080/bookings/{}?approved={}] : Запрос на добавление бронирования - {}", bookingId, approved, bookingId);
         return client.approvedUp(userId, bookingId, approved);
     }

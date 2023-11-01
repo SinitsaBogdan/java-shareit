@@ -35,7 +35,7 @@ class ItemControllerTest {
     @DisplayName("Запрос всех записей вещей пользователя")
     public void getAll() throws Exception {
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.OK);
-        when(client.get(1L)).thenReturn(response);
+        when(client.get(1L, 0, 4)).thenReturn(response);
 
         mvc.perform(get("/items")
                         .header("X-Sharer-User-Id", 1)
@@ -49,7 +49,7 @@ class ItemControllerTest {
     @DisplayName("Запрос записи вещи пользователя по ID")
     public void getById() throws Exception {
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.OK);
-        when(client.get(1L)).thenReturn(response);
+        when(client.get(1L, 0, 4)).thenReturn(response);
 
         mvc.perform(get("/items/1")
                         .header("X-Sharer-User-Id", 1)
@@ -63,7 +63,7 @@ class ItemControllerTest {
     @DisplayName("Запрос записей вещей по поиску в text (название или описание)")
     public void getAllToSearchText() throws Exception {
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.OK);
-        when(client.getAllToSearchText(1L, "ALL")).thenReturn(response);
+        when(client.getAllToSearchText(1L, "ALL", 0, 4)).thenReturn(response);
 
         mvc.perform(get("/items/search?text=ALL")
                         .header("X-Sharer-User-Id", 1)

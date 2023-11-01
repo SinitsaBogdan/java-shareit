@@ -29,19 +29,23 @@ public class ItemClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> get(long userId) {
-        return get("", userId);
+    public ResponseEntity<Object> get(long userId, int from, int size) {
+        Map<String, Object> parameters = Map.of(
+                "from", from,
+                "size", size
+        );
+        return get("", userId, parameters);
     }
 
     public ResponseEntity<Object> getById(long userId, long itemId) {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getAllToSearchText(long userId, String text) {
+    public ResponseEntity<Object> getAllToSearchText(long userId, String text, int from, int size) {
         Map<String, Object> parameters = Map.of(
                 "X-Sharer-User-Id", userId
         );
-        return get("/search?text=" + text, userId);
+        return get(String.format("/search?text=%s&from=%s&size=%s", text, from, size), userId);
     }
 
     public ResponseEntity<Object> add(long userId, ItemDto itemDto) {

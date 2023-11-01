@@ -9,6 +9,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j
@@ -19,12 +20,15 @@ import javax.validation.constraints.PositiveOrZero;
 public class ItemRequestController {
 
     private final ItemRequestClient client;
+    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /**
      * Запрос на получение всех запросов вещей пользователя
      **/
     @GetMapping
-    public ResponseEntity<Object> getAllOwner(@RequestHeader(value = "X-Sharer-User-Id") long userId) {
+    public ResponseEntity<Object> getAllOwner(
+            @RequestHeader(headerShareitUserId) @Positive long userId
+    ) {
         log.info("   GET [http://localhost:8080/requests] : Запрос на получение всех запросов вещей");
         return client.get(userId);
     }
@@ -34,7 +38,7 @@ public class ItemRequestController {
      **/
     @GetMapping("/all")
     public ResponseEntity<Object> getUsersAll(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) @Positive long userId,
             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(defaultValue = "10") @Min(1) int size
     ) {
@@ -46,7 +50,10 @@ public class ItemRequestController {
      * Запрос на получение всех запросов вещей
      **/
     @GetMapping("/{requestId}")
-    public ResponseEntity<Object> get(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long requestId) {
+    public ResponseEntity<Object> get(
+            @RequestHeader(headerShareitUserId) @Positive long userId,
+            @PathVariable long requestId
+    ) {
         log.info("   GET [http://localhost:8080/requests/{}] : Запрос на получение всех запросов вещей", requestId);
         return client.get(userId, requestId);
     }
@@ -55,7 +62,10 @@ public class ItemRequestController {
      * Добавление нового запроса вещи
      **/
     @PostMapping
-    public ResponseEntity<Object> add(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody @Valid ItemRequestDto requestDto) {
+    public ResponseEntity<Object> add(
+            @RequestHeader(headerShareitUserId) @Positive long userId,
+            @RequestBody @Valid ItemRequestDto requestDto
+    ) {
         log.info("  POST [http://localhost:8080/requests] : Запрос на добавление запроса вещи - {}", requestDto);
         return client.add(userId, requestDto);
     }

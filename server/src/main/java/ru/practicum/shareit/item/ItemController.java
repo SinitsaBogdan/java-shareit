@@ -12,6 +12,8 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
+import static ru.practicum.shareit.Constants.headerShareitUserId;
+
 @Slf4j
 @RestController
 @AllArgsConstructor
@@ -19,7 +21,6 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /** Запрос всех записей вещей пользователя **/
     @GetMapping

@@ -12,6 +12,8 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import java.util.List;
 
+import static ru.practicum.shareit.Constants.headerShareitUserId;
+
 @Slf4j
 @Validated
 @RestController
@@ -20,7 +22,6 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
-    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /**
      * Запрос всех записей бронирования пользователя

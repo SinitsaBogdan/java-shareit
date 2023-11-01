@@ -14,6 +14,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
+import static ru.practicum.shareit.Constants.headerShareitUserId;
+
 @Slf4j
 @Validated
 @Controller
@@ -22,7 +24,6 @@ import javax.validation.constraints.PositiveOrZero;
 public class ItemController {
 
     private final ItemClient client;
-    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /** Запрос всех записей вещей пользователя **/
     @GetMapping

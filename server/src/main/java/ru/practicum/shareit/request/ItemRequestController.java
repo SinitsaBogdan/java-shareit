@@ -13,6 +13,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+import static ru.practicum.shareit.Constants.headerShareitUserId;
+
 
 @Slf4j
 @Validated
@@ -22,7 +24,6 @@ import java.util.List;
 public class ItemRequestController {
 
     private final ItemRequestService itemRequestService;
-    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /**
      * Запрос на получение всех запросов вещей пользователя

@@ -49,7 +49,7 @@ class ItemRequestControllerTest {
     @DisplayName("Запрос на получение всех запросов вещей")
     public void getAllOwner() throws Exception {
         ResponseEntity<Object> response = new ResponseEntity<>(HttpStatus.OK);
-        when(client.get(1L)).thenReturn(response);
+        when(client.get(1L, 0, 5)).thenReturn(response);
 
         mvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", 1)

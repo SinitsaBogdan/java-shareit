@@ -29,7 +29,9 @@ public class UserController {
      * Запрос пользователя по ID
      **/
     @GetMapping("/{userId}")
-    public UserDto getById(@PathVariable long userId) {
+    public UserDto getById(
+            @PathVariable long userId
+    ) {
         log.info("   GET [http://localhost:8080/users/{}] : Запрос на получение пользователя id : {}", userId, userId);
         return userService.getById(userId);
     }
@@ -38,7 +40,9 @@ public class UserController {
      * Добавление нового пользователя
      **/
     @PostMapping
-    public UserDto add(@RequestBody UserDto user) {
+    public UserDto add(
+            @RequestBody UserDto user
+    ) {
         log.info("  POST [http://localhost:8080/users] : Запрос на добавление пользователя - {}", user);
         return userService.save(user);
     }
@@ -47,7 +51,10 @@ public class UserController {
      * Обновление существующего пользователя
      **/
     @PatchMapping("/{userId}")
-    public UserDto update(@PathVariable long userId, @RequestBody UserDto user) {
+    public UserDto update(
+            @PathVariable long userId,
+            @RequestBody UserDto user
+    ) {
         user.setId(userId);
         log.info(" PATCH [http://localhost:8080/users/{}] : Запрос на обновление пользователя - {}", userId, user);
         return userService.update(user);
@@ -57,7 +64,9 @@ public class UserController {
      * Удаление существующего пользователя
      **/
     @DeleteMapping("/{userId}")
-    public void delete(@PathVariable long userId) {
+    public void delete(
+            @PathVariable long userId
+    ) {
         log.info(" DELETE [http://localhost:8080/users/{}] : Запрос на удаление пользователя id : {}", userId, userId);
         userService.deleteById(userId);
     }

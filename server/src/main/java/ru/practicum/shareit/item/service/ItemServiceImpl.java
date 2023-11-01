@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -41,13 +43,13 @@ public class ItemServiceImpl implements ItemService {
     private final CommentRepository commentRepository;
 
     @Override
-    public List<ItemDto> getAllByUserId(long userId) {
+    public List<ItemDto> getAllByUserId(long userId, Pageable pageable) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) throw new RepositoryException(REPOSITORY_ERROR__USER__ID_NOT_IN_REPO__ID);
 
         List<ItemDto> result = new ArrayList<>();
         LocalDateTime actual = LocalDateTime.now();
-        List<Item> items = itemRepository.findByUser(optionalUser.get());
+        Page<Item> items = itemRepository.findByUser(optionalUser.get(), pageable);
         List<Booking> bookings = bookingRepository.findByItem_User(optionalUser.get());
 
         items.forEach(item -> {
@@ -98,9 +100,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getBySearchText(@NotNull String text) {
+    public List<ItemDto> getBySearchText(@NotNull String text, Pageable pageable) {
         if (text.isEmpty()) return new ArrayList<>();
-        else return itemRepository.findSearch(text).stream()
+        else return itemRepository.findSearch(text, pageable).stream()
                 .map(MapperItem::mapperEntityToDto)
                 .collect(Collectors.toList());
     }

@@ -20,13 +20,14 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final String headerShareitUserId = "X-Sharer-User-Id";
 
     /**
      * Запрос всех записей бронирования пользователя
      **/
     @GetMapping
     public List<BookingResponseDto> getAll(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) long userId,
             @RequestParam String state,
             @RequestParam int from,
             @RequestParam int size
@@ -40,7 +41,7 @@ public class BookingController {
      **/
     @GetMapping("/{bookingId}")
     public BookingResponseDto getById(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) long userId,
             @PathVariable long bookingId
     ) {
         log.info("   GET [http://localhost:8080/bookings/{}] : Запрос на получение бронирования по id : {}", bookingId, bookingId);
@@ -52,7 +53,7 @@ public class BookingController {
      **/
     @GetMapping("/owner")
     public List<BookingResponseDto> getById(
-            @RequestHeader(value = "X-Sharer-User-Id") long userId,
+            @RequestHeader(headerShareitUserId) long userId,
             @RequestParam String state,
             @RequestParam int from,
             @RequestParam int size
@@ -65,7 +66,10 @@ public class BookingController {
      * Добавление новой записи бронирования пользователя
      **/
     @PostMapping
-    public BookingResponseDto save(@RequestHeader(value = "X-Sharer-User-Id") long userId, @RequestBody BookingRequestDto bookingRequestDto) {
+    public BookingResponseDto save(
+            @RequestHeader(headerShareitUserId) long userId,
+            @RequestBody BookingRequestDto bookingRequestDto
+    ) {
         log.info("  POST [http://localhost:8080/bookings] : Запрос на добавление бронирования - {}", bookingRequestDto);
         return bookingService.save(userId, bookingRequestDto);
     }
@@ -74,7 +78,11 @@ public class BookingController {
      * Подтверждение бронирования
      **/
     @PatchMapping("/{bookingId}")
-    public BookingResponseDto approved(@RequestHeader(value = "X-Sharer-User-Id") long userId, @PathVariable long bookingId, @RequestParam(defaultValue = "") boolean approved) {
+    public BookingResponseDto approved(
+            @RequestHeader(headerShareitUserId) long userId,
+            @PathVariable long bookingId,
+            @RequestParam("") boolean approved
+    ) {
         log.info("  POST [http://localhost:8080/bookings/{}?approved={}] : Запрос на добавление бронирования - {}", bookingId, approved, bookingId);
         return bookingService.updateApproved(userId, bookingId, approved);
     }

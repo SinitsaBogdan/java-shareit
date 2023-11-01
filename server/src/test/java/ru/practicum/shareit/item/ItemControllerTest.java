@@ -43,9 +43,9 @@ class ItemControllerTest {
                 ItemDto.builder().id(2L).name("item-2").description("description-2").available(false).build()
         );
 
-        when(service.getAllByUserId(1L)).thenReturn(response);
+        when(service.getAllByUserId(anyLong(), any())).thenReturn(response);
 
-        mvc.perform(get("/items")
+        mvc.perform(get("/items?from=0&size=4")
                         .header("X-Sharer-User-Id", 1)
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,9 +81,9 @@ class ItemControllerTest {
                 ItemDto.builder().id(2L).name("item-2").description("description-2").available(false).build()
         );
 
-        when(service.getBySearchText("item")).thenReturn(response);
+        when(service.getBySearchText(any(), any())).thenReturn(response);
 
-        mvc.perform(get("/items/search")
+        mvc.perform(get("/items/search?from=0&size=2")
                         .header("X-Sharer-User-Id", 1)
                         .param("text", "item")
                         .characterEncoding(StandardCharsets.UTF_8)

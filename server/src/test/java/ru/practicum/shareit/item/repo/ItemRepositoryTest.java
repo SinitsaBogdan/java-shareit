@@ -4,6 +4,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repo.UserRepository;
@@ -97,15 +99,15 @@ class ItemRepositoryTest {
         @Test
         @DisplayName("Проверка метода - findByUser")
         public void findByUser() {
-            List<Item> result = itemRepository.findByUser(user);
+            List<Item> result = itemRepository.findByUser(user, PageRequest.of(0, 4)).toList();
             Assertions.assertEquals(result.size(), 1);
         }
 
         @Test
         @DisplayName("Проверка метода - findSearch")
         public void findSearch() {
-            List<Item> result = itemRepository.findSearch("item");
-            Assertions.assertEquals(result.size(), 1);
+            Page<Item> result = itemRepository.findSearch("item", PageRequest.of(0, 3));
+            Assertions.assertEquals(result.stream().toArray().length, 1);
         }
     }
 }

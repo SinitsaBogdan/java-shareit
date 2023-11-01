@@ -29,7 +29,7 @@ public class ItemController {
             @RequestParam int size
     ) {
         log.info("   GET [http://localhost:8080/items] : Запрос на получение всех вещей от пользователя id : {}", userId);
-        return itemService.getAllByUserId(userId, PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("id")));
+        return itemService.getAllByUserId(userId, PageRequest.of(from > 0 ? from / size : 0, size));
     }
 
     /** Запрос записи вещи пользователя по ID **/

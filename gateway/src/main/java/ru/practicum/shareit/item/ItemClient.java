@@ -35,7 +35,7 @@ public class ItemClient extends BaseClient {
                 "from", from,
                 "size", size
         );
-        return get("", userId, parameters);
+        return get(String.format("?from=%s&size=%s", from, size), userId, parameters);
     }
 
     public ResponseEntity<Object> getById(long userId, long itemId) {
